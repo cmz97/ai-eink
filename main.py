@@ -7,7 +7,7 @@ import io
 import time
 from sshkeyboard import listen_keyboard
 import numpy as np
-import einkDSP
+from einkDSP import einkDSP
 
 # Load the Stable Diffusion pipeline
 pl = ORTStableDiffusionPipeline.from_pretrained('./sd_v15_lcm_onnx/')
@@ -17,8 +17,7 @@ model = "openhermes"  # Update this as necessary
 is_generating_image = False
 fix_prompt = "manga style, anime style, high quality, HD, fineart, detailed face, 1 waifu, brown eyes, brown hair, low-tied long hair, medium breast,"
 
-einkDSP.EPD_GPIO_Init()
-einkDSP.epd_w21_init_4g
+eink = einkDSP()
 
 def get_t():
     return datetime.datetime.now().strftime('%b %d %a %H:%M %p')
@@ -157,7 +156,7 @@ For Example:
     
     # to 2 bit
     hex_pixels = image_to_header_file(image)
-    einkDSP.pic_display_4g(hex_pixels)
+    eink.pic_display_4g(hex_pixels)
 
     end_time = time.time()
     iter_t += end_time - start_time
