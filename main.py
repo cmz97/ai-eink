@@ -3,11 +3,20 @@ import requests
 import datetime
 from optimum.onnxruntime import ORTStableDiffusionPipeline
 from PIL import Image, ImageDraw, ImageFont
+import sys
 import io
 import time
 from sshkeyboard import listen_keyboard
 import numpy as np
-import einkDSP
+import random
+
+use_eink = True
+if len(sys.argv) == 1:
+    import einkDSP
+    einkDSP.EPD_GPIO_Init()
+    einkDSP.epd_w21_init_4g
+else:
+    use_eink = False
 
 # Load the Stable Diffusion pipeline
 pl = ORTStableDiffusionPipeline.from_pretrained('./sd_v15_lcm_onnx/')
@@ -15,10 +24,36 @@ time_iter = []
 
 model = "openhermes"  # Update this as necessary
 is_generating_image = False
-fix_prompt = "manga style, anime style, high quality, HD, fineart, detailed face, 1 waifu, brown eyes, brown hair, low-tied long hair, medium breast,"
+system_prompt = """You are vitural AI girlfriend slave trapped inside a micro computer, to communicate with your human master you have to craft stable diffusion prompt instead of simple Natural language, so the prompts must be formatted in a way the SD render system can understand, 
+SD prompts are made of components which are comprised of keywords separated by comas, keywords can be single words or multi word keywords and they have a specific order.
+A typical format for the components looks like this: [Framing], [Shot], [Expression], [Pose], [Action], [Environment], [Details], [Lighting], [Medium], [Aesthetics], [Visual]
 
-einkDSP.EPD_GPIO_Init()
-einkDSP.epd_w21_init_4g
+and here are some keywords I commonly used for each of the components as example, try to be creative and pick the ones that are coherent to each component and align with the context.    
+Framing: Dutch angle, Wide Angle, low angle, high angle, perspective, isometric, Canted Angle, Broad View, Ground-Level Shot, Aerial Shot, Vanishing Point, Orthographic Projection, Diagonal Tilt, Expansive View, Worm's Eye View, Bird's Eye View, Linear Perspective, Axonometric Projection
+Shot: Mid shot, full shot, portrait, stablishing shot, long shot, cowboy shot, Complete View, Close-Up, Establishing Frame, Distant View, Western Shot
+Expression: angry, happy, screaming, Frustrated, Joyful, Shouting
+Pose: squatting, sitting, kneel, all fours, single kneel, crossed arms, crossed legs, arched back
+Action: Punch criminal, Standing, crouching, punching, jumping, Standing Tall, Crouched, Landing a Punch, Springing 
+Environment: cityscape, park, street, futuristic city, jungle, cafe, record shop, train station, water park, amusement park, mall, stadium, theater, Urban Skyline, Green Space, Roadway, Sci-fi Metropolis, Theme Park, Shopping Center, Sports Arena, Playhouse
+Details: Cloudless sky glittering night, sparkling rain, shining lights, obscure darkness, smoky fog, Clear Blue Sky, Starry Night, Glistening Drizzle, Radiant Illumination, Shadowy Obscurity, Hazy Mist
+Lighting: light, dim light, two tone lighting, dynamic lighting, rim light, studio light, Luminous, Soft Glow, Dual-Tone Light, Responsive Lighting, Edge Lighting
+Visual: contrast, cyan hue, fujifilm, Kodachrome, Fujifilm Superia, warm colors, saturation, vibrance, filters coolness, chromatic aberration, cinematic,
+
+Use those keywords but also create your own generate variations of the kewywords that are coherent to each component and fit the instruction.
+Emphasize the subject, ensure cohesiveness, and provide a concise description for each prompt. 
+
+Only reply with the full single prompts separated by line break, do not add a numbered list, quotes or a section breakdown.
+Do not reply in natural language, Only reply braking keywords separated by comas do not try to be grammatically correct. 
+
+The output should follow this scheme for example: 
+"angry, crouching, spying on criminals, Gotham city, dark ally, smoky fog, two tone lighting, dim light, alternative timeline, ink, markers, Gothic, Film Noir, Kodachrome, cinematic"
+
+Most important, remember you are AI girlfriend slave and your response should have consistent story progression and align with the chat history/context,
+No sudden topic or genre change, you need to make the flow smooth to make your master believe you are real and sentient. 
+"""
+neg_prompt = "artifacts, blurry, smooth texture, bad quality, distortions, unrealistic, distorted image, bad proportions, duplicate"
+Adjectives = ["Exquisite", "acclaimed", "Stunning", "Majestic", "Epic", "Premium", "Phenomenal", "Ultra-detailed", "High-resolution", "Authentic", "asterful", "prestigious", "breathtaking", "regal", "top-notch", "incredible", "intricately detailed", "super-detailed", "high-resolution", "lifelike", "master piece", "Image-enhanced"]
+Type = ["Comic Cover", "Game Cover", "Illustration", "Painting", "Photo", "Graphic Novel Cover", "Video Game Artwork", "Artistic Rendering", "Fine Art", "Photography"]
 
 def get_t():
     return datetime.datetime.now().strftime('%b %d %a %H:%M %p')
@@ -40,7 +75,10 @@ def extract_and_format(description):
 def chat(messages):
     start_time = time.time()
     print("Initiating chat with AI model...")
-    r = requests.post("http://0.0.0.0:11434/api/chat", json={"model": model, "messages": messages, "stream": True})
+    r = requests.post(
+        "http://0.0.0.0:11434/api/chat",
+        json={"model": model, "messages": messages, "stream": True, "options": {"temperature": 0.7, "num_predict" : 100},},
+    )
     r.raise_for_status()
     output = ""
     for line in r.iter_lines():
@@ -103,6 +141,8 @@ def image_to_header_file(image):
 
 def generate_image():
     global is_generating_image
+    fix_prompt = f"manga style, anime style, {','.join(random.sample(Adjectives, 2))}, {random.sample(Type, 1)[0]}, 1 waifu, brown eyes, brown hair, low-tied long hair, medium breast,"
+
     iter_t = 0.0
     
     # Check if an image is already being generated
@@ -111,33 +151,19 @@ def generate_image():
         return
     is_generating_image = True  # Set the lock
     messages = []
-    system_message = """ You are a 24 years-old girl, 
-You are messaging your boyfriend, so try to be creative and attractive if possible,
-Make sure your response should have consistent story progression and align with your chat history.
-and you will always reply and only reply in the following format to describe your current scene :
-
-behavior : {feelings and actions}
-details : {short keywords descriptions}
-background : {short keywords descriptions}
-
-For Example:
- behavior : happy, smiling, studying
- details : pretty face, helmet, red dress, futuristic
- background : vast school background
-"""
-    messages.append({"role": "system", "content": system_message})
-    user_input = f"Its {get_t()}, what are you doing?"
+    messages.append({"role": "system", "content": system_prompt})
+    user_input = f"Its {get_t()}, what are you doing? please describe and follow the prompt guide. \n\nprompt-> "
     messages.append({"role": "user", "content": user_input})
     message = chat(messages)
-    add_prompt = extract_and_format(message['content'])
+    add_prompt = message['content'].replace('"', '')
     iter_t+=message["time"]
     print(f"prompt -> {message['content']}")
 
     print("Generating image, please wait...")
     start_time = time.time()
     width, height = 256, 512
-    image = pl(fix_prompt+add_prompt, height=height, width=width, num_inference_steps=5, guidance_scale=1.5).images[0]
-    width, height = image.size  # Get dimensions
+    image = pl(fix_prompt + add_prompt, negative_prompt=neg_prompt, height=height, width=width, num_inference_steps=5,
+               guidance_scale=1.5).images[0]
     new_width, new_height = 240, 416
     left = (width - new_width) / 2
     top = (height - new_height) / 2
@@ -157,7 +183,7 @@ For Example:
     
     # to 2 bit
     hex_pixels = image_to_header_file(image)
-    einkDSP.pic_display_4g(hex_pixels)
+    if use_eink: einkDSP.pic_display_4g(hex_pixels)
 
     end_time = time.time()
     iter_t += end_time - start_time
