@@ -134,9 +134,17 @@ def image_to_header_file(image):
             converted_pixels.append(color_mapping['gray2'])
         else:
             converted_pixels.append(color_mapping['white'])
-    grouped_pixels = [''.join(converted_pixels[i:i+4]) for i in range(0, len(converted_pixels), 4)]
-    hex_pixels = [f"0x{int(bits, 2):02X}" for bits in grouped_pixels]
-    return hex_pixels
+   
+    # Group every 4 elements into one byte
+    byte_array = []
+    for i in range(0, len(converted_pixels), 4):
+        byte = 0
+        for j in range(4):
+            if i + j < len(converted_pixels):
+                byte |= (converted_pixels[i+j] << (6 - 2*j))
+        byte_array.append(byte)
+
+    return np.array(byte_array, dtype=np.uint8)
 
 def generate_image():
     global is_generating_image
