@@ -157,15 +157,16 @@ def generate_image():
     messages.append({"role": "system", "content": system_prompt})
     user_input = f"Its {get_t()}, what are you doing? please describe and follow the prompt guide. \n\nprompt-> "
     messages.append({"role": "user", "content": user_input})
-    message = chat(messages)
-    add_prompt = message['content'].replace('"', '')
-    iter_t+=message["time"]
-    print(f"prompt -> {message['content']}")
 
+    # message = chat(messages) # skip
+    # add_prompt = message['content'].replace('"', '')
+    # iter_t+=message["time"]
+    # print(f"prompt -> {message['content']}")
+    full_prompt = fix_prompt #+ add_prompt
     print("Generating image, please wait...")
     start_time = time.time()
     width, height = 256, 512
-    image = pl(fix_prompt + add_prompt, negative_prompt=neg_prompt, height=height, width=width, num_inference_steps=5,
+    image = pl(full_prompt, negative_prompt=neg_prompt, height=height, width=width, num_inference_steps=1,
                guidance_scale=1.5).images[0]
     new_width, new_height = 240, 416
     left = (width - new_width) / 2
