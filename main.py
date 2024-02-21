@@ -166,7 +166,7 @@ def generate_image():
     print("Generating image, please wait...")
     start_time = time.time()
     width, height = 256, 512
-    image = pl(full_prompt, negative_prompt=neg_prompt, height=height, width=width, num_inference_steps=1,
+    image = pl(full_prompt, negative_prompt=neg_prompt, height=height, width=width, num_inference_steps=5,
                guidance_scale=1.5).images[0]
     new_width, new_height = 240, 416
     left = (width - new_width) / 2
