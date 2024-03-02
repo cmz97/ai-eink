@@ -21379,6 +21379,7 @@ LOW=ON</text>
 <wire x1="421.64" y1="81.28" x2="411.48" y2="81.28" width="0.1524" layer="91"/>
 <wire x1="421.64" y1="78.74" x2="421.64" y2="81.28" width="0.1524" layer="91"/>
 <junction x="421.64" y="81.28"/>
+<label x="421.64" y="81.28" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="FL2" gate="G$1" pin="1"/>
@@ -21696,6 +21697,27 @@ LOW=ON</text>
 </nets>
 </sheet>
 </sheets>
+<errors>
+<approved hash="102,1,551.18,43.18,GND,N$30,,,,"/>
+<approved hash="102,1,312.42,81.28,OUT,2.8V,,,,"/>
+<approved hash="102,1,403.86,81.28,OUT,1.5V,,,,"/>
+<approved hash="104,1,563.88,215.9,U1,PGND,GND,,,"/>
+<approved hash="104,1,563.88,236.22,U1,VOUT,5.0V,,,"/>
+<approved hash="104,1,10.16,30.48,U2,VCC,3.3V,,,"/>
+<approved hash="104,1,292.1,81.28,U5,IN,3.3V,,,"/>
+<approved hash="104,1,447.04,35.56,OSC1,VCC,3.3V,,,"/>
+<approved hash="106,1,30.48,22.86,CAM_GPIO,,,,,"/>
+<approved hash="106,1,497.84,86.36,GDR,,,,,"/>
+<approved hash="106,1,497.84,88.9,NC,,,,,"/>
+<approved hash="106,1,497.84,83.82,RESE,,,,,"/>
+<approved hash="106,1,497.84,76.2,TSCL,,,,,"/>
+<approved hash="106,1,497.84,73.66,TSDA,,,,,"/>
+<approved hash="111,1,568.96,218.44,LBO,,,,,"/>
+<approved hash="112,1,594.36,34.29,,,,,,"/>
+<approved hash="113,1,349.25,123.198,S1,,,,,"/>
+<approved hash="115,1,281.94,252.73,TS,,,,,"/>
+<approved hash="115,1,591.82,220.98,VOUT,,,,,"/>
+</errors>
 </schematic>
 </drawing>
 <compatibility>

@@ -21559,22 +21559,31 @@ LOW=ON</text>
 <approved hash="102,1,551.18,43.18,GND,N$30,,,,"/>
 <approved hash="102,1,312.42,81.28,OUT,2.8V,,,,"/>
 <approved hash="102,1,403.86,81.28,OUT,1.5V,,,,"/>
+<approved hash="201,1,551.18,43.18,GND,GND\, N$30,,,,"/>
+<approved hash="201,1,403.86,81.28,OUT,2.8V\, 1.5V,,,,"/>
+<approved hash="201,1,312.42,81.28,OUT,2.8V\, 1.5V,,,,"/>
 <approved hash="104,1,563.88,215.9,U1,PGND,GND,,,"/>
 <approved hash="104,1,563.88,236.22,U1,VOUT,5.0V,,,"/>
 <approved hash="104,1,10.16,30.48,U2,VCC,3.3V,,,"/>
 <approved hash="104,1,292.1,81.28,U5,IN,3.3V,,,"/>
 <approved hash="104,1,447.04,35.56,OSC1,VCC,3.3V,,,"/>
+<approved hash="202,1,7.62,193.04,IC3,LINPUT3,,,,"/>
+<approved hash="202,1,7.62,190.5,IC3,LINPUT2,,,,"/>
+<approved hash="202,1,7.62,180.34,IC3,RINPUT2,,,,"/>
+<approved hash="202,1,7.62,177.8,IC3,RINPUT3,,,,"/>
 <approved hash="106,1,30.48,22.86,CAM_GPIO,,,,,"/>
 <approved hash="106,1,497.84,86.36,GDR,,,,,"/>
 <approved hash="106,1,497.84,88.9,NC,,,,,"/>
 <approved hash="106,1,497.84,83.82,RESE,,,,,"/>
 <approved hash="106,1,497.84,76.2,TSCL,,,,,"/>
 <approved hash="106,1,497.84,73.66,TSDA,,,,,"/>
+<approved hash="108,1,591.82,218.44,VOUT,,,,,"/>
+<approved hash="108,1,368.3,261.62,VOUT,,,,,"/>
 <approved hash="111,1,568.96,218.44,LBO,,,,,"/>
 <approved hash="112,1,594.36,34.29,,,,,,"/>
 <approved hash="113,1,349.25,123.198,S1,,,,,"/>
-<approved hash="115,1,281.94,252.73,TS,,,,,"/>
 <approved hash="115,1,591.82,220.98,VOUT,,,,,"/>
+<approved hash="115,1,281.94,252.73,TS,,,,,"/>
 </errors>
 </schematic>
 </drawing>
