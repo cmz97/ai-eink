@@ -120,7 +120,7 @@ class einkDSP:
 
     def epd_sleep(self):
         self.epd_w21_write_cmd(0x02)  # Power off
-        self.self.lcd_chkstatus()  # Implement this to check the display's busy status
+        self.lcd_chkstatus()  # Implement this to check the display's busy status
         
         self.epd_w21_write_cmd(0x07)  # Deep sleep
         self.epd_w21_write_data(0xA5)

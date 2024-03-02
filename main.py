@@ -192,7 +192,10 @@ def generate_image():
 
     # to 2 bit
     hex_pixels = image_to_header_file(image)
-    if use_eink: eink.pic_display_4g(hex_pixels)
+    if use_eink: 
+        eink.epd_w21_init_4g()
+        eink.pic_display_4g(hex_pixels)
+        eink.epd_sleep()
 
     end_time = time.time()
     iter_t += end_time - start_time
