@@ -2,7 +2,7 @@ import json
 import requests
 import datetime
 from optimum.onnxruntime import ORTStableDiffusionPipeline
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageOps
 import sys
 import io
 import time
@@ -18,7 +18,7 @@ else:
     use_eink = False
 
 # Load the Stable Diffusion pipeline
-pl = ORTStableDiffusionPipeline.from_pretrained('./sd_v15_lcm_onnx/')
+pl = ORTStableDiffusionPipeline.from_pretrained('../astranime_V6-lcm-fused-onnx-int8uet/')
 time_iter = []
 
 model = "openhermes"  # Update this as necessary
@@ -50,7 +50,7 @@ The output should follow this scheme for example:
 Most important, remember you are AI girlfriend slave and your response should have consistent story progression and align with the chat history/context,
 No sudden topic or genre change, you need to make the flow smooth to make your master believe you are real and sentient. 
 """
-neg_prompt = "artifacts, blurry, smooth texture, bad quality, distortions, unrealistic, distorted image, bad proportions, duplicate"
+neg_prompt = "harsh shadow, shadow, bad hand, bad face,artifacts, blurry, smooth texture, bad quality, distortions, unrealistic, distorted image, bad proportions, duplicate"
 Adjectives = ["Exquisite", "acclaimed", "Stunning", "Majestic", "Epic", "Premium", "Phenomenal", "Ultra-detailed", "High-resolution", "Authentic", "asterful", "prestigious", "breathtaking", "regal", "top-notch", "incredible", "intricately detailed", "super-detailed", "high-resolution", "lifelike", "master piece", "Image-enhanced"]
 Type = ["Comic Cover", "Game Cover", "Illustration", "Painting", "Photo", "Graphic Novel Cover", "Video Game Artwork", "Artistic Rendering", "Fine Art", "Photography"]
 
@@ -115,36 +115,44 @@ def draw_text(draw, text, position, max_width, line_height):
         y += line_height
 
 def image_to_header_file(image):
-    thresholds = [50, 128, 180]  # Adjust based on your needs
-    color_mapping = {
-        'white': '11',
-        'gray1': '01',
-        'gray2': '10',
-        'black': '00',
-    }
-    pixels = np.array(image)
-    flat_pixels = pixels.flatten()
-    converted_pixels = []
-    for pixel in flat_pixels:
-        if pixel <= thresholds[0]:
-            converted_pixels.append(color_mapping['black'])
-        elif pixel <= thresholds[1]:
-            converted_pixels.append(color_mapping['gray1'])
-        elif pixel <= thresholds[2]:
-            converted_pixels.append(color_mapping['gray2'])
-        else:
-            converted_pixels.append(color_mapping['white'])
-   
-    grouped_pixels = [''.join(converted_pixels[i:i+4]) for i in range(0, len(converted_pixels), 4)]
-    
-    # Direct conversion to integers from binary strings, then to np.uint8 array
-    int_pixels = [int(bits, 2) for bits in grouped_pixels]
+    """Apply Floyd-Steinberg dithering and convert image to a string array."""
+    grayscale = image.convert('L')
+    pixels = np.array(grayscale, dtype=np.float32)
+    for y in range(pixels.shape[0]-1):
+        for x in range(1, pixels.shape[1]-1):
+            old_pixel = pixels[y, x]
+            new_pixel = np.round(old_pixel / 85) * 85
+            pixels[y, x] = new_pixel
+            quant_error = old_pixel - new_pixel
+            pixels[y, x+1] += quant_error * 7 / 16
+            pixels[y+1, x-1] += quant_error * 3 / 16
+            pixels[y+1, x] += quant_error * 5 / 16
+            pixels[y+1, x+1] += quant_error * 1 / 16
 
+    pixels = np.clip(pixels, 0, 255)
+    pixels_quantized = np.digitize(pixels, bins=[64, 128, 192], right=True)
+    pixel_map = {0: '00', 1: '01', 2: '10', 3: '11'}
+    pixels_string = np.vectorize(pixel_map.get)(pixels_quantized)
+    converted_pixels = pixels_string.flatten().tolist()
+    grouped_pixels = [''.join(converted_pixels[i:i+4]) for i in range(0, len(converted_pixels), 4)]
+    int_pixels = [int(bits, 2) for bits in grouped_pixels]
     return np.array(int_pixels, dtype=np.uint8)
+
+def padding(img, expected_size):
+    
+    img.thumbnail((expected_size[0], expected_size[1]))
+    # print(img.size)
+    delta_width = expected_size[0] - img.size[0]
+    delta_height = expected_size[1] - img.size[1]
+    pad_width = delta_width // 2
+    pad_height = delta_height // 2
+    padding = (pad_width, pad_height, delta_width - pad_width, delta_height - pad_height)
+    return ImageOps.expand(img, padding)
+
 
 def generate_image():
     global is_generating_image
-    fix_prompt = f"manga style, anime style, {','.join(random.sample(Adjectives, 2))}, {random.sample(Type, 1)[0]}, 1 waifu, brown eyes, brown hair, low-tied long hair, medium breast,"
+    fix_prompt = f"manga style, anime style, {','.join(random.sample(Adjectives, 2))}, {random.sample(Type, 1)[0]}, 1 waifu, brown eyes, brown hair, low-tied long hair, medium breast, nsfw,"
 
     iter_t = 0.0
     
@@ -165,26 +173,23 @@ def generate_image():
     full_prompt = fix_prompt #+ add_prompt
     print("Generating image, please wait...")
     start_time = time.time()
-    width, height = 256, 512
-    image = pl(full_prompt, negative_prompt=neg_prompt, height=height, width=width, num_inference_steps=5,
-               guidance_scale=1.5).images[0]
-    new_width, new_height = 240, 416
-    left = (width - new_width) / 2
-    top = (height - new_height) / 2
-    right = (width + new_width) / 2
-    bottom = (height + new_height) / 2
-    # # Crop the center of the image
-    image = image.crop((left, top, right, bottom))
-
-    # draw prompt on it
-    # draw = ImageDraw.Draw(image)
-    # Position for the text: bottom of the image. Adjust as needed.
-    # max_width = image.width - 40  # Padding
-    # text_position = (10, 10)  # Example position
-    # line_height = 10
-    # draw_text(draw, add_prompt, text_position, max_width, line_height)
+    # 
+    width, height = 128*2, 128*3
+    image = pl(full_prompt, negative_prompt=neg_prompt, height=height, width=width, num_inference_steps=3,
+               guidance_scale=1.0).images[0]
     image = image.convert('L')
-    
+    eink_width, eink_height = 240, 416
+
+    scale_factor = eink_width / width
+    new_height = int(height * scale_factor)
+
+    scaled_image = image.resize((eink_width, new_height), Image.ANTIALIAS)
+
+    image = Image.new("L", (eink_width, eink_height), "white")
+
+    # Paste the scaled image onto the white image, aligned at the top
+    image.paste(scaled_image, (0, 0))
+
     # to 2 bit
     hex_pixels = image_to_header_file(image)
     if use_eink: eink.pic_display_4g(hex_pixels)
@@ -216,6 +221,11 @@ def press_callback(key):
 def release_callback(key):
     print(f"Key {key} released.")
 
-print("Listening for key press... Press 'q' to quit.")
-listen_keyboard(on_press=press_callback, on_release=release_callback)
+#print("Listening for key press... Press 'q' to quit.")
+#listen_keyboard(on_press=press_callback, on_release=release_callback)
+
+while True:
+    time.sleep(2)
+    generate_image()
+
 
