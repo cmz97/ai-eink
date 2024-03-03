@@ -259,7 +259,7 @@ def generate_image():
                 hex_pixels = image_to_header_file(curImage)
 
                 eink.epd_init_part()
-                eink.EPD_Display(hex_pixels)
+                eink.PIC_display(hex_pixels)
         eink.epd_sleep()
 
 
