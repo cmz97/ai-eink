@@ -9,6 +9,7 @@ import time
 from sshkeyboard import listen_keyboard
 import numpy as np
 import random
+from .utils import ORTModelTiledVaeWrapper
 
 dialog_image_path = 'dialogBox.png'
 ascii_table_image_path = 'asciiTable.png'
@@ -24,6 +25,10 @@ else:
 
 # Load the Stable Diffusion pipeline
 pl = ORTStableDiffusionPipeline.from_pretrained('../astranime_V6-lcm-lora-fused-mar-02-onnx')
+width, height = 128*4, 128*6
+if width > 128*2 or height > 128*3:
+    pl.vae_decoder = ORTModelTiledVaeWrapper(pl.vae_decoder, True, 64, 0.5)
+
 time_iter = []
 
 model = "openhermes"  # Update this as necessary
@@ -219,7 +224,7 @@ def draw_text_on_dialog(dialog_image_path, ascii_table_image_path, text, text_ar
 
 def generate_image(add_prompt=""):
     global is_generating_image
-    fix_prompt = f"manga style, anime style, {','.join(random.sample(Adjectives, 2))}, {random.sample(Type, 1)[0]}, monochrome, 1 girl, waifu, {char_id} nsfw,"
+    fix_prompt = f"{','.join(random.sample(Adjectives, 2))}, {random.sample(Type, 1)[0]}, monochrome, 1 girl, waifu, {char_id} nsfw,"
     iter_t = 0.0
     
     # Check if an image is already being generated
@@ -234,7 +239,6 @@ def generate_image(add_prompt=""):
     
     seed = np.random.randint(0, 1000000)
     g = np.random.RandomState(0)
-    width, height = 128*2, 128*3
     image = pl(full_prompt, negative_prompt=neg_prompt, height=height, width=width, num_inference_steps=3, generator=g, guidance_scale=1.0).images[0]
 
     eink_width, eink_height = 240, 416
