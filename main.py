@@ -152,7 +152,7 @@ def padding(img, expected_size):
 
 def generate_image():
     global is_generating_image
-    fix_prompt = f"manga style, anime style, {','.join(random.sample(Adjectives, 2))}, {random.sample(Type, 1)[0]}, waist up, 1 waifu, brown eyes, brown hair, low-tied long hair, medium breast, nsfw,"
+    fix_prompt = f"manga style, anime style, {','.join(random.sample(Adjectives, 2))}, {random.sample(Type, 1)[0]},monochrome, grayscale, 1 waifu, brown eyes, brown hair, low-tied long hair, medium breast, nsfw,"
 
     iter_t = 0.0
     
