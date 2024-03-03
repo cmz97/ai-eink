@@ -12,8 +12,8 @@ import random
 
 dialog_image_path = 'dialogBox.png'
 ascii_table_image_path = 'asciiTable.png'
-text_area_start = (12, 12)
-text_area_end = (229, 80)
+text_area_start = (9, 12)
+text_area_end = (226, 80)
 
 
 use_eink = True
@@ -245,7 +245,7 @@ def generate_image():
 
 
     dialogBox = draw_text_on_dialog(dialog_image_path, ascii_table_image_path, "Hello World", text_area_start, text_area_end)
-    curImage.paste(dialogBox, (0, eink_height-dialogBox.height))
+    curImage.paste(dialogBox, (3, eink_height-dialogBox.height-4))
 
     hex_pixels = image_to_header_file(curImage)
     if use_eink: 
@@ -276,6 +276,7 @@ def generate_image():
     with open(filename, "wb") as f:
         f.write(image_bytes.read())
     print(f"Image saved as {filename}")
+    curImage.save(f'./Asset/dialog_image_{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}.png')
     is_generating_image = False
 
 def press_callback(key):
