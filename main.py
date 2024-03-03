@@ -254,7 +254,7 @@ def generate_image():
         eink.epd_w21_init_4g()
         eink.pic_display_4g(hex_pixels)
         for i in range(100):
-                dialogBox = draw_text_on_dialog(dialog_image_path, ascii_table_image_path, str(i)), text_area_start, text_area_end)
+                dialogBox = draw_text_on_dialog(dialog_image_path, ascii_table_image_path, str(i), text_area_start, text_area_end)
                 curImage.paste(dialogBox, (0, eink_height-dialogBox.height))
                 hex_pixels = image_to_header_file(curImage)
 
