@@ -17,6 +17,7 @@ from random import random
 import torch
 
 
+
 # Example usage
 dialog_image_path = 'dialogBox.png'
 ascii_table_image_path = 'asciiTable.png'

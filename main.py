@@ -240,7 +240,7 @@ def generate_image():
     eink_width, eink_height = 240, 416
     scale_factor = eink_width / width
     new_height = int(height * scale_factor)
-    scaled_image = curImage.resize((eink_width, new_height), Image.ANTIALIAS)
+    scaled_image = image.resize((eink_width, new_height), Image.ANTIALIAS)
     curImage = Image.new("L", (eink_width, eink_height), "white")
     # Paste the scaled image onto the white image, aligned at the top
     curImage.paste(scaled_image, (0, 0))
