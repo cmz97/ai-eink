@@ -51,7 +51,7 @@ class ORTModelTiledVaeWrapper(object):
         sample_dtype = next(
             (
                 input.type
-                for input in self.wrapped.model.get_inputs()
+                for input in self.wrapped.session.get_inputs()
                 if input.name == "sample" or input.name == "latent_sample"
             ),
             "tensor(float)",
