@@ -10,6 +10,12 @@ from sshkeyboard import listen_keyboard
 import numpy as np
 import random
 
+dialog_image_path = 'dialogBox.png'
+ascii_table_image_path = 'asciiTable.png'
+text_area_start = (12, 12)
+text_area_end = (229, 80)
+
+
 use_eink = True
 if len(sys.argv) == 1:
     from einkDSP import einkDSP
@@ -116,6 +122,7 @@ def draw_text(draw, text, position, max_width, line_height):
 
 def image_to_header_file(image):
     """Apply Floyd-Steinberg dithering and convert image to a string array."""
+    
     grayscale = image.convert('L')
     pixels = np.array(grayscale, dtype=np.float32)
     for y in range(pixels.shape[0]-1):
@@ -150,6 +157,58 @@ def padding(img, expected_size):
     return ImageOps.expand(img, padding)
 
 
+def draw_text_on_dialog(dialog_image_path, ascii_table_image_path, text, text_area_start, text_area_end):
+    # Load the dialog box image
+    dialog_image = Image.open(dialog_image_path)
+
+    # Load the ASCII character image asset
+    ascii_table_image = Image.open(ascii_table_image_path)
+
+    # Calculate the size of each character cell
+    ascii_table_width, ascii_table_height = ascii_table_image.size
+    char_width = ascii_table_width // 16
+    char_height = ascii_table_height // 14
+
+    # Calculate the position and size of the text area
+    text_area_width = text_area_end[0] - text_area_start[0]
+    text_area_height = text_area_end[1] - text_area_start[1]
+    
+    # Initialize the position for the first character
+    x, y = text_area_start
+
+    # Loop through each character in the text
+    for char in text:
+        # Calculate the ASCII value, then find the row and column in the ASCII image
+        ascii_value = ord(char)
+        if 32 <= ascii_value <= 255:
+            row = (ascii_value - 32) // 16
+            col = (ascii_value - 32) % 16
+        else:
+            continue  # Skip characters not in the range 32-255
+
+        # Calculate the position to slice the character from the ASCII image
+        char_x = col * char_width
+        char_y = row * char_height
+
+        # Slice the character image from the ASCII image
+        char_image = ascii_table_image.crop((char_x, char_y, char_x + char_width, char_y + char_height))
+
+        # Paste the character image onto the dialog box image
+        dialog_image.paste(char_image, (x, y))
+
+        # Move to the next character position
+        x += char_width
+        if x + char_width > text_area_end[0]:  # Newline if we run out of space
+            x = text_area_start[0]
+            y += char_height
+            if y + char_height > text_area_end[1]:  # Stop if we run out of vertical space
+                break
+
+    # Save or return the dialog image with text
+    dialog_image.save('dialog_with_text.png')
+    return dialog_image
+
+
 def generate_image():
     global is_generating_image
     fix_prompt = f"manga style, anime style, {','.join(random.sample(Adjectives, 2))}, {random.sample(Type, 1)[0]},monochrome, grayscale, 1 waifu, brown eyes, brown hair, low-tied long hair, medium breast, nsfw,"
@@ -177,25 +236,32 @@ def generate_image():
     width, height = 128*2, 128*3
     image = pl(full_prompt, negative_prompt=neg_prompt, height=height, width=width, num_inference_steps=3,
                guidance_scale=1.0).images[0]
-    image = image.convert('L')
-    eink_width, eink_height = 240, 416
 
+    eink_width, eink_height = 240, 416
     scale_factor = eink_width / width
     new_height = int(height * scale_factor)
-
-    scaled_image = image.resize((eink_width, new_height), Image.ANTIALIAS)
-
-    image = Image.new("L", (eink_width, eink_height), "white")
-
+    scaled_image = curImage.resize((eink_width, new_height), Image.ANTIALIAS)
+    curImage = Image.new("L", (eink_width, eink_height), "white")
     # Paste the scaled image onto the white image, aligned at the top
-    image.paste(scaled_image, (0, 0))
+    curImage.paste(scaled_image, (0, 0))
 
-    # to 2 bit
-    hex_pixels = image_to_header_file(image)
+
+    dialogBox = draw_text_on_dialog(dialog_image_path, ascii_table_image_path, "Hello World", text_area_start, text_area_end)
+    curImage.paste(dialogBox, (0, eink_height-dialogBox.height))
+
+    hex_pixels = image_to_header_file(curImage)
     if use_eink: 
         eink.epd_w21_init_4g()
         eink.pic_display_4g(hex_pixels)
+        for i in range(100):
+                dialogBox = draw_text_on_dialog(dialog_image_path, ascii_table_image_path, str(i)), text_area_start, text_area_end)
+                curImage.paste(dialogBox, (0, eink_height-dialogBox.height))
+                hex_pixels = image_to_header_file(curImage)
+
+                eink.epd_init_part()
+                eink.EPD_Display(hex_pixels)
         eink.epd_sleep()
+
 
     end_time = time.time()
     iter_t += end_time - start_time
