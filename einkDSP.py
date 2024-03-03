@@ -40,7 +40,7 @@ class einkDSP:
         0x09,	0x10,	0x3F,	0x3F,	0x00,	0x0B,		
         ]
         self.emptyImage = [0xFF] * 24960
-        self.oldData = [0] * 12480
+        self.oldData = [0xFF] * 24960
 
 
         #Pin Def
@@ -311,22 +311,62 @@ class einkDSP:
         # Assuming oldData is globally defined or accessible        
         # Transfer old data
         print("Region Refresh Start")
-        print("Transfer old data ...")
-        self.epd_w21_write_cmd(0x10)
-        for i in range(12480):
-            self.epd_w21_write_data(self.oldData[i])
+        # Iterate over each byte of the image data
+        for i in range(12480):  # Assuming 416x240 resolution, adjust accordingly
+            temp3 = 0
+            for j in range(2):  # For each half-byte in the data
+                temp1 = self.oldData[i][i * 2 + j]
+                for k in range(4):  # For each bit in the half-byte
+                    temp2 = temp1 & 0xC0
+                    if temp2 == 0xC0:
+                        temp3 |= 0x01  # White
+                    elif temp2 == 0x00:
+                        temp3 |= 0x00  # Black
+                    elif temp2 == 0x80:
+                        temp3 |= 0x01  # Gray1
+                    elif temp2 == 0x40:
+                        temp3 |= 0x00  # Gray2
 
-        print("Transfer new data ...")
-        # Transfer new data
+                    if j==0:
+                        temp1 <<= 2
+                        temp3 <<= 1
+                    if j==1 and k != 3:
+                        temp1 <<= 2
+                        temp3 <<= 1
+            self.epd_w21_write_data(temp3)
+
+        print("Start New Data Transmission")
+        # Command to start transmitting new data
         self.epd_w21_write_cmd(0x13)
-        for i in range(12480):
-            self.epd_w21_write_data(new_data[i])
-            self.oldData[i] = new_data[i]
-        
-        # Refresh display
+        for i in range(12480):  # Repeat the process for new data
+            temp3 = 0
+            for j in range(2):
+                temp1 = new_data[i * 2 + j]
+                for k in range(4):
+                    temp2 = temp1 & 0xC0
+                    # The logic for determining color values remains the same
+                    if temp2 == 0xC0:
+                        temp3 |= 0x01  # White
+                    elif temp2 == 0x00:
+                        temp3 |= 0x00  # Black
+                    elif temp2 == 0x80:
+                        temp3 |= 0x00  # Gray1
+                    elif temp2 == 0x40:
+                        temp3 |= 0x01  # Gray2
+                
+                    if j==0:
+                        temp1 <<= 2
+                        temp3 <<= 1
+                    if j==1 and k != 3:
+                        temp1 <<= 2
+                        temp3 <<= 1
+            self.epd_w21_write_data(temp3)
+
+        # Refresh command
+        print("Refreshing")
         self.epd_w21_write_cmd(0x12)
         self.delay_xms(1)  # Necessary delay for the display refresh
-        self.lcd_chkstatus()  # Check if the display is ready
+        self.lcd_chkstatus()  # Check the display status
 
 
 # spi = EPD_GPIO_Init()
