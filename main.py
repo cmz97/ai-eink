@@ -9,8 +9,6 @@ import time
 from sshkeyboard import listen_keyboard
 import numpy as np
 import random
-import torch
-
 
 dialog_image_path = 'dialogBox.png'
 ascii_table_image_path = 'asciiTable.png'
@@ -235,7 +233,7 @@ def generate_image(add_prompt=""):
     start_time = time.time()
     
     seed = np.random.randint(0, 1000000)
-    g = torch.manual_seed(seed)
+    g = np.random.RandomState(0)
     width, height = 128*2, 128*3
     image = pl(full_prompt, negative_prompt=neg_prompt, height=height, width=width, num_inference_steps=3, generator=g, guidance_scale=1.0).images[0]
 
