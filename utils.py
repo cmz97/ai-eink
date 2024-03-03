@@ -48,23 +48,23 @@ class ORTModelTiledVaeWrapper(object):
 
     def __call__(self, latent_sample=None, sample=None, **kwargs):
         # convert latent/sample type to match model for mixed fp16/fp32 support
-        sample_dtype = next(
-            (
-                input.type
-                for input in self.wrapped.session.get_inputs()
-                if input.name == "sample" or input.name == "latent_sample"
-            ),
-            "tensor(float)",
-        )
-        sample_dtype = ORT_TO_NP_TYPE[sample_dtype]
+        # sample_dtype = next(
+        #     (
+        #         input.type
+        #         for input in self.wrapped.session.get_inputs()
+        #         if input.name == "sample" or input.name == "latent_sample"
+        #     ),
+        #     "tensor(float)",
+        # )
+        # sample_dtype = ORT_TO_NP_TYPE[sample_dtype]
 
-        if latent_sample is not None and latent_sample.dtype != sample_dtype:
-            logger.debug("converting VAE latent sample dtype to %s", sample_dtype)
-            latent_sample = latent_sample.astype(sample_dtype)
+        # if latent_sample is not None and latent_sample.dtype != sample_dtype:
+        #     logger.debug("converting VAE latent sample dtype to %s", sample_dtype)
+        #     latent_sample = latent_sample.astype(sample_dtype)
 
-        if sample is not None and sample.dtype != sample_dtype:
-            logger.debug("converting VAE sample dtype to %s", sample_dtype)
-            sample = sample.astype(sample_dtype)
+        # if sample is not None and sample.dtype != sample_dtype:
+        #     logger.debug("converting VAE sample dtype to %s", sample_dtype)
+        #     sample = sample.astype(sample_dtype)
 
         if self.tiled:
             if self.decoder:
@@ -96,7 +96,7 @@ class ORTModelTiledVaeWrapper(object):
 
     @torch.no_grad()
     def tiled_encode(
-        self, x: torch.FloatTensor, return_dict: bool = True
+        self, x, return_dict: bool = True
     ) -> AutoencoderKLOutput:
         r"""Encode a batch of images using a tiled encoder.
         Args:
@@ -150,8 +150,8 @@ class ORTModelTiledVaeWrapper(object):
 
     @torch.no_grad()
     def tiled_decode(
-        self, z: torch.FloatTensor, return_dict: bool = True
-    ) -> Union[DecoderOutput, torch.FloatTensor]:
+        self, z, return_dict: bool = True
+    ):
         r"""Decode a batch of images using a tiled decoder.
         Args:
         When this option is enabled, the VAE will split the input tensor into tiles to compute decoding in several
