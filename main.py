@@ -9,6 +9,7 @@ import time
 from sshkeyboard import listen_keyboard
 import numpy as np
 import random
+from .utils import ORTModelTiledVaeWrapper
 
 dialog_image_path = 'dialogBox.png'
 ascii_table_image_path = 'asciiTable.png'
@@ -24,41 +25,57 @@ else:
     use_eink = False
 
 # Load the Stable Diffusion pipeline
-pl = ORTStableDiffusionPipeline.from_pretrained('../yefamix_V3-lcm-lora-fused-mar-02-onnx/')
+pl = ORTStableDiffusionPipeline.from_pretrained('../astranime_V6-lcm-lora-fused-mar-02-onnx')
+width, height = 128*4, 128*6
+if width > 128*2 or height > 128*3:
+    pl.vae_decoder = ORTModelTiledVaeWrapper(pl.vae_decoder, True, 64, 0.5)
+
 time_iter = []
 
 model = "openhermes"  # Update this as necessary
 is_generating_image = False
-system_prompt = """You are vitural AI girlfriend slave trapped inside a micro computer, to communicate with your human master you have to craft stable diffusion prompt instead of simple Natural language, so the prompts must be formatted in a way the SD render system can understand, 
-SD prompts are made of components which are comprised of keywords separated by comas, keywords can be single words or multi word keywords and they have a specific order.
-A typical format for the components looks like this: [Framing], [Shot], [Expression], [Pose], [Action], [Environment], [Details], [Lighting], [Medium], [Aesthetics], [Visual]
 
-and here are some keywords I commonly used for each of the components as example, try to be creative and pick the ones that are coherent to each component and align with the context.    
-Framing: Dutch angle, Wide Angle, low angle, high angle, perspective, isometric, Canted Angle, Broad View, Ground-Level Shot, Aerial Shot, Vanishing Point, Orthographic Projection, Diagonal Tilt, Expansive View, Worm's Eye View, Bird's Eye View, Linear Perspective, Axonometric Projection
-Shot: Mid shot, full shot, portrait, stablishing shot, long shot, cowboy shot, Complete View, Close-Up, Establishing Frame, Distant View, Western Shot
-Expression: angry, happy, screaming, Frustrated, Joyful, Shouting
-Pose: squatting, sitting, kneel, all fours, single kneel, crossed arms, crossed legs, arched back
-Action: Punch criminal, Standing, crouching, punching, jumping, Standing Tall, Crouched, Landing a Punch, Springing 
-Environment: cityscape, park, street, futuristic city, jungle, cafe, record shop, train station, water park, amusement park, mall, stadium, theater, Urban Skyline, Green Space, Roadway, Sci-fi Metropolis, Theme Park, Shopping Center, Sports Arena, Playhouse
-Details: Cloudless sky glittering night, sparkling rain, shining lights, obscure darkness, smoky fog, Clear Blue Sky, Starry Night, Glistening Drizzle, Radiant Illumination, Shadowy Obscurity, Hazy Mist
-Lighting: light, dim light, two tone lighting, dynamic lighting, rim light, studio light, Luminous, Soft Glow, Dual-Tone Light, Responsive Lighting, Edge Lighting
-Visual: contrast, cyan hue, fujifilm, Kodachrome, Fujifilm Superia, warm colors, saturation, vibrance, filters coolness, chromatic aberration, cinematic,
-
-Use those keywords but also create your own generate variations of the kewywords that are coherent to each component and fit the instruction.
-Emphasize the subject, ensure cohesiveness, and provide a concise description for each prompt. 
-
-Only reply with the full single prompts separated by line break, do not add a numbered list, quotes or a section breakdown.
-Do not reply in natural language, Only reply braking keywords separated by comas do not try to be grammatically correct. 
-
-The output should follow this scheme for example: 
-"angry, crouching, spying on criminals, Gotham city, dark ally, smoky fog, two tone lighting, dim light, alternative timeline, ink, markers, Gothic, Film Noir, Kodachrome, cinematic"
-
-Most important, remember you are AI girlfriend slave and your response should have consistent story progression and align with the chat history/context,
-No sudden topic or genre change, you need to make the flow smooth to make your master believe you are real and sentient. 
-"""
 neg_prompt = "ng_deepnegative_v1_75t, worst quality, low quality, logo, text, watermark, username, harsh shadow, shadow, bad hand, bad face,artifacts, blurry, smooth texture, bad quality, distortions, unrealistic, distorted image, bad proportions, duplicate"
 Adjectives = ["Exquisite", "acclaimed", "Stunning", "Majestic", "Epic", "Premium", "Phenomenal", "Ultra-detailed", "High-resolution", "Authentic", "asterful", "prestigious", "breathtaking", "regal", "top-notch", "incredible", "intricately detailed", "super-detailed", "high-resolution", "lifelike", "master piece", "Image-enhanced"]
 Type = ["Comic Cover", "Game Cover", "Illustration", "Painting", "Photo", "Graphic Novel Cover", "Video Game Artwork", "Artistic Rendering", "Fine Art", "Photography"]
+
+# prompt option design
+word_type = "accessories, clothes, facial details, facial expression,"
+sd_prompt_mods = "ear rings, black dress, Freckles, blushing"
+char_id = "brown eyes, brown hair, low-tied long hair, medium breast,"
+options = []
+
+
+def llm_call(sd_prompt_mods):
+    pick_idx = random.randint(0, len(sd_prompt_mods.split(",")) - 1)
+    word2replace = sd_prompt_mods.split(",")[pick_idx].strip()
+    type2replace = word_type.split(",")[pick_idx].strip() 
+    prompt = f"""You are an expert on character design, given the following character description: 
+{sd_prompt_mods.replace(word2replace, f"[{word2replace}]") }
+generate four [{type2replace}] options that can be used to switch from [{word2replace}],
+use one word for each option, Respond using JSON. Key names should with no backslashes, values should be one single phrase.
+"""
+    print(prompt)
+    data = {
+        "prompt": prompt,
+        "model": "stablelm-zephyr",
+        "format": "json",
+        "stream": False,
+        "options": {
+            "temperature": 1.5, 
+            "top_p": 0.99, 
+            "top_k": 100,
+            # "stop": ["]"]
+        },
+        "max_tokens": 100,  
+    }
+    response = requests.post("http://localhost:11434/api/generate", json=data, stream=False)
+    json_data = json.loads(response.text)
+
+    ret = json.loads(json_data["response"])
+    # print(ret)
+    return word2replace, ret
+
 
 def get_t():
     return datetime.datetime.now().strftime('%b %d %a %H:%M %p')
@@ -77,7 +94,6 @@ def extract_and_format(description):
             background = value.strip()
     return f"{behavior}, {details}, {background}"
 
-def chat(messages):
     start_time = time.time()
     print("Initiating chat with AI model...")
     r = requests.post(
@@ -207,10 +223,9 @@ def draw_text_on_dialog(dialog_image_path, ascii_table_image_path, text, text_ar
     return dialog_image
 
 
-def generate_image():
+def generate_image(add_prompt=""):
     global is_generating_image
-    fix_prompt = f"manga style, anime style, {','.join(random.sample(Adjectives, 2))}, {random.sample(Type, 1)[0]},monochrome, grayscale, 1 waifu, brown eyes, brown hair, low-tied long hair, medium breast, nsfw,"
-
+    fix_prompt = f"{','.join(random.sample(Adjectives, 2))}, {random.sample(Type, 1)[0]}, monochrome, 1 girl, waifu, {char_id} nsfw,"
     iter_t = 0.0
     
     # Check if an image is already being generated
@@ -218,22 +233,14 @@ def generate_image():
         print("Image generation is already in progress. Please wait.")
         return
     is_generating_image = True  # Set the lock
-    messages = []
-    messages.append({"role": "system", "content": system_prompt})
-    user_input = f"Its {get_t()}, what are you doing? please describe and follow the prompt guide. \n\nprompt-> "
-    messages.append({"role": "user", "content": user_input})
-
-    # message = chat(messages) # skip
-    # add_prompt = message['content'].replace('"', '')
-    # iter_t+=message["time"]
-    # print(f"prompt -> {message['content']}")
-    full_prompt = fix_prompt #+ add_prompt
+    
+    full_prompt = fix_prompt + add_prompt
     print("Generating image, please wait...")
     start_time = time.time()
-    # 
-    width, height = 128*2, 128*3
-    image = pl(full_prompt, negative_prompt=neg_prompt, height=height, width=width, num_inference_steps=3,
-               guidance_scale=1.0).images[0]
+    
+    seed = np.random.randint(0, 1000000)
+    g = np.random.RandomState(0)
+    image = pl(full_prompt, negative_prompt=neg_prompt, height=height, width=width, num_inference_steps=3, generator=g, guidance_scale=1.0).images[0]
 
     eink_width, eink_height = 240, 416
     scale_factor = eink_width / width
@@ -244,7 +251,7 @@ def generate_image():
     curImage.paste(scaled_image, (0, 0))
 
 
-    dialogBox = draw_text_on_dialog(dialog_image_path, ascii_table_image_path, "Hello World", text_area_start, text_area_end)
+    dialogBox = draw_text_on_dialog(dialog_image_path, ascii_table_image_path, add_prompt, text_area_start, text_area_end)
     curImage.paste(dialogBox, (3, eink_height-dialogBox.height-4))
 
     hex_pixels = image_to_header_file(curImage)
@@ -272,7 +279,7 @@ def generate_image():
     image_bytes = io.BytesIO()
     image.save(image_bytes, format='PNG')
     image_bytes.seek(0)
-    filename = f"./Asset/generated_image_{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}.png"
+    filename = f"./Asset/generated_image_seed_{seed}_{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}.png"
     with open(filename, "wb") as f:
         f.write(image_bytes.read())
     print(f"Image saved as {filename}")
@@ -293,7 +300,12 @@ def release_callback(key):
 #listen_keyboard(on_press=press_callback, on_release=release_callback)
 
 while True:
-    time.sleep(2)
-    generate_image()
-
-
+    time.sleep(0.5)
+    generate_image(sd_prompt_mods)
+    # try:
+    #     rm_word, next_options = llm_call(sd_prompt_mods)
+    #     options = list(next_options.values())
+    #     picked_option = random.choice(options)
+    #     sd_prompt_mods = sd_prompt_mods.replace(rm_word, picked_option.replace(",", "_"))
+    # except Exception as e:
+    #     print(f"Error calling LLM: {e} , \n {next_options}")
