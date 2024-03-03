@@ -16,7 +16,6 @@ dialog_image_path = 'dialogBox.png'
 ascii_table_image_path = 'asciiTable.png'
 text_area_start = (12, 12)
 text_area_end = (229, 80)
-generator = torch.Generator()
 
 use_eink = True
 if len(sys.argv) == 1:
@@ -235,8 +234,8 @@ def generate_image(add_prompt=""):
     print("Generating image, please wait...")
     start_time = time.time()
     
-    seed = generator.seed()
-    g = generator.manual_seed(seed)
+    seed = np.random.randint(0, 1000000)
+    g = torch.manual_seed(seed)
     width, height = 128*2, 128*3
     image = pl(full_prompt, negative_prompt=neg_prompt, height=height, width=width, num_inference_steps=3, generator=g, guidance_scale=1.0).images[0]
 
