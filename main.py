@@ -24,7 +24,7 @@ else:
     use_eink = False
 
 # Load the Stable Diffusion pipeline
-pl = ORTStableDiffusionPipeline.from_pretrained('../astranime_V6-lcm-fused-onnx-int8uet/')
+pl = ORTStableDiffusionPipeline.from_pretrained('../astranime_V6-lcm-lora-fused-mar-02-onnx/')
 time_iter = []
 
 model = "openhermes"  # Update this as necessary
