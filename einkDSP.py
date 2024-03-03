@@ -315,7 +315,7 @@ class einkDSP:
         for i in range(12480):  # Assuming 416x240 resolution, adjust accordingly
             temp3 = 0
             for j in range(2):  # For each half-byte in the data
-                temp1 = self.oldData[i][i * 2 + j]
+                temp1 = self.oldData[i * 2 + j]
                 for k in range(4):  # For each bit in the half-byte
                     temp2 = temp1 & 0xC0
                     if temp2 == 0xC0:
