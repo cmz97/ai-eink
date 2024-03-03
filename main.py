@@ -56,8 +56,8 @@ The output should follow this scheme for example:
 Most important, remember you are AI girlfriend slave and your response should have consistent story progression and align with the chat history/context,
 No sudden topic or genre change, you need to make the flow smooth to make your master believe you are real and sentient. 
 """
-neg_prompt = "harsh shadow, shadow, bad hand, bad face,artifacts, blurry, smooth texture, bad quality, distortions, unrealistic, distorted image, bad proportions, duplicate"
-Adjectives = ["ng_deepnegative_v1_75t, Exquisite", "acclaimed", "Stunning", "Majestic", "Epic", "Premium", "Phenomenal", "Ultra-detailed", "High-resolution", "Authentic", "asterful", "prestigious", "breathtaking", "regal", "top-notch", "incredible", "intricately detailed", "super-detailed", "high-resolution", "lifelike", "master piece", "Image-enhanced"]
+neg_prompt = "ng_deepnegative_v1_75t, worst quality, low quality, logo, text, watermark, username, harsh shadow, shadow, bad hand, bad face,artifacts, blurry, smooth texture, bad quality, distortions, unrealistic, distorted image, bad proportions, duplicate"
+Adjectives = ["Exquisite", "acclaimed", "Stunning", "Majestic", "Epic", "Premium", "Phenomenal", "Ultra-detailed", "High-resolution", "Authentic", "asterful", "prestigious", "breathtaking", "regal", "top-notch", "incredible", "intricately detailed", "super-detailed", "high-resolution", "lifelike", "master piece", "Image-enhanced"]
 Type = ["Comic Cover", "Game Cover", "Illustration", "Painting", "Photo", "Graphic Novel Cover", "Video Game Artwork", "Artistic Rendering", "Fine Art", "Photography"]
 
 def get_t():
