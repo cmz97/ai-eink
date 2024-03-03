@@ -204,8 +204,6 @@ def draw_text_on_dialog(dialog_image_path, ascii_table_image_path, text, text_ar
             if y + char_height > text_area_end[1]:  # Stop if we run out of vertical space
                 break
 
-    # Save or return the dialog image with text
-    dialog_image.save('dialog_with_text.png')
     return dialog_image
 
 
