@@ -258,8 +258,9 @@ def generate_image():
                 curImage.paste(dialogBox, (0, eink_height-dialogBox.height))
                 hex_pixels = image_to_header_file(curImage)
 
+                eink.epd_init_fast()                
                 eink.epd_init_part()
-                eink.pic_display_4g(hex_pixels)
+                eink.PIC_display(hex_pixels)
         eink.epd_sleep()
 
 

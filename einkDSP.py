@@ -342,6 +342,8 @@ class einkDSP:
             temp3 = 0
             for j in range(2):
                 temp1 = new_data[i * 2 + j]
+                self.oldData[i * 2 + j]=temp1
+
                 for k in range(4):
                     temp2 = temp1 & 0xC0
                     # The logic for determining color values remains the same
