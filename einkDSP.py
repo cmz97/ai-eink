@@ -310,10 +310,13 @@ class einkDSP:
     def PIC_display(self,new_data):
         # Assuming oldData is globally defined or accessible        
         # Transfer old data
+        print("Region Refresh Start")
+        print("Transfer old data ...")
         self.epd_w21_write_cmd(0x10)
         for i in range(12480):
             self.epd_w21_write_data(self.oldData[i])
-        
+
+        print("Transfer new data ...")
         # Transfer new data
         self.epd_w21_write_cmd(0x13)
         for i in range(12480):
