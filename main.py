@@ -208,7 +208,7 @@ def generate_image():
     image_bytes = io.BytesIO()
     image.save(image_bytes, format='PNG')
     image_bytes.seek(0)
-    filename = f"./generated_image_{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}.png"
+    filename = f"./Asset/generated_image_{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}.png"
     with open(filename, "wb") as f:
         f.write(image_bytes.read())
     print(f"Image saved as {filename}")
