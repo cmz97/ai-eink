@@ -2,6 +2,7 @@ import json
 import requests
 import datetime
 from optimum.onnxruntime import ORTStableDiffusionPipeline
+from diffusers import StableDiffusionPipeline
 from PIL import Image, ImageDraw, ImageFont
 import sys
 import io
@@ -11,7 +12,19 @@ import numpy as np
 import random
 
 # Load the Stable Diffusion pipeline
-pl = ORTStableDiffusionPipeline.from_pretrained('./astranime_V6-lcm-fused-onnx-int8uet')
+pl = StableDiffusionPipeline.from_pretrained('Model/astranime_V6-lcm-lora-fused-classic')
+# pl = StableDiffusionPipeline.from_single_file('Model/majicmixRealistic_v7.safetensors')
+
+pl.load_lora_weights("Lora/BeautyNwsjMajic2-01.safetensors", adapter_name="waifu")
+
+
+pl.load_lora_weights('Lora/smile.safetensors', adapter_name="smile")
+
+pl.load_lora_weights('Lora/ClothingAdjuster3.safetensors', adapter_name="cloth")
+
+pl.set_adapters(["waifu", "smile", "cloth"], adapter_weights=[0.7,0.4,0.1])
+pl.fuse_lora()
+
 time_iter = []
 
 model = "stablelm-zephyr"  # Update this as necessary
@@ -23,6 +36,7 @@ Type = ["Comic Cover", "Game Cover", "Illustration", "Painting", "Photo", "Graph
 # prompt option design
 word_type = "Framing, Expression, Pose"
 sd_prompt_mods = "Dutch angle, smile, squatting"
+
 options = []
 
 def llm_call(sd_prompt_mods):
@@ -79,7 +93,8 @@ def draw_text(draw, text, position, max_width, line_height):
 
 def generate_image(curr_prompt):
     global is_generating_image, options
-    fix_prompt = f"anime style, pixelart, {','.join(random.sample(Adjectives, 2))}, {random.sample(Type, 1)[0]}, 1 waifu, brown eyes, brown hair, low-tied long hair, medium breast, nsfw,"
+    # fix_prompt = f"anime style, pixelart, {','.join(random.sample(Adjectives, 2))}, {random.sample(Type, 1)[0]}, 1 waifu, brown eyes, brown hair, low-tied long hair, medium breast, nsfw,"
+    fix_prompt = f"<lora:ClothingAdjuster3:0.3>, PerfectNwsjMajic, 1 waifu, glasses, , smile, cute, monochrome, anime style,greyscale, medium breast"
 
     iter_t = 0.0
     
@@ -89,7 +104,9 @@ def generate_image(curr_prompt):
         return
     is_generating_image = True  # Set the lock
 
-    full_prompt = fix_prompt + curr_prompt
+    # full_prompt = fix_prompt + curr_prompt
+    full_prompt = fix_prompt
+
     print("Generating image, please wait...")
     print(f"Prompt: {full_prompt}")
     start_time = time.time()
