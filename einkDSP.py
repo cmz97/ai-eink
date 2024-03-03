@@ -66,12 +66,12 @@ class einkDSP:
         device = 0 #Device is the chip select pin. Set to 0 or 1, depending on the connections
         spi = spidev.SpiDev()
         spi.open(bus, device) 
-        spi.max_speed_hz = 10000000 #1MHZ
+        spi.max_speed_hz = 3000000 #1MHZ
         spi.mode = 0
         return spi
 
     def SPI_Delay(self):
-        time.sleep(0.0001)
+        time.sleep(0.00001)
 
     def SPI_Write(self,value):
         return self.spi.xfer2([value])
