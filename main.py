@@ -283,7 +283,7 @@ def generate_image(add_prompt=""):
     with open(filename, "wb") as f:
         f.write(image_bytes.read())
     print(f"Image saved as {filename}")
-    curImage.save(f'./Asset/dialog_image_{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}.png')
+    curImage.save(f"./Asset/dialogBox_image_seed_{seed}_{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}.png")
     is_generating_image = False
 
 def press_callback(key):
