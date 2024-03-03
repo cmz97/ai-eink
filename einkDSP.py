@@ -305,25 +305,25 @@ class einkDSP:
         self.delay_xms(1)  # Necessary delay for the display refresh
         self.lcd_chkstatus()  # Check the display status
 
-def PIC_display(self,new_data):
-    # Assuming oldData is globally defined or accessible
-    global oldData
-    
-    # Transfer old data
-    self.epd_w21_write_cmd(0x10)
-    for i in range(12480):
-        self.epd_w21_write_data(oldData[i])
-    
-    # Transfer new data
-    self.epd_w21_write_cmd(0x13)
-    for i in range(12480):
-        self.epd_w21_write_data(new_data[i])
-        oldData[i] = new_data[i]
-    
-    # Refresh display
-    self.epd_w21_write_cmd(0x12)
-    self.delay_xms(1)  # Necessary delay for the display refresh
-    self.lcd_chkstatus()  # Check if the display is ready
+    def PIC_display(self,new_data):
+        # Assuming oldData is globally defined or accessible
+        global oldData
+        
+        # Transfer old data
+        self.epd_w21_write_cmd(0x10)
+        for i in range(12480):
+            self.epd_w21_write_data(oldData[i])
+        
+        # Transfer new data
+        self.epd_w21_write_cmd(0x13)
+        for i in range(12480):
+            self.epd_w21_write_data(new_data[i])
+            oldData[i] = new_data[i]
+        
+        # Refresh display
+        self.epd_w21_write_cmd(0x12)
+        self.delay_xms(1)  # Necessary delay for the display refresh
+        self.lcd_chkstatus()  # Check if the display is ready
 
 
 # spi = EPD_GPIO_Init()
