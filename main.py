@@ -9,7 +9,7 @@ import time
 from sshkeyboard import listen_keyboard
 import numpy as np
 import random
-from .utils import ORTModelTiledVaeWrapper
+from utils import ORTModelTiledVaeWrapper
 
 dialog_image_path = 'dialogBox.png'
 ascii_table_image_path = 'asciiTable.png'
