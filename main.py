@@ -26,13 +26,13 @@ else:
 
 # Load the Stable Diffusion pipeline
 pl = ORTStableDiffusionPipeline.from_pretrained('../astranime_V6-lcm-lora-fused-mar-02-onnx')
-width, height = 128*4, 128*6
+width, height = 128*2, 128*3
 if width > 128*2 or height > 128*3:
     pl.vae_decoder = ORTModelTiledVaeWrapper(pl.vae_decoder, True, 64, 0.5)
 
 time_iter = []
 
-model = "openhermes"  # Update this as necessary
+model = "stablelm-zephyr"  # Update this as necessary
 is_generating_image = False
 
 neg_prompt = "ng_deepnegative_v1_75t, worst quality, low quality, logo, text, watermark, username, harsh shadow, shadow, bad hand, bad face,artifacts, blurry, smooth texture, bad quality, distortions, unrealistic, distorted image, bad proportions, duplicate"
@@ -302,10 +302,10 @@ def release_callback(key):
 while True:
     time.sleep(0.5)
     generate_image(sd_prompt_mods)
-    # try:
-    #     rm_word, next_options = llm_call(sd_prompt_mods)
-    #     options = list(next_options.values())
-    #     picked_option = random.choice(options)
-    #     sd_prompt_mods = sd_prompt_mods.replace(rm_word, picked_option.replace(",", "_"))
-    # except Exception as e:
-    #     print(f"Error calling LLM: {e} , \n {next_options}")
+    try:
+        rm_word, next_options = llm_call(sd_prompt_mods)
+        options = list(next_options.values())
+        picked_option = random.choice(options)
+        sd_prompt_mods = sd_prompt_mods.replace(rm_word, picked_option.replace(",", "_"))
+    except Exception as e:
+        print(f"Error calling LLM: {e} , \n {next_options}")
