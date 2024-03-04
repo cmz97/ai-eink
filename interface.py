@@ -5,7 +5,6 @@ from sshkeyboard import listen_keyboard
 from apps import generate_image, llm_call, image_to_header_file
 from threading import Thread
 from PIL import Image, ImageDraw, ImageFont, ImageOps
-
 from einkDSP import einkDSP
 eink = einkDSP()
 
@@ -53,10 +52,7 @@ def execute_current_selection():
             Thread(target=run_sd_gallery).start()
         else:
             print("Invalid selection")
-
-def main():
-    display_menu()
-    
+  
 def run_sd():
     global loop_running
     # word_type = "accessories, clothes, facial details, facial expression," need to match with catagories
@@ -119,4 +115,4 @@ if __name__ == "__main__":
     # Flag to control the execution of the loop
     loop_running = True
     current_image_index = 0
-    main()
+    display_menu()
