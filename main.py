@@ -32,7 +32,6 @@ if width > 128*2 or height > 128*3:
 
 time_iter = []
 
-model = "stablelm-zephyr"  # Update this as necessary
 is_generating_image = False
 
 neg_prompt = "ng_deepnegative_v1_75t, worst quality, low quality, logo, text, watermark, username, harsh shadow, shadow, bad hand, bad face,artifacts, blurry, smooth texture, bad quality, distortions, unrealistic, distorted image, bad proportions, duplicate"
@@ -57,6 +56,7 @@ use one word for each option, Respond using JSON. Key names should with no backs
 """
     print(prompt)
     data = {
+        "keep_alive": "5m",
         "prompt": prompt,
         "model": "stablelm-zephyr",
         "format": "json",
@@ -79,40 +79,6 @@ use one word for each option, Respond using JSON. Key names should with no backs
 
 def get_t():
     return datetime.datetime.now().strftime('%b %d %a %H:%M %p')
-
-def extract_and_format(description):
-    parts = description.split('\n')
-    behavior, details, background = "", "", ""
-    for part in parts:
-        if ':' not in part: continue
-        key, value = part.split(':', 1)
-        if 'behavior' in key:
-            behavior = value.strip()
-        elif 'details' in key:
-            details = value.strip()
-        elif 'background' in key:
-            background = value.strip()
-    return f"{behavior}, {details}, {background}"
-
-    start_time = time.time()
-    print("Initiating chat with AI model...")
-    r = requests.post(
-        "http://0.0.0.0:11434/api/chat",
-        json={"model": model, "messages": messages, "stream": True, "options": {"temperature": 0.7, "num_predict" : 100},},
-    )
-    r.raise_for_status()
-    output = ""
-    for line in r.iter_lines():
-        body = json.loads(line)
-        if "error" in body:
-            raise Exception(body["error"])
-        if body.get("done") is False:
-            content = body.get("message", {}).get("content", "")
-            output += content
-        if body.get("done", False):
-            end_time = time.time()
-            print(f"Chat completed in {end_time - start_time:.2f} seconds.")
-            return {"content": output, "time" : end_time - start_time}
 
 def draw_text(draw, text, position, max_width, line_height):
     """
@@ -303,9 +269,12 @@ while True:
     time.sleep(0.5)
     generate_image(sd_prompt_mods)
     try:
+        st = time.time()
         rm_word, next_options = llm_call(sd_prompt_mods)
+        print(f"{time.time() - st} sec to generate next prompt")
         options = list(next_options.values())
         picked_option = random.choice(options)
         sd_prompt_mods = sd_prompt_mods.replace(rm_word, picked_option.replace(",", "_"))
+        print(f"new prompt: {sd_prompt_mods}")
     except Exception as e:
         print(f"Error calling LLM: {e} , \n {next_options}")
