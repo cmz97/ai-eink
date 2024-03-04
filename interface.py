@@ -12,7 +12,6 @@ menu_options = ["SD in loop", "SD Gallery", "Exit"]
 current_selection = 0
 
 def display_menu():
-    listen_keyboard(on_press=on_press)
     print("\033[H\033[J", end="")  # Clear the screen
     for i, option in enumerate(menu_options):
         if i == current_selection:
@@ -73,7 +72,8 @@ def run_sd():
         except Exception as e:
             print(f"Error calling LLM: {e} , \n {next_options}")
     
-    display_menu() # back to main menu
+    display_menu()
+    listen_keyboard(on_press=on_press)
 
 
 def display_current_image_info(file_name):
@@ -102,6 +102,8 @@ def on_press_gallery(key, image_files):
         # Mechanism to stop gallery view and return to the main menu
         print("Exiting gallery...")
         display_menu()
+        listen_keyboard(on_press=on_press)
+        
 
 def run_sd_gallery():
     images_dir = "./Assets"
@@ -116,3 +118,4 @@ if __name__ == "__main__":
     loop_running = True
     current_image_index = 0
     display_menu()
+    listen_keyboard(on_press=on_press)
