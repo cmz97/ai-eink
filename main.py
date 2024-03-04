@@ -51,15 +51,20 @@ def llm_call(sd_prompt_mods):
     type2replace = word_type.split(",")[pick_idx].strip() 
     prompt = f"""You are an expert on character design, given the following character description: 
 {sd_prompt_mods.replace(word2replace, f"[{word2replace}]") }
-generate four [{type2replace}] options that can be used to switch from [{word2replace}],
+generate 3 [{type2replace}] options that can be used to switch from [{word2replace}],
 use one word for each option, Respond using JSON. Key names should with no backslashes, values should be one single phrase.
-"""
+""" + """for example: 
+{
+  "Option 1": "phrase 1",
+  "Option 2": "phrase 2",
+  "Option 3": "phrase 3"
+}"""
     print(prompt)
     data = {
         "keep_alive": "5m",
         "prompt": prompt,
         "model": "stablelm-zephyr",
-        "format": "json",
+        # "format": "json",
         "stream": False,
         "options": {
             "temperature": 1.5, 
@@ -70,10 +75,11 @@ use one word for each option, Respond using JSON. Key names should with no backs
         "max_tokens": 100,  
     }
     response = requests.post("http://localhost:11434/api/generate", json=data, stream=False)
-    json_data = json.loads(response.text)
-
-    ret = json.loads(json_data["response"])
-    # print(ret)
+    json_data = json.loads(response.text)["response"]
+    start_index = json_data.find('{')
+    end_index = json_data.rfind('}')
+    json_str = json_data[start_index:end_index+1]
+    ret = json.loads(json_str)
     return word2replace, ret
 
 
