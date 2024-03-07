@@ -27,10 +27,10 @@ class Encoder:
         # print(f"p1 {p1} p2 {p2}")
         if newState == "00" or newState ==  "11": # down
             self.direction = "D"
-            self.counter -= 1
+            self.counter += 1
         else:
             self.direction = "U"
-            self.counter +=1
+            self.counter -=1
         if self.callback : self.callback(self.counter, self.direction)
         return
 

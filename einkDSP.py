@@ -313,12 +313,12 @@ class einkDSP:
         # Transfer old data
         self.epd_w21_write_cmd(0x10)
         for i in range(12480):
-            self.epd_w21_write_data(self.oldData[i])
+            self.epd_w21_write_data(int(self.oldData[i]))
         
         # Transfer new data
         self.epd_w21_write_cmd(0x13)
         for i in range(12480):
-            self.epd_w21_write_data(new_data[i])
+            self.epd_w21_write_data(int(new_data[i]))
             self.oldData[i] = new_data[i]
         
         # Refresh display

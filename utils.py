@@ -285,7 +285,7 @@ def process_image(image, dialogBox=None, height=128*3, width=128*2):
         curImage.paste(dialogBox, (3, eink_height-dialogBox.height-4))
     return curImage
 
-def image_to_header_file(image):
+def image_to_header_file(image, two_bit=False):
     """Apply Floyd-Steinberg dithering and convert image to a string array."""
     
     grayscale = image.convert('L')
@@ -303,9 +303,10 @@ def image_to_header_file(image):
 
     pixels = np.clip(pixels, 0, 255)
     pixels_quantized = np.digitize(pixels, bins=[64, 128, 192], right=True)
-    pixel_map = {0: '00', 1: '01', 2: '10', 3: '11'}
+    pixel_map = {0: '00', 1: '01', 2: '10', 3: '11'} if not two_bit else {0: '0', 1: '0', 2: '1', 3: '1'} 
     pixels_string = np.vectorize(pixel_map.get)(pixels_quantized)
     converted_pixels = pixels_string.flatten().tolist()
-    grouped_pixels = [''.join(converted_pixels[i:i+4]) for i in range(0, len(converted_pixels), 4)]
+    group_size = 4 if not two_bit else 8 
+    grouped_pixels = [''.join(converted_pixels[i:i+group_size]) for i in range(0, len(converted_pixels), group_size)]
     int_pixels = [int(bits, 2) for bits in grouped_pixels]
     return np.array(int_pixels, dtype=np.uint8)
