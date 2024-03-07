@@ -40,7 +40,7 @@ class einkDSP:
         0x09,	0x10,	0x3F,	0x3F,	0x00,	0x0B,		
         ]
         self.emptyImage = [0xFF] * 24960
-        self.oldData = [0xFF] * 12480
+        self.oldData = [0] * 12480
 
 
         #Pin Def
@@ -66,12 +66,12 @@ class einkDSP:
         device = 0 #Device is the chip select pin. Set to 0 or 1, depending on the connections
         spi = spidev.SpiDev()
         spi.open(bus, device) 
-        spi.max_speed_hz = 3000000 #1MHZ
+        spi.max_speed_hz = 30000000 #1MHZ
         spi.mode = 0
         return spi
 
     def SPI_Delay(self):
-        time.sleep(0.00001)
+        time.sleep(0.000001) #0.000001
 
     def SPI_Write(self,value):
         return self.spi.xfer2([value])
@@ -312,14 +312,31 @@ class einkDSP:
         
         # Transfer old data
         self.epd_w21_write_cmd(0x10)
-        for i in range(12480):
-            self.epd_w21_write_data(int(self.oldData[i]))
-        
+
+        chunk_size = 4096
+        data_length = 12480
+
+        GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
+
+        for start_idx in range(0, data_length, chunk_size):
+            # self.SPI_Delay()
+
+            # Calculate the end index for the current chunk
+            end_idx = min(start_idx + chunk_size, data_length)
+            # self.spi.xfer2(self.oldData[start_idx:end_idx])
+            self.spi.xfer(self.oldData[start_idx:end_idx], self.spi.max_speed_hz, 1 ,8)
+
         # Transfer new data
         self.epd_w21_write_cmd(0x13)
-        for i in range(12480):
-            self.epd_w21_write_data(int(new_data[i]))
-            self.oldData[i] = new_data[i]
+
+        for start_idx in range(0, data_length, chunk_size):
+            # self.SPI_Delay()
+            # Calculate the end index for the current chunk
+            end_idx = min(start_idx + chunk_size, data_length)
+            # self.spi.xfer2(new_data[start_idx:end_idx])
+            self.spi.xfer(new_data[start_idx:end_idx], self.spi.max_speed_hz, 1 ,8)
+            
+        self.oldData = new_data.copy()
         
         # Refresh display
         self.epd_w21_write_cmd(0x12)
@@ -329,11 +346,14 @@ class einkDSP:
     def PIC_display_Clear(self,poweroff=False):
         # Transfer old data
         self.epd_w21_write_cmd(0x10)
+
         for i in range(12480):
             self.epd_w21_write_data(self.oldData[i])
         
         # Transfer new data, setting all to 0xFF (white or clear)
         self.epd_w21_write_cmd(0x13)
+
+
         for i in range(12480):
             self.epd_w21_write_data(0xFF)  # Set all pixels to white/clear
             self.oldData[i] = 0xFF  # Update oldData to reflect the clear screen

@@ -285,9 +285,27 @@ def process_image(image, dialogBox=None, height=128*3, width=128*2):
         curImage.paste(dialogBox, (3, eink_height-dialogBox.height-4))
     return curImage
 
-def image_to_header_file(image, two_bit=False):
+
+def override_dialogBox(image, dialogBox):
+    image.paste(dialogBox, (3, 416-dialogBox.height-4))
+    return image
+
+def dump_2bit(image):
+    grayscale = image.transpose(Image.FLIP_TOP_BOTTOM).convert('L')
+    pixels = np.array(grayscale, dtype=np.float32)
+    pixels = np.clip(pixels, 0, 255)
+    pixels_quantized = np.digitize(pixels, bins=[64, 128, 192], right=True)
+    pixel_map = {0: '0', 1: '0', 2: '1', 3: '1'} 
+    pixels_string = np.vectorize(pixel_map.get)(pixels_quantized)
+    converted_pixels = pixels_string.flatten().tolist() 
+    group_size = 8 
+    grouped_pixels = [''.join(converted_pixels[i:i+group_size]) for i in range(0, len(converted_pixels), group_size)]
+    int_pixels = [int(bits, 2) for bits in grouped_pixels] 
+    return [int(x) for x in int_pixels]
+
+
+def image_to_header_file(image):
     """Apply Floyd-Steinberg dithering and convert image to a string array."""
-    
     grayscale = image.convert('L')
     pixels = np.array(grayscale, dtype=np.float32)
     for y in range(pixels.shape[0]-1):
@@ -300,13 +318,15 @@ def image_to_header_file(image, two_bit=False):
             pixels[y+1, x-1] += quant_error * 3 / 16
             pixels[y+1, x] += quant_error * 5 / 16
             pixels[y+1, x+1] += quant_error * 1 / 16
-
+    # raw_pixels = pixels.copy()
     pixels = np.clip(pixels, 0, 255)
     pixels_quantized = np.digitize(pixels, bins=[64, 128, 192], right=True)
-    pixel_map = {0: '00', 1: '01', 2: '10', 3: '11'} if not two_bit else {0: '0', 1: '0', 2: '1', 3: '1'} 
+    pixel_map = {0: '00', 1: '01', 2: '10', 3: '11'} 
     pixels_string = np.vectorize(pixel_map.get)(pixels_quantized)
-    converted_pixels = pixels_string.flatten().tolist()
-    group_size = 4 if not two_bit else 8 
+    converted_pixels = pixels_string.flatten().tolist() 
+    # if two_bit : converted_pixels = converted_pixels[::-1]
+    group_size = 4 
     grouped_pixels = [''.join(converted_pixels[i:i+group_size]) for i in range(0, len(converted_pixels), group_size)]
-    int_pixels = [int(bits, 2) for bits in grouped_pixels]
+    int_pixels = [int(bits, 2) for bits in grouped_pixels] 
+
     return np.array(int_pixels, dtype=np.uint8)
