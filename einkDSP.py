@@ -40,7 +40,7 @@ class einkDSP:
         0x09,	0x10,	0x3F,	0x3F,	0x00,	0x0B,		
         ]
         self.emptyImage = [0xFF] * 24960
-        self.oldData = [0xFF] * 24960
+        self.oldData = [0xFF] * 12480
 
 
         #Pin Def
@@ -307,6 +307,24 @@ class einkDSP:
         self.delay_xms(1)  # Necessary delay for the display refresh
         self.lcd_chkstatus()  # Check the display status
 
+    def PIC_display(self,new_data):
+        # Assuming oldData is globally defined or accessible
+        
+        # Transfer old data
+        self.epd_w21_write_cmd(0x10)
+        for i in range(12480):
+            self.epd_w21_write_data(self.oldData[i])
+        
+        # Transfer new data
+        self.epd_w21_write_cmd(0x13)
+        for i in range(12480):
+            self.epd_w21_write_data(new_data[i])
+            self.oldData[i] = new_data[i]
+        
+        # Refresh display
+        self.epd_w21_write_cmd(0x12)
+        self.delay_xms(1)  # Necessary delay for the display refresh
+        self.lcd_chkstatus()  # Check if the display is ready
 
 # spi = EPD_GPIO_Init()
 
