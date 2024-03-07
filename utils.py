@@ -286,6 +286,18 @@ def process_image(image, dialogBox=None, height=128*3, width=128*2):
     return curImage
 
 
+def process_image(image, dialogBox=None, width=128*2, height=128*3):
+    eink_width, eink_height = 240, 416
+    scale_factor = eink_width / width
+    new_height = int(height * scale_factor)
+    scaled_image = image.resize((eink_width, new_height), Image.ANTIALIAS)
+    curImage = Image.new("L", (eink_width, eink_height), "white")
+    # Paste the scaled image onto the white image, aligned at the top
+    curImage.paste(scaled_image, (0, 0))
+    if dialogBox:
+        curImage.paste(dialogBox, (3, eink_height-dialogBox.height-4))
+    return curImage
+
 def override_dialogBox(image, dialogBox):
     image.paste(dialogBox, (3, 416-dialogBox.height-4))
     return image

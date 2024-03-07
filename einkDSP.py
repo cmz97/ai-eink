@@ -316,25 +316,32 @@ class einkDSP:
         chunk_size = 4096
         data_length = 12480
 
-        GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
-
-        for start_idx in range(0, data_length, chunk_size):
+        # GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
+        
+        for data in self.oldData:
             # self.SPI_Delay()
+            self.epd_w21_write_data(data)
+ 
+        # for start_idx in range(0, data_length, chunk_size):
+        #     # self.SPI_Delay()
 
-            # Calculate the end index for the current chunk
-            end_idx = min(start_idx + chunk_size, data_length)
-            # self.spi.xfer2(self.oldData[start_idx:end_idx])
-            self.spi.xfer(self.oldData[start_idx:end_idx], self.spi.max_speed_hz, 1 ,8)
+        #     # Calculate the end index for the current chunk
+        #     end_idx = min(start_idx + chunk_size, data_length)
+        #     # self.spi.xfer2(self.oldData[start_idx:end_idx])
+        #     self.spi.xfer(self.oldData[start_idx:end_idx], self.spi.max_speed_hz, 1 ,8)
 
         # Transfer new data
         self.epd_w21_write_cmd(0x13)
-
-        for start_idx in range(0, data_length, chunk_size):
+        for data in new_data:
             # self.SPI_Delay()
-            # Calculate the end index for the current chunk
-            end_idx = min(start_idx + chunk_size, data_length)
-            # self.spi.xfer2(new_data[start_idx:end_idx])
-            self.spi.xfer(new_data[start_idx:end_idx], self.spi.max_speed_hz, 1 ,8)
+            self.epd_w21_write_data(data)
+            
+        # for start_idx in range(0, data_length, chunk_size):
+        #     # self.SPI_Delay()
+        #     # Calculate the end index for the current chunk
+        #     end_idx = min(start_idx + chunk_size, data_length)
+        #     # self.spi.xfer2(new_data[start_idx:end_idx])
+        #     self.spi.xfer(new_data[start_idx:end_idx], self.spi.max_speed_hz, 1 ,8)
             
         self.oldData = new_data.copy()
         
