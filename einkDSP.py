@@ -326,6 +326,27 @@ class einkDSP:
         self.delay_xms(1)  # Necessary delay for the display refresh
         self.lcd_chkstatus()  # Check if the display is ready
 
+    def PIC_display_Clear(self,poweroff=False):
+        # Transfer old data
+        self.epd_w21_write_cmd(0x10)
+        for i in range(12480):
+            self.epd_w21_write_data(self.oldData[i])
+        
+        # Transfer new data, setting all to 0xFF (white or clear)
+        self.epd_w21_write_cmd(0x13)
+        for i in range(12480):
+            self.epd_w21_write_data(0xFF)  # Set all pixels to white/clear
+            self.oldData[i] = 0xFF  # Update oldData to reflect the clear screen
+        
+        # Refresh the display
+        self.epd_w21_write_cmd(0x12)
+        self.delay_xms(1)  # Ensure a small delay for the display to process
+        self.lcd_chkstatus()  # Check the display status
+
+        if poweroff:
+            self.power_off()  # Optionally power off the display after clearing
+
+
 # spi = EPD_GPIO_Init()
 
 # print("Started")
