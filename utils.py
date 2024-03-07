@@ -1,11 +1,14 @@
 import numpy as np
-import torch
 from typing import Any, Dict, Optional, Union
-from optimum.onnxruntime.modeling_diffusion import ORTModelVaeDecoder, ORTModelVaeEncoder
-from diffusers import AutoencoderKL
-from diffusers.models.autoencoders.vae import DecoderOutput
-from diffusers.models.modeling_outputs import AutoencoderKLOutput
+from PIL import Image
 
+
+
+
+dialog_image_path = 'dialogBox.png'
+ascii_table_image_path = 'asciiTable.png'
+text_area_start = (9, 12)
+text_area_end = (226, 80)
 
 ORT_TO_NP_TYPE = {
     "tensor(bool)": np.bool_,
@@ -28,11 +31,16 @@ logger = logging.getLogger(__name__)
 class ORTModelTiledVaeWrapper(object):
     def __init__(
         self,
-        wrapped: Union[ORTModelVaeDecoder, ORTModelVaeEncoder],
+        wrapped,
         decoder: bool,
         window: int,
         overlap: float,
     ):
+        import torch
+        from optimum.onnxruntime.modeling_diffusion import ORTModelVaeDecoder, ORTModelVaeEncoder
+        from diffusers import AutoencoderKL
+        from diffusers.models.autoencoders.vae import DecoderOutput
+        from diffusers.models.modeling_outputs import AutoencoderKLOutput
         self.wrapped = wrapped
         self.decoder = decoder
         self.tiled = False
@@ -94,10 +102,9 @@ class ORTModelTiledVaeWrapper(object):
             ] * (x / blend_extent)
         return b
 
-    @torch.no_grad()
     def tiled_encode(
         self, x, return_dict: bool = True
-    ) -> AutoencoderKLOutput:
+    ):
         r"""Encode a batch of images using a tiled encoder.
         Args:
         When this option is enabled, the VAE will split the input tensor into tiles to compute encoding in several
@@ -110,45 +117,44 @@ class ORTModelTiledVaeWrapper(object):
         """
         if isinstance(x, np.ndarray):
             x = torch.from_numpy(x)
+        with torch.no_grad():
+            overlap_size = int(self.tile_sample_min_size * (1 - self.tile_overlap_factor))
+            blend_extent = int(self.tile_latent_min_size * self.tile_overlap_factor)
+            row_limit = self.tile_latent_min_size - blend_extent
 
-        overlap_size = int(self.tile_sample_min_size * (1 - self.tile_overlap_factor))
-        blend_extent = int(self.tile_latent_min_size * self.tile_overlap_factor)
-        row_limit = self.tile_latent_min_size - blend_extent
+            # Split the image into 512x512 tiles and encode them separately.
+            rows = []
+            for i in range(0, x.shape[2], overlap_size):
+                row = []
+                for j in range(0, x.shape[3], overlap_size):
+                    tile = x[
+                        :,
+                        :,
+                        i : i + self.tile_sample_min_size,
+                        j : j + self.tile_sample_min_size,
+                    ]
+                    tile = torch.from_numpy(self.wrapped(sample=tile.numpy())[0])
+                    row.append(tile)
+                rows.append(row)
+            result_rows = []
+            for i, row in enumerate(rows):
+                result_row = []
+                for j, tile in enumerate(row):
+                    # blend the above tile and the left tile
+                    # to the current tile and add the current tile to the result row
+                    if i > 0:
+                        tile = self.blend_v(rows[i - 1][j], tile, blend_extent)
+                    if j > 0:
+                        tile = self.blend_h(row[j - 1], tile, blend_extent)
+                    result_row.append(tile[:, :, :row_limit, :row_limit])
+                result_rows.append(torch.cat(result_row, dim=3))
 
-        # Split the image into 512x512 tiles and encode them separately.
-        rows = []
-        for i in range(0, x.shape[2], overlap_size):
-            row = []
-            for j in range(0, x.shape[3], overlap_size):
-                tile = x[
-                    :,
-                    :,
-                    i : i + self.tile_sample_min_size,
-                    j : j + self.tile_sample_min_size,
-                ]
-                tile = torch.from_numpy(self.wrapped(sample=tile.numpy())[0])
-                row.append(tile)
-            rows.append(row)
-        result_rows = []
-        for i, row in enumerate(rows):
-            result_row = []
-            for j, tile in enumerate(row):
-                # blend the above tile and the left tile
-                # to the current tile and add the current tile to the result row
-                if i > 0:
-                    tile = self.blend_v(rows[i - 1][j], tile, blend_extent)
-                if j > 0:
-                    tile = self.blend_h(row[j - 1], tile, blend_extent)
-                result_row.append(tile[:, :, :row_limit, :row_limit])
-            result_rows.append(torch.cat(result_row, dim=3))
-
-        moments = torch.cat(result_rows, dim=2).numpy()
-        if not return_dict:
-            return (moments,)
+            moments = torch.cat(result_rows, dim=2).numpy()
+            if not return_dict:
+                return (moments,)
 
         return AutoencoderKLOutput(latent_dist=moments)
 
-    @torch.no_grad()
     def tiled_decode(
         self, z, return_dict: bool = True
     ):
@@ -166,45 +172,140 @@ class ORTModelTiledVaeWrapper(object):
         if isinstance(z, np.ndarray):
             z = torch.from_numpy(z)
 
-        overlap_size = int(self.tile_latent_min_size * (1 - self.tile_overlap_factor))
-        blend_extent = int(self.tile_sample_min_size * self.tile_overlap_factor)
-        row_limit = self.tile_sample_min_size - blend_extent
+        with torch.no_grad():
+            overlap_size = int(self.tile_latent_min_size * (1 - self.tile_overlap_factor))
+            blend_extent = int(self.tile_sample_min_size * self.tile_overlap_factor)
+            row_limit = self.tile_sample_min_size - blend_extent
 
-        # Split z into overlapping 64x64 tiles and decode them separately.
-        # The tiles have an overlap to avoid seams between tiles.
-        rows = []
-        for i in range(0, z.shape[2], overlap_size):
-            row = []
-            for j in range(0, z.shape[3], overlap_size):
-                tile = z[
-                    :,
-                    :,
-                    i : i + self.tile_latent_min_size,
-                    j : j + self.tile_latent_min_size,
-                ]
-                decoded = torch.from_numpy(self.wrapped(latent_sample=tile.numpy())[0])
-                row.append(decoded)
-            rows.append(row)
+            # Split z into overlapping 64x64 tiles and decode them separately.
+            # The tiles have an overlap to avoid seams between tiles.
+            rows = []
+            for i in range(0, z.shape[2], overlap_size):
+                row = []
+                for j in range(0, z.shape[3], overlap_size):
+                    tile = z[
+                        :,
+                        :,
+                        i : i + self.tile_latent_min_size,
+                        j : j + self.tile_latent_min_size,
+                    ]
+                    decoded = torch.from_numpy(self.wrapped(latent_sample=tile.numpy())[0])
+                    row.append(decoded)
+                rows.append(row)
 
-        result_rows = []
-        for i, row in enumerate(rows):
-            result_row = []
-            for j, tile in enumerate(row):
-                # blend the above tile and the left tile
-                # to the current tile and add the current tile to the result row
-                if i > 0:
-                    tile = self.blend_v(rows[i - 1][j], tile, blend_extent)
-                if j > 0:
-                    tile = self.blend_h(row[j - 1], tile, blend_extent)
-                result_row.append(tile[:, :, :row_limit, :row_limit])
-            result_rows.append(torch.cat(result_row, dim=3))
+            result_rows = []
+            for i, row in enumerate(rows):
+                result_row = []
+                for j, tile in enumerate(row):
+                    # blend the above tile and the left tile
+                    # to the current tile and add the current tile to the result row
+                    if i > 0:
+                        tile = self.blend_v(rows[i - 1][j], tile, blend_extent)
+                    if j > 0:
+                        tile = self.blend_h(row[j - 1], tile, blend_extent)
+                    result_row.append(tile[:, :, :row_limit, :row_limit])
+                result_rows.append(torch.cat(result_row, dim=3))
 
-        dec = torch.cat(result_rows, dim=2)
-        dec = dec.numpy()
+            dec = torch.cat(result_rows, dim=2)
+            dec = dec.numpy()
 
-        if not return_dict:
-            return (dec,)
+            if not return_dict:
+                return (dec,)
 
         return DecoderOutput(sample=dec)
 
 
+def draw_text_on_dialog(text, dialog_image_path=dialog_image_path, ascii_table_image_path=ascii_table_image_path, text_area_start=text_area_start, text_area_end=text_area_end):
+    # Load the dialog box image
+    dialog_image = Image.open(dialog_image_path)
+
+    # Load the ASCII character image asset
+    ascii_table_image = Image.open(ascii_table_image_path)
+
+    # Calculate the size of each character cell
+    ascii_table_width, ascii_table_height = ascii_table_image.size
+    char_width = ascii_table_width // 16
+    char_height = ascii_table_height // 14
+
+    # Calculate the position and size of the text area
+    text_area_width = text_area_end[0] - text_area_start[0]
+    text_area_height = text_area_end[1] - text_area_start[1]
+    
+    # Initialize the position for the first character
+    x, y = text_area_start
+
+    # Loop through each character in the text
+    for idx, char in enumerate(text):
+
+        # check if new line
+        if char == '\n':
+            x = text_area_start[0]
+            y += char_height
+            if y + char_height > text_area_end[1]:  # Stop if we run out of vertical space
+                break
+
+        # Calculate the ASCII value, then find the row and column in the ASCII image
+        ascii_value = ord(char)
+        if 32 <= ascii_value <= 255:
+            row = (ascii_value - 32) // 16
+            col = (ascii_value - 32) % 16
+        else:
+            continue  # Skip characters not in the range 32-255
+
+
+        # Calculate the position to slice the character from the ASCII image
+        char_x = col * char_width
+        char_y = row * char_height
+
+        # Slice the character image from the ASCII image
+        char_image = ascii_table_image.crop((char_x, char_y, char_x + char_width, char_y + char_height))
+
+        # Paste the character image onto the dialog box image
+        dialog_image.paste(char_image, (x, y))
+
+        # Move to the next character position
+        x += char_width
+        if x + char_width > text_area_end[0]:  # Newline if we run out of space
+            x = text_area_start[0]
+            y += char_height
+            if y + char_height > text_area_end[1]:  # Stop if we run out of vertical space
+                break
+
+    return dialog_image
+
+def process_image(image, dialogBox=None, height=128*3, width=128*2):
+    eink_width, eink_height = 240, 416
+    scale_factor = eink_width / width
+    new_height = int(height * scale_factor)
+    scaled_image = image.resize((eink_width, new_height), Image.ANTIALIAS)
+    curImage = Image.new("L", (eink_width, eink_height), "white")
+    # Paste the scaled image onto the white image, aligned at the top
+    curImage.paste(scaled_image, (0, 0))
+    if dialogBox:
+        curImage.paste(dialogBox, (3, eink_height-dialogBox.height-4))
+    return curImage
+
+def image_to_header_file(image):
+    """Apply Floyd-Steinberg dithering and convert image to a string array."""
+    
+    grayscale = image.convert('L')
+    pixels = np.array(grayscale, dtype=np.float32)
+    for y in range(pixels.shape[0]-1):
+        for x in range(1, pixels.shape[1]-1):
+            old_pixel = pixels[y, x]
+            new_pixel = np.round(old_pixel / 85) * 85
+            pixels[y, x] = new_pixel
+            quant_error = old_pixel - new_pixel
+            pixels[y, x+1] += quant_error * 7 / 16
+            pixels[y+1, x-1] += quant_error * 3 / 16
+            pixels[y+1, x] += quant_error * 5 / 16
+            pixels[y+1, x+1] += quant_error * 1 / 16
+
+    pixels = np.clip(pixels, 0, 255)
+    pixels_quantized = np.digitize(pixels, bins=[64, 128, 192], right=True)
+    pixel_map = {0: '00', 1: '01', 2: '10', 3: '11'}
+    pixels_string = np.vectorize(pixel_map.get)(pixels_quantized)
+    converted_pixels = pixels_string.flatten().tolist()
+    grouped_pixels = [''.join(converted_pixels[i:i+4]) for i in range(0, len(converted_pixels), 4)]
+    int_pixels = [int(bits, 2) for bits in grouped_pixels]
+    return np.array(int_pixels, dtype=np.uint8)

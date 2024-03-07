@@ -24,7 +24,7 @@ else:
     use_eink = False
 
 # Load the Stable Diffusion pipeline
-pl = ORTStableDiffusionPipeline.from_pretrained('../astranime_V6-lcm-lora-fused-mar-02-onnx')
+pl = ORTStableDiffusionPipeline.from_pretrained('../yefamix_V3-lcm-lora-fused-mar-02-onnx')
 width, height = 128*2, 128*3
 if width > 128*2 or height > 128*3:
     pl.vae_decoder = ORTModelTiledVaeWrapper(pl.vae_decoder, True, 64, 0.5)
@@ -39,7 +39,7 @@ Type = ["Comic Cover", "Game Cover", "Illustration", "Painting", "Photo", "Graph
 
 # prompt option design
 word_type = "accessories, clothes, facial details, facial expression,"
-char_id = "brown eyes, brown hair, low-tied long hair, medium breast,"
+char_id = "perfect face, seducing looking, looking at viewer, 1girl, solo, naked half body, from above, peer proportional face"
 options = []
 
 
@@ -74,11 +74,7 @@ use one word for each option, Respond using JSON. Key names should with no backs
     }
     response = requests.post("http://localhost:11434/api/generate", json=data, stream=False)
     json_data = json.loads(response.text)["response"]
-    start_index = json_data.find('{')
-    end_index = json_data.rfind('}')
-    json_str = json_data[start_index:end_index+1]
-    ret = json.loads(json_str)
-    return word2replace, ret
+    return word2replace, json_data
 
 
 def get_t():
@@ -207,7 +203,7 @@ def process_image(image, dialogBox=None):
 
 def generate_image(add_prompt=""):
     global is_generating_image
-    fix_prompt = f"{','.join(random.sample(Adjectives, 2))}, {random.sample(Type, 1)[0]}, monochrome, 1 girl, waifu, {char_id} nsfw,"
+    fix_prompt = f"{','.join(random.sample(Adjectives, 2))}, {random.sample(Type, 1)[0]}, monochrome, {char_id}, nsfw,"
     iter_t = 0.0
     
     # Check if an image is already being generated
@@ -221,7 +217,7 @@ def generate_image(add_prompt=""):
     start_time = time.time()
     
     seed = np.random.randint(0, 1000000)
-    g = np.random.RandomState(0)
+    g = np.random.RandomState(seed)
     image = pl(full_prompt, negative_prompt=neg_prompt, height=height, width=width, num_inference_steps=3, generator=g, guidance_scale=1.0).images[0]
     dialogBox = draw_text_on_dialog(dialog_image_path, ascii_table_image_path, add_prompt + f"\n[{seed}]", text_area_start, text_area_end)
     curImage = process_image(image, dialogBox)

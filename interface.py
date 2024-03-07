@@ -10,8 +10,13 @@ eink = einkDSP()
 
 menu_options = ["SD in loop", "SD Gallery", "Exit"]
 current_selection = 0
+page = 0 # 0 : main, 1 : sd, 2 : gallery 
+image_files = [] 
 
 def display_menu():
+    global page
+    page = 0 # reset
+
     print("\033[H\033[J", end="")  # Clear the screen
     for i, option in enumerate(menu_options):
         if i == current_selection:
@@ -20,18 +25,44 @@ def display_menu():
             print(f"  {option}")
 
 def on_press(key):
-    global current_selection, loop_running
+    global current_selection, loop_running, current_image_index, image_files
+    locked = False
+
     if key == "up":
-        current_selection = (current_selection - 1) % len(menu_options)
-        display_menu()
+        if page == 0: # main
+            current_selection = (current_selection - 1) % len(menu_options)
+            display_menu()
+        elif page == 2 : 
+            current_image_index = (current_image_index - 1) % len(image_files)
+            display_current_image_info(current_image_index)
+        else: 
+            pass
     elif key == "down":
-        current_selection = (current_selection + 1) % len(menu_options)
-        display_menu()
+        if page == 0: # main
+            current_selection = (current_selection + 1) % len(menu_options)
+            display_menu()
+        elif page == 2 : 
+            current_image_index = (current_image_index + 1) % len(image_files)
+            display_current_image_info(current_image_index)
+        else:
+            pass
     elif key == "enter":
-        execute_current_selection()
-    elif key == "q" and loop_running:
-        # Mechanism to stop 'run_sd' and return to the main menu
+        if page == 0: # main
+            execute_current_selection()
+        elif page == 2 and not locked: 
+            locked = True
+            # Display the selected image
+            print(f"Selected Image: {image_files[current_image_index]}")
+            image = Image.open(f"./Asset/{image_files[current_image_index]}")
+            hex_pixels = image_to_header_file(image)
+            eink.epd_w21_init_4g()
+            eink.pic_display_4g(hex_pixels)
+            eink.epd_sleep()
+            locked = False            
+    elif key == "q":
         loop_running = False
+        display_menu()
+
 
 def execute_current_selection():
     global loop_running
@@ -53,7 +84,9 @@ def execute_current_selection():
             print("Invalid selection")
   
 def run_sd():
-    global loop_running
+    global loop_running, page
+    page = 1 # set page
+
     # word_type = "accessories, clothes, facial details, facial expression," need to match with catagories
     sd_prompt_mods = "ear rings, black dress, Freckles, blushing"
     while loop_running:
@@ -61,57 +94,41 @@ def run_sd():
         generate_image(sd_prompt_mods)
         if not loop_running:
             break
+        
+        st = time.time()
+        rm_word, json_data = llm_call(sd_prompt_mods)
+        print(f"{time.time() - st} sec to generate next prompt")
+
         try:
-            st = time.time()
-            rm_word, next_options = llm_call(sd_prompt_mods)
-            print(f"{time.time() - st} sec to generate next prompt")
+            start_index = json_data.find('{')
+            end_index = json_data.rfind('}')
+            json_str = json_data[start_index:end_index+1]
+            next_options = json.loads(json_str)
             options = list(next_options.values())
             picked_option = random.choice(options)
             sd_prompt_mods = sd_prompt_mods.replace(rm_word, picked_option.replace(",", "_"))
             print(f"new prompt: {sd_prompt_mods}")
         except Exception as e:
-            print(f"Error calling LLM: {e} , \n {next_options}")
+            print(f"Error calling LLM: {e} , \n {json_data}")
     
     display_menu()
-    listen_keyboard(on_press=on_press)
 
-
-def display_current_image_info(file_name):
-    print(f"Current Image: {file_name}")
-
-def on_press_gallery(key, image_files):
-    global current_image_index
-    locked = False
-    if key == "up":
-        current_image_index = (current_image_index - 1) % len(image_files)
-        display_current_image_info(image_files[current_image_index])
-    elif key == "down":
-        current_image_index = (current_image_index + 1) % len(image_files)
-        display_current_image_info(image_files[current_image_index])
-    elif key == "enter" and not locked:
-        locked = True
-        # Display the selected image
-        print(f"Selected Image: {image_files[current_image_index]}")
-        image = Image.open(f"./Assets/{image_files[current_image_index]}")
-        hex_pixels = image_to_header_file(image)
-        eink.epd_w21_init_4g()
-        eink.pic_display_4g(hex_pixels)
-        eink.epd_sleep()
-        locked = False
-    elif key == "q":
-        # Mechanism to stop gallery view and return to the main menu
-        print("Exiting gallery...")
-        display_menu()
-        listen_keyboard(on_press=on_press)
-        
+def display_current_image_info(idx):
+    global image_files
+    print("\033[H\033[J", end="")  # Clear the screen
+    for i, file_name in enumerate(image_files):
+        if i == idx:
+            print(f"> {file_name}")  # Highlight the current selection
+        else:
+            print(f"  {file_name}")
 
 def run_sd_gallery():
-    images_dir = "./Assets"
+    global page, image_files
+    page = 2 # switch page
+    images_dir = "./Asset"
     image_files = [f for f in os.listdir(images_dir) if f.endswith('.png') and f.startswith('dialogBox_image_seed_')]
     image_files.sort()  # Optional: Sort the files if needed
-    display_current_image_info(image_files)
-    listen_keyboard(on_press=on_press_gallery)    
-
+    display_current_image_info(0)
 
 if __name__ == "__main__":
     # Flag to control the execution of the loop
