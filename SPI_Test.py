@@ -110,7 +110,7 @@ if __name__ == "__main__":
                 # full_screen(hex_pixels)
 
                 # Acquire the lock
-                text = get_file_list(file_idx)
+                text = str(file_idx)
                 print(file_idx, text)
                 # image = Image.open(f"{images_dir}/{image_files[idx]}")
                 dialogBox = draw_text_on_dialog(text)
