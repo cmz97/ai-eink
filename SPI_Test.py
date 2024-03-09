@@ -109,7 +109,17 @@ if __name__ == "__main__":
                 # hex_pixels = image_to_header_file(image)
                 # full_screen(hex_pixels)
 
-                display_current_image_info(file_idx)
+                # Acquire the lock
+                text = get_file_list(file_idx)
+                print(file_idx, text)
+                # image = Image.open(f"{images_dir}/{image_files[idx]}")
+                dialogBox = draw_text_on_dialog(text)
+                updated_img = override_dialogBox(buffer[1], dialogBox)
+                hex_pixels = dump_2bit(updated_img)
+                if not init :
+                    transit()
+                    init = True
+                part_screen(hex_pixels)
             except Exception as e:
                 print(f"{e}")
                 #file_name = image_files[file_idx]
