@@ -1,8 +1,7 @@
 import numpy as np
 from typing import Any, Dict, Optional, Union
 from PIL import Image
-
-
+from numba import jit
 
 
 dialog_image_path = 'dialogBox.png'
@@ -286,40 +285,58 @@ def process_image(image, dialogBox=None, height=128*3, width=128*2):
     return curImage
 
 
-def process_image(image, dialogBox=None, width=128*2, height=128*3):
-    eink_width, eink_height = 240, 416
-    scale_factor = eink_width / width
-    new_height = int(height * scale_factor)
-    scaled_image = image.resize((eink_width, new_height), Image.ANTIALIAS)
-    curImage = Image.new("L", (eink_width, eink_height), "white")
-    # Paste the scaled image onto the white image, aligned at the top
-    curImage.paste(scaled_image, (0, 0))
-    if dialogBox:
-        curImage.paste(dialogBox, (3, eink_height-dialogBox.height-4))
-    return curImage
-
 def override_dialogBox(image, dialogBox):
     image.paste(dialogBox, (3, 416-dialogBox.height-4))
     return image
 
-def dump_2bit(image):
-    grayscale = image.transpose(Image.FLIP_TOP_BOTTOM).convert('L')
-    pixels = np.array(grayscale, dtype=np.float32)
+@jit(nopython=True)
+def dump_2bit(pixels):
     pixels = np.clip(pixels, 0, 255)
     pixels_quantized = np.digitize(pixels, bins=[64, 128, 192], right=True)
-    pixel_map = {0: '0', 1: '0', 2: '1', 3: '1'} 
-    pixels_string = np.vectorize(pixel_map.get)(pixels_quantized)
-    converted_pixels = pixels_string.flatten().tolist() 
-    group_size = 8 
-    grouped_pixels = [''.join(converted_pixels[i:i+group_size]) for i in range(0, len(converted_pixels), group_size)]
-    int_pixels = [int(bits, 2) for bits in grouped_pixels] 
-    return [int(x) for x in int_pixels]
+    
+    result_size = (pixels.size + 7) // 8  # Calculate the needed size for the result
+    int_pixels = np.zeros(result_size, dtype=np.uint8)
+    
+    index = 0
+    for i in range(pixels_quantized.size):
+        bit = 1 if pixels_quantized.flat[i] in [2, 3] else 0
+        if i % 8 == 0 and i > 0:
+            index += 1
+        int_pixels[index] |= bit << (7 - (i % 8))
+    
+    return int_pixels
 
 
-def image_to_header_file(image):
-    """Apply Floyd-Steinberg dithering and convert image to a string array."""
-    grayscale = image.convert('L')
-    pixels = np.array(grayscale, dtype=np.float32)
+# def image_to_header_file(image):
+#     """Apply Floyd-Steinberg dithering and convert image to a string array."""
+#     grayscale = image.convert('L')
+#     pixels = np.array(grayscale, dtype=np.float32)
+#     for y in range(pixels.shape[0]-1):
+#         for x in range(1, pixels.shape[1]-1):
+#             old_pixel = pixels[y, x]
+#             new_pixel = np.round(old_pixel / 85) * 85
+#             pixels[y, x] = new_pixel
+#             quant_error = old_pixel - new_pixel
+#             pixels[y, x+1] += quant_error * 7 / 16
+#             pixels[y+1, x-1] += quant_error * 3 / 16
+#             pixels[y+1, x] += quant_error * 5 / 16
+#             pixels[y+1, x+1] += quant_error * 1 / 16
+#     # raw_pixels = pixels.copy()
+#     pixels = np.clip(pixels, 0, 255)
+#     pixels_quantized = np.digitize(pixels, bins=[64, 128, 192], right=True)
+#     pixel_map = {0: '00', 1: '01', 2: '10', 3: '11'} 
+#     pixels_string = np.vectorize(pixel_map.get)(pixels_quantized)
+#     converted_pixels = pixels_string.flatten().tolist() 
+#     # if two_bit : converted_pixels = converted_pixels[::-1]
+#     group_size = 4 
+#     grouped_pixels = [''.join(converted_pixels[i:i+group_size]) for i in range(0, len(converted_pixels), group_size)]
+#     int_pixels = [int(bits, 2) for bits in grouped_pixels] 
+
+#     # return np.array(int_pixels, dtype=np.uint8)
+#     return [int(x) for x in int_pixels]
+
+@jit(nopython=True)
+def floydSteinbergDithering_numba(pixels):
     for y in range(pixels.shape[0]-1):
         for x in range(1, pixels.shape[1]-1):
             old_pixel = pixels[y, x]
@@ -330,15 +347,24 @@ def image_to_header_file(image):
             pixels[y+1, x-1] += quant_error * 3 / 16
             pixels[y+1, x] += quant_error * 5 / 16
             pixels[y+1, x+1] += quant_error * 1 / 16
-    # raw_pixels = pixels.copy()
-    pixels = np.clip(pixels, 0, 255)
+    return pixels
+
+def image_to_header_file(image):
+    grayscale = image.convert('L')
+    pixels = np.array(grayscale, dtype=np.float32)
+
+    # Apply the Numba-optimized Floyd-Steinberg dithering
+    pixels = floydSteinbergDithering_numba(pixels)
+
+    # Convert pixels to 2-bit representation
+    pixels = np.clip(pixels, 0, 255)  # Ensure pixels are in valid range after dithering
     pixels_quantized = np.digitize(pixels, bins=[64, 128, 192], right=True)
     pixel_map = {0: '00', 1: '01', 2: '10', 3: '11'} 
-    pixels_string = np.vectorize(pixel_map.get)(pixels_quantized)
-    converted_pixels = pixels_string.flatten().tolist() 
-    # if two_bit : converted_pixels = converted_pixels[::-1]
-    group_size = 4 
-    grouped_pixels = [''.join(converted_pixels[i:i+group_size]) for i in range(0, len(converted_pixels), group_size)]
-    int_pixels = [int(bits, 2) for bits in grouped_pixels] 
+    pixels_string = np.vectorize(pixel_map.get)(pixels_quantized).flatten()
 
-    return np.array(int_pixels, dtype=np.uint8)
+    # Convert the binary string to integer values
+    group_size = 4
+    grouped_pixels = [''.join(pixels_string[i:i+group_size]) for i in range(0, len(pixels_string), group_size)]
+    int_pixels = [int(bits, 2) for bits in grouped_pixels]
+
+    return [int(x) for x in int_pixels]

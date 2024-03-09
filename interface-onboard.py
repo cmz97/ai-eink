@@ -50,13 +50,25 @@ def display_current_image_info(idx):
     # Acquire the lock
     text = get_file_list(idx)
     print(idx, text)
-    # image = Image.open(f"{images_dir}/{image_files[idx]}")
+    image = Image.open(f"{images_dir}/{image_files[idx]}")
     dialogBox = draw_text_on_dialog(text)
-    updated_img = override_dialogBox(buffer[1], dialogBox)
-    hex_pixels = dump_2bit(updated_img)
+    # updated_img = override_dialogBox(buffer[1], dialogBox)
+    updated_img = process_image(image, dialogBox)
+    # updated_img = override_dialogBox(image, dialogBox)
+
+    grayscale = updated_img.transpose(Image.FLIP_TOP_BOTTOM).convert('L')
+    pixels = np.array(grayscale, dtype=np.float32)
+
+    print("hex_pixels" + str(time.time()))
+    hex_pixels = dump_2bit(pixels).tolist()
+    print("hex_pixels" + str(time.time()))
+
     if not init :
+        print("transit" + str(time.time()))
         transit()
+        print("transit" + str(time.time()))
         init = True
+    
     part_screen(hex_pixels)
 
 def rotChanged(counter, direction):
@@ -76,8 +88,11 @@ def butClicked():
     image = Image.open(f"{images_dir}/{file_name}")
     # image = process_image(image)
     buffer = (file_idx, image)
+    print(time.time())
     hex_pixels = image_to_header_file(image)
+    print(time.time())
     full_screen(hex_pixels)
+    print(time.time())
     init = False
 
 

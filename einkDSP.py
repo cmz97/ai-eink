@@ -66,7 +66,7 @@ class einkDSP:
         device = 0 #Device is the chip select pin. Set to 0 or 1, depending on the connections
         spi = spidev.SpiDev()
         spi.open(bus, device) 
-        spi.max_speed_hz = 30000000 #1MHZ
+        spi.max_speed_hz = 30000000 #30000000MHZ
         spi.mode = 0
         return spi
 
@@ -117,7 +117,7 @@ class einkDSP:
 
     def lcd_chkstatus(self):
         while GPIO.input(self.BUSY_PIN) == GPIO.LOW:  # Assuming LOW means busy
-            time.sleep(0.001)  # Wait 10ms before checking again
+            time.sleep(0.01)  # Wait 10ms before checking again
 
     def epd_sleep(self):
         self.epd_w21_write_cmd(0x02)  # Power off
@@ -247,7 +247,10 @@ class einkDSP:
 
     def pic_display_4g(self,datas):
         # Command to start transmitting old data
+        buffer = []
         self.epd_w21_write_cmd(0x10)
+        GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
+
         print("Start Old Data Transmission")
         # Iterate over each byte of the image data
         for i in range(12480):  # Assuming 416x240 resolution, adjust accordingly
@@ -271,11 +274,15 @@ class einkDSP:
                     if j==1 and k != 3:
                         temp1 <<= 2
                         temp3 <<= 1
-            self.epd_w21_write_data(temp3)
+            buffer.append(temp3)
+        self.spi.xfer3(buffer, self.spi.max_speed_hz, 1 ,8)
 
+        buffer = []
         print("Start New Data Transmission")
         # Command to start transmitting new data
         self.epd_w21_write_cmd(0x13)
+        GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
+
         for i in range(12480):  # Repeat the process for new data
             temp3 = 0
             for j in range(2):
@@ -298,7 +305,9 @@ class einkDSP:
                     if j==1 and k != 3:
                         temp1 <<= 2
                         temp3 <<= 1
-            self.epd_w21_write_data(temp3)
+            buffer.append(temp3)
+
+        self.spi.xfer3(buffer, self.spi.max_speed_hz, 1 ,8)
 
         # Refresh command
         print("Refreshing")
@@ -311,37 +320,13 @@ class einkDSP:
         
         # Transfer old data
         self.epd_w21_write_cmd(0x10)
-
-        chunk_size = 4096
-        data_length = 12480
-
-        
-        # for data in self.oldData:
-        #     # self.SPI_Delay()
-        #     self.epd_w21_write_data(data)
-        
         GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
-        for start_idx in range(0, data_length, chunk_size):
-            # self.SPI_Delay()
-
-            # Calculate the end index for the current chunk
-            end_idx = min(start_idx + chunk_size, data_length)
-            # self.spi.xfer2(self.oldData[start_idx:end_idx])
-            self.spi.xfer2(self.oldData[start_idx:end_idx], self.spi.max_speed_hz, 1 ,8)
+        self.spi.xfer3(self.oldData, self.spi.max_speed_hz, 1 ,8)
 
         # Transfer new data
-        # self.epd_w21_write_cmd(0x13)
-        # for data in new_data:
-        #     # self.SPI_Delay()
-        #     self.epd_w21_write_data(data)
-            
-        for start_idx in range(0, data_length, chunk_size):
-            # self.SPI_Delay()
-            # Calculate the end index for the current chunk
-            end_idx = min(start_idx + chunk_size, data_length)
-            # self.spi.xfer2(new_data[start_idx:end_idx])
-            self.spi.xfer2(new_data[start_idx:end_idx], self.spi.max_speed_hz, 1 ,8)
-            
+        self.epd_w21_write_cmd(0x13)
+        GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
+        self.spi.xfer3(new_data, self.spi.max_speed_hz, 1 ,8)
         self.oldData = new_data.copy()
         
         # Refresh display
@@ -352,17 +337,15 @@ class einkDSP:
     def PIC_display_Clear(self,poweroff=False):
         # Transfer old data
         self.epd_w21_write_cmd(0x10)
-
-        for i in range(12480):
-            self.epd_w21_write_data(self.oldData[i])
+        GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
+        self.spi.xfer3(self.oldData, self.spi.max_speed_hz, 1 ,8)
         
         # Transfer new data, setting all to 0xFF (white or clear)
         self.epd_w21_write_cmd(0x13)
+        GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
+        self.spi.xfer3([0] * 12480, self.spi.max_speed_hz, 1 ,8)
+        self.oldData = [0] * 12480
 
-
-        for i in range(12480):
-            self.epd_w21_write_data(0xFF)  # Set all pixels to white/clear
-            self.oldData[i] = 0xFF  # Update oldData to reflect the clear screen
         
         # Refresh the display
         self.epd_w21_write_cmd(0x12)
