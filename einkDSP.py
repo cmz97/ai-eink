@@ -117,8 +117,7 @@ class einkDSP:
 
     def lcd_chkstatus(self):
         while GPIO.input(self.BUSY_PIN) == GPIO.LOW:  # Assuming LOW means busy
-            time.sleep(0.01)  # Wait 10ms before checking again
-            print("BUSY...")
+            time.sleep(0.001)  # Wait 10ms before checking again
 
     def epd_sleep(self):
         self.epd_w21_write_cmd(0x02)  # Power off
