@@ -22978,11 +22978,6 @@ LOW=ON</text>
 <label x="441.96" y="243.84" size="1.27" layer="95" font="vector" rot="R180" xref="yes"/>
 </segment>
 <segment>
-<pinref part="RPI-CM1" gate="G$1" pin="GPIO3"/>
-<wire x1="91.44" y1="76.2" x2="99.06" y2="76.2" width="0.1524" layer="91"/>
-<label x="93.98" y="76.2" size="1.778" layer="95"/>
-</segment>
-<segment>
 <pinref part="OV5647" gate="G$1" pin="PIN12"/>
 <wire x1="386.08" y1="20.32" x2="403.86" y2="20.32" width="0.1524" layer="91"/>
 <label x="403.86" y="20.32" size="1.778" layer="95" align="bottom-right"/>
@@ -23002,6 +22997,11 @@ LOW=ON</text>
 <wire x1="464.82" y1="144.78" x2="449.58" y2="144.78" width="0.1524" layer="91"/>
 <label x="449.58" y="144.78" size="1.778" layer="95"/>
 </segment>
+<segment>
+<pinref part="RPI-CM1" gate="G$1" pin="GPIO2"/>
+<wire x1="91.44" y1="73.66" x2="96.52" y2="73.66" width="0.1524" layer="91"/>
+<label x="91.44" y="73.66" size="1.778" layer="95"/>
+</segment>
 </net>
 <net name="SCL" class="0">
 <segment>
@@ -23014,11 +23014,6 @@ LOW=ON</text>
 <wire x1="454.66" y1="246.38" x2="454.66" y2="241.3" width="0.1524" layer="91"/>
 <wire x1="454.66" y1="241.3" x2="441.96" y2="241.3" width="0.1524" layer="91"/>
 <label x="441.96" y="241.3" size="1.27" layer="95" font="vector" rot="R180" xref="yes"/>
-</segment>
-<segment>
-<pinref part="RPI-CM1" gate="G$1" pin="GPIO2"/>
-<wire x1="91.44" y1="73.66" x2="99.06" y2="73.66" width="0.1524" layer="91"/>
-<label x="93.98" y="73.66" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="OV5647" gate="G$1" pin="PIN11"/>
@@ -23039,6 +23034,11 @@ LOW=ON</text>
 <pinref part="U9" gate="A" pin="SMCLK"/>
 <wire x1="464.82" y1="154.94" x2="449.58" y2="154.94" width="0.1524" layer="91"/>
 <label x="449.58" y="154.94" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="RPI-CM1" gate="G$1" pin="GPIO3"/>
+<wire x1="91.44" y1="76.2" x2="96.52" y2="76.2" width="0.1524" layer="91"/>
+<label x="91.44" y="76.2" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="BATTERY_IN" class="0">

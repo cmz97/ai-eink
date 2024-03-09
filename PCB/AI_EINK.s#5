@@ -18055,7 +18055,6 @@ Source: &lt;a href="http://www.te.com/commerce/DocumentDelivery/DDEController?Ac
 </part>
 <part name="GND18" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
 <part name="S1" library="SparkFun-Electromechanical" deviceset="SWITCH-SPDT" device="-SMD-A"/>
-<part name="SUPPLY13" library="SparkFun-Aesthetics" deviceset="V_BATT" device=""/>
 <part name="R31" library="SparkFun-Resistors" deviceset="100KOHM-1/10W-1%(0603)" device="" value="100k"/>
 <part name="R7" library="SparkFun-Passives" deviceset="RESISTOR" device="0603-RES" value="1.1k">
 <attribute name="PROD_ID" value="RES-10447"/>
@@ -18835,9 +18834,6 @@ LOW=ON</text>
 <instance part="S1" gate="1" x="347.98" y="124.46" smashed="yes">
 <attribute name="NAME" x="346.075" y="118.11" size="1.778" layer="95"/>
 <attribute name="VALUE" x="345.44" y="128.27" size="1.778" layer="96"/>
-</instance>
-<instance part="SUPPLY13" gate="G$1" x="355.6" y="142.24" smashed="yes">
-<attribute name="VALUE" x="354.584" y="145.796" size="1.778" layer="96"/>
 </instance>
 <instance part="R31" gate="G$1" x="355.6" y="134.62" smashed="yes" rot="R270">
 <attribute name="NAME" x="357.0986" y="138.43" size="1.778" layer="95" rot="R270"/>
@@ -19707,11 +19703,6 @@ LOW=ON</text>
 <wire x1="393.7" y1="233.68" x2="396.24" y2="233.68" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<pinref part="U4" gate="G$1" pin="EN1"/>
-<wire x1="363.22" y1="251.46" x2="365.76" y2="251.46" width="0.1524" layer="91"/>
-<label x="365.76" y="251.46" size="1.27" layer="95" font="vector" xref="yes"/>
-</segment>
-<segment>
 <wire x1="353.06" y1="121.92" x2="355.6" y2="121.92" width="0.1524" layer="91"/>
 <wire x1="355.6" y1="121.92" x2="355.6" y2="119.38" width="0.1524" layer="91"/>
 <pinref part="S1" gate="1" pin="S"/>
@@ -20030,6 +20021,14 @@ LOW=ON</text>
 <wire x1="548.64" y1="43.18" x2="551.18" y2="43.18" width="0.1524" layer="91"/>
 <pinref part="U$125" gate="G$1" pin="GND"/>
 <wire x1="551.18" y1="35.56" x2="548.64" y2="35.56" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="U4" gate="G$1" pin="SYSOFF"/>
+<wire x1="363.22" y1="248.92" x2="365.76" y2="248.92" width="0.1524" layer="91"/>
+<pinref part="U4" gate="G$1" pin="EN1"/>
+<wire x1="363.22" y1="251.46" x2="365.76" y2="251.46" width="0.1524" layer="91"/>
+<label x="365.76" y="251.46" size="1.27" layer="95" font="vector" xref="yes"/>
+<wire x1="365.76" y1="248.92" x2="365.76" y2="251.46" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$1" class="0">
@@ -20666,11 +20665,6 @@ LOW=ON</text>
 <pinref part="C23" gate="G$1" pin="1"/>
 </segment>
 <segment>
-<pinref part="R31" gate="G$1" pin="1"/>
-<pinref part="SUPPLY13" gate="G$1" pin="V_BATT"/>
-<wire x1="355.6" y1="142.24" x2="355.6" y2="139.7" width="0.1524" layer="91"/>
-</segment>
-<segment>
 <pinref part="RPIBOOT5" gate="G$1" pin="1"/>
 <wire x1="-30.48" y1="139.7" x2="-20.32" y2="139.7" width="0.1524" layer="91"/>
 <label x="-25.4" y="139.7" size="1.778" layer="95"/>
@@ -20810,16 +20804,16 @@ LOW=ON</text>
 <pinref part="R6" gate="G$1" pin="1"/>
 </segment>
 </net>
-<net name="SYSOFF" class="0">
-<segment>
-<pinref part="U4" gate="G$1" pin="SYSOFF"/>
-<wire x1="363.22" y1="248.92" x2="365.76" y2="248.92" width="0.1524" layer="91"/>
-<label x="365.76" y="248.92" size="1.27" layer="95" font="vector" xref="yes"/>
-</segment>
+<net name="BOOST_EN" class="0">
 <segment>
 <wire x1="345.44" y1="124.46" x2="342.9" y2="124.46" width="0.1524" layer="91"/>
 <label x="342.9" y="124.46" size="1.27" layer="95" font="vector" rot="R180" xref="yes"/>
 <pinref part="S1" gate="1" pin="P"/>
+</segment>
+<segment>
+<pinref part="R13" gate="G$1" pin="1"/>
+<wire x1="533.4" y1="274.32" x2="533.4" y2="276.86" width="0.1524" layer="91"/>
+<label x="533.4" y="276.86" size="1.778" layer="95" rot="R90" xref="yes"/>
 </segment>
 </net>
 <net name="!CE!" class="0">
@@ -20900,12 +20894,6 @@ LOW=ON</text>
 <label x="505.46" y="238.76" size="1.778" layer="95" rot="R90" xref="yes"/>
 </segment>
 <segment>
-<pinref part="R13" gate="G$1" pin="1"/>
-<wire x1="533.4" y1="274.32" x2="533.4" y2="276.86" width="0.1524" layer="91"/>
-<label x="533.4" y="276.86" size="1.778" layer="95" rot="R90" xref="yes"/>
-<label x="591.82" y="223.52" size="1.778" layer="95" rot="R90" xref="yes"/>
-</segment>
-<segment>
 <pinref part="U4" gate="G$1" pin="EN2"/>
 <wire x1="363.22" y1="254" x2="368.3" y2="254" width="0.1524" layer="91"/>
 <pinref part="U4" gate="G$1" pin="OUT"/>
@@ -20928,9 +20916,9 @@ LOW=ON</text>
 <wire x1="368.3" y1="254" x2="368.3" y2="261.62" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<wire x1="591.82" y1="218.44" x2="591.82" y2="223.52" width="0.1524" layer="91"/>
 <pinref part="T1" gate="G$1" pin="E"/>
 <wire x1="591.82" y1="218.44" x2="591.82" y2="223.52" width="0.1524" layer="91"/>
+<label x="591.82" y="223.52" size="1.778" layer="95" rot="R90" xref="yes"/>
 </segment>
 <segment>
 <pinref part="RPIBOOT4" gate="G$1" pin="1"/>
@@ -21473,6 +21461,13 @@ LOW=ON</text>
 <wire x1="233.68" y1="248.92" x2="238.76" y2="248.92" width="0.1524" layer="91"/>
 <pinref part="RF1" gate="G$1" pin="AC1"/>
 <pinref part="ANT1" gate="G$1" pin="1"/>
+</segment>
+</net>
+<net name="V_OUT" class="0">
+<segment>
+<pinref part="R31" gate="G$1" pin="1"/>
+<wire x1="355.6" y1="142.24" x2="355.6" y2="139.7" width="0.1524" layer="91"/>
+<label x="355.6" y="142.24" size="1.778" layer="95" rot="R90" xref="yes"/>
 </segment>
 </net>
 </nets>

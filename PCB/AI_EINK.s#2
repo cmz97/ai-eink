@@ -20001,9 +20001,10 @@ Switches electrical signals</description>
 <part name="GND32" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="J1" library="BM04B-GHS-TBT_LF__SN__N_" deviceset="BM04B-GHS-TBT(LF)(SN)(N)" device=""/>
 <part name="GND33" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
-<part name="U$131" library="microbuilder" deviceset="3.3V" device=""/>
 <part name="R30" library="Resistor" library_urn="urn:adsk.eagle:library:16378527" deviceset="R-US" device="CHIP-0603(1608-METRIC)" package3d_urn="urn:adsk.eagle:package:16378565/5" technology="_" value="36k"/>
 <part name="U$136" library="microbuilder" deviceset="3.3V" device=""/>
+<part name="U$131" library="microbuilder" deviceset="5.0V" device=""/>
+<part name="C42" library="microbuilder" deviceset="CAP_CERAMIC" device="0805_10MGAP" value="0.1uF"/>
 </parts>
 <sheets>
 <sheet>
@@ -21231,15 +21232,19 @@ LOW=ON</text>
 <instance part="GND33" gate="1" x="546.1" y="134.62" smashed="yes" rot="MR0">
 <attribute name="VALUE" x="548.64" y="132.08" size="1.778" layer="96" rot="MR0"/>
 </instance>
-<instance part="U$131" gate="G$1" x="538.48" y="147.32" smashed="yes" rot="R90">
-<attribute name="VALUE" x="537.464" y="145.796" size="1.27" layer="96" rot="R90"/>
-</instance>
 <instance part="R30" gate="G$1" x="548.64" y="162.56" smashed="yes" rot="R90">
 <attribute name="NAME" x="545.8714" y="162.56" size="1.778" layer="95" rot="R90" align="center"/>
 <attribute name="VALUE" x="551.942" y="162.56" size="1.778" layer="96" rot="R90" align="center"/>
 </instance>
 <instance part="U$136" gate="G$1" x="548.64" y="172.72" smashed="yes">
 <attribute name="VALUE" x="547.116" y="173.736" size="1.27" layer="96"/>
+</instance>
+<instance part="U$131" gate="G$1" x="530.86" y="147.32" smashed="yes" rot="R90">
+<attribute name="VALUE" x="529.844" y="145.796" size="1.27" layer="96" rot="R90"/>
+</instance>
+<instance part="C42" gate="G$1" x="538.48" y="142.24" smashed="yes">
+<attribute name="NAME" x="536.19" y="143.49" size="1.27" layer="95" font="vector" rot="R90" align="center"/>
+<attribute name="VALUE" x="540.78" y="143.49" size="1.27" layer="96" font="vector" rot="R90" align="center"/>
 </instance>
 </instances>
 <busses>
@@ -22027,6 +22032,8 @@ LOW=ON</text>
 <wire x1="546.1" y1="144.78" x2="546.1" y2="139.7" width="0.1524" layer="91"/>
 <junction x="546.1" y="139.7"/>
 <pinref part="GND33" gate="1" pin="GND"/>
+<pinref part="C42" gate="G$1" pin="2"/>
+<wire x1="546.1" y1="139.7" x2="538.48" y2="139.7" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$1" class="0">
@@ -22117,6 +22124,14 @@ LOW=ON</text>
 <junction x="-12.7" y="228.6"/>
 <pinref part="IC3" gate="G$1" pin="SPKVDD1"/>
 <wire x1="-15.24" y1="228.6" x2="-15.24" y2="226.06" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="J1" gate="G$1" pin="3"/>
+<wire x1="548.64" y1="147.32" x2="538.48" y2="147.32" width="0.1524" layer="91"/>
+<pinref part="U$131" gate="G$1" pin="5.0V"/>
+<pinref part="C42" gate="G$1" pin="1"/>
+<wire x1="538.48" y1="147.32" x2="533.4" y2="147.32" width="0.1524" layer="91"/>
+<junction x="538.48" y="147.32"/>
 </segment>
 </net>
 <net name="N$2" class="0">
@@ -22384,11 +22399,6 @@ LOW=ON</text>
 <wire x1="464.82" y1="137.16" x2="462.28" y2="137.16" width="0.1524" layer="91"/>
 <pinref part="U$130" gate="G$1" pin="3.3V"/>
 <wire x1="462.28" y1="137.16" x2="462.28" y2="139.7" width="0.1524" layer="91"/>
-</segment>
-<segment>
-<pinref part="J1" gate="G$1" pin="3"/>
-<wire x1="548.64" y1="147.32" x2="541.02" y2="147.32" width="0.1524" layer="91"/>
-<pinref part="U$131" gate="G$1" pin="3.3V"/>
 </segment>
 <segment>
 <pinref part="R30" gate="G$1" pin="2"/>
