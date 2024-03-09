@@ -96,16 +96,16 @@ if __name__ == "__main__":
         image_files.sort()  # Optional: Sort the files if needed
         total_len = len(image_files)
         display_pages = [x for x in range(0, total_len, 6)] # 6 per page
+        file_name = "dialogBox_image_seed_224137_20240304010040.png"#image_files[file_idx].replace("generated_image","dialogBox_image")
+        image = Image.open(f"{images_dir}/{file_name}")    
 
         while True :
             if locked : 
                 time.sleep(5)
                 continue           
         
-            file_name = "dialogBox_image_seed_224137_20240304010040.png"#image_files[file_idx].replace("generated_image","dialogBox_image")
             print(f'displaying {file_name}')
             try:
-                # image = Image.open(f"{images_dir}/{file_name}")    
                 # hex_pixels = image_to_header_file(image)
                 # full_screen(hex_pixels)
 
@@ -114,7 +114,7 @@ if __name__ == "__main__":
                 print(file_idx, text)
                 # image = Image.open(f"{images_dir}/{image_files[idx]}")
                 dialogBox = draw_text_on_dialog(text)
-                updated_img = override_dialogBox(buffer[1], dialogBox)
+                updated_img = override_dialogBox(image, dialogBox)
                 hex_pixels = dump_2bit(updated_img)
                 if not init :
                     transit()
