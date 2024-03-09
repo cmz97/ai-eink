@@ -1,4 +1,5 @@
 import os
+import sys
 import time 
 import random
 from einkDSP import einkDSP
@@ -8,17 +9,15 @@ from utils import *
 import threading  # Import threading module
 
 
-lock = threading.Lock()
+locked = False
 
 # prepare file windows
 images_dir = "./Asset"
-image_files = [f for f in os.listdir(images_dir) if f.endswith('.png') and f.startswith('generated_image_seed_')]
-image_files.sort()  # Optional: Sort the files if needed
-total_len = len(image_files)
-display_pages = [x for x in range(0, total_len, 6)] # 6 per page
 buffer = (None, None)
 init = False
 file_idx = 0
+eink = einkDSP()
+
 
 def get_file_list(idx):
     list_idx = range(max(0, idx-1), min(total_len, idx+6))
@@ -82,11 +81,52 @@ def butClicked():
     init = False
 
 
-rot = Encoder(22, 17, callback=rotChanged) # 22 17
-but = Button(26, callback=butClicked) # gpio 26
-eink = einkDSP()
 
+def pauseDisplay():
+    global locked, file_idx
+    if not locked : print(f"* locking at {file_idx}")  
+    else: print(f"* unlocking ... ")  
+    locked = not locked
+    
 if __name__ == "__main__":
+
+    if sys.argv[1] and sys.argv[1] == "display-mode":
+        but = Button(26, callback=pauseDisplay) # gpio 26
+        image_files = [f for f in os.listdir(images_dir) if f.endswith('.png') and f.startswith('generated_image')]
+        image_files.sort()  # Optional: Sort the files if needed
+        total_len = len(image_files)
+        display_pages = [x for x in range(0, total_len, 6)] # 6 per page
+
+        while True :
+            if locked : 
+                time.sleep(5)
+                continue           
+        
+            file_name = "dialogBox_image_seed_224137_20240304010040.png"#image_files[file_idx].replace("generated_image","dialogBox_image")
+            print(f'displaying {file_name}')
+            try:
+                image = Image.open(f"{images_dir}/{file_name}")    
+                hex_pixels = image_to_header_file(image)
+                full_screen(hex_pixels)
+            except Exception as e:
+                print(f"{e}")
+                #file_name = image_files[file_idx]
+                #image = Image.open(f"{images_dir}/{file_name}")    
+                #hex_pixels = image_to_header_file(image)
+                #full_screen(hex_pixels)
+            file_idx+=1
+            #time.sleep(5)
+            
+        exit()
+
+    image_files = [f for f in os.listdir(images_dir) if f.endswith('.png') and f.startswith('generated_image_seed_')]
+    image_files.sort()  # Optional: Sort the files if needed
+    total_len = len(image_files)
+    display_pages = [x for x in range(0, total_len, 6)] # 6 per page
+
+    rot = Encoder(22, 17, callback=rotChanged) # 22 17
+    but = Button(26, callback=butClicked) # gpio 26
+    eink = einkDSP()
 
     # first screen
     text = get_file_list(0)
