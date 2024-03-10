@@ -864,6 +864,12 @@ UsedLibrary="/Users/chengmingzhang/Documents/EAGLE/libraries/2024-02-19_09-48-43
 UsedLibrary="/Users/chengmingzhang/Documents/EAGLE/libraries/2024-03-07_00-29-57_Library.lbr"
 UsedLibrary="/Users/chengmingzhang/Documents/EAGLE/libraries/2024-03-07_02-24-03_Library.lbr"
 UsedLibrary="/Users/chengmingzhang/Documents/EAGLE/libraries/2024-03-07_04-01-04_Library.lbr"
+UsedLibrary="/Users/chengmingzhang/Documents/EAGLE/libraries/2024-03-10_01-36-20_Library.lbr"
+UsedLibrary="/Users/chengmingzhang/Documents/EAGLE/libraries/2024-03-10_01-58-19_Library.lbr"
+UsedLibrary="/Users/chengmingzhang/Documents/EAGLE/libraries/2024-03-10_02-00-52_Library.lbr"
+UsedLibrary="/Users/chengmingzhang/Documents/EAGLE/libraries/2024-03-10_02-04-46_Library.lbr"
+UsedLibrary="/Users/chengmingzhang/Documents/EAGLE/libraries/2024-03-10_02-24-03_Library.lbr"
+UsedLibrary="/Users/chengmingzhang/Documents/EAGLE/libraries/2024-03-10_02-29-22_Library.lbr"
 UsedLibrary="/Users/chengmingzhang/Documents/EAGLE/libraries/482016514001.lbr"
 UsedLibrary="/Users/chengmingzhang/Documents/EAGLE/libraries/AS01808AO-WP-R.lbr"
 UsedLibrary="/Users/chengmingzhang/Documents/EAGLE/libraries/B2B-PH-SM4-TB_LF__SN_.lbr"
@@ -922,6 +928,15 @@ UsedLibrary="/Users/chengmingzhang/Documents/EAGLE/libraries/XT60PW-M.lbr"
 UsedLibrary="/Users/chengmingzhang/Documents/EAGLE/libraries/adafruit.lbr"
 UsedLibrary="/Users/chengmingzhang/Documents/EAGLE/libraries/mp1584S.lbr"
 UsedLibrary="/Users/chengmingzhang/Downloads/Fusion360 4/2024-03-07_05-07-01_Library.lbr"
+UsedLibrary="/Users/chengmingzhang/Downloads/Fusion360 10/2024-03-10_02-25-32_Library.lbr"
+UsedLibrary="/Users/chengmingzhang/Documents/eagle/libraries/con-pci_express%28pci-e%29.lbr"
+UsedLibrary="/Users/chengmingzhang/Documents/eagle/libraries/2024-03-10_11-20-45_Library.lbr"
+UsedLibrary="/Users/chengmingzhang/Documents/eagle/libraries/SPU0410LR5H-QB.lbr"
+
+[Win_1]
+Type="Control Panel"
+Number=0
 
 [Desktop]
 Screen="3440 1440"
+Window="Win_1"
