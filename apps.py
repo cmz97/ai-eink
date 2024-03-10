@@ -16,31 +16,84 @@ text_area_start = (9, 12)
 text_area_end = (226, 80)
 
 
-use_eink = True
-if len(sys.argv) == 1:
-    from einkDSP import einkDSP
-    eink = einkDSP()
-else:
-    use_eink = False
+class SdBaker:
+    # CONSTANTS
+    neg_prompt = "ng_deepnegative_v1_75t, bad hand, bad face, worst quality, low quality, logo, text, watermark, username, harsh shadow, shadow, artifacts, blurry, smooth texture, bad quality, distortions, unrealistic, distorted image, bad proportions, duplicate"
+    char_id = "perfect face, seducing looking, looking at viewer, 1girl, solo, peer proportional face"
+    prompt_groups = ['face', 'clothing', 'body', 'style', 'pose', 'other_shit']
+    model_path =  '../yefamix_V3-lcm-lora-fused-mar-02-onnx'
+    width, height = 128*2, 128*3
 
-# Load the Stable Diffusion pipeline
-pl = ORTStableDiffusionPipeline.from_pretrained('../yefamix_V3-lcm-lora-fused-mar-02-onnx')
-width, height = 128*2, 128*3
-if width > 128*2 or height > 128*3:
-    pl.vae_decoder = ORTModelTiledVaeWrapper(pl.vae_decoder, True, 64, 0.5)
+    def __init__(self):
+        self.prompts_bank = {}
+        self.pl = None
 
-time_iter = []
+        # init func
+        self._load_prompt_bank()
 
-is_generating_image = False
+    def _load_model(self):
+        self.pl = ORTStableDiffusionPipeline.from_pretrained(self.model_path)
 
-neg_prompt = "ng_deepnegative_v1_75t, worst quality, low quality, logo, text, watermark, username, harsh shadow, shadow, bad hand, bad face,artifacts, blurry, smooth texture, bad quality, distortions, unrealistic, distorted image, bad proportions, duplicate"
-Adjectives = ["Exquisite", "acclaimed", "Stunning", "Majestic", "Epic", "Premium", "Phenomenal", "Ultra-detailed", "High-resolution", "Authentic", "asterful", "prestigious", "breathtaking", "regal", "top-notch", "incredible", "intricately detailed", "super-detailed", "high-resolution", "lifelike", "master piece", "Image-enhanced"]
-Type = ["Comic Cover", "Game Cover", "Illustration", "Painting", "Photo", "Graphic Novel Cover", "Video Game Artwork", "Artistic Rendering", "Fine Art", "Photography"]
+    def _load_prompt_bank(self):
+        # load prompt bank
+        with open('./prompt_pool.json') as f:
+            self.prompts_bank = json.load(f)
+    
+    def get_prompts(self, group=None):
+        if not group:
+            ret = []
+            for x in self.prompt_groups:
+                ret.append(random.sample(self.prompts_bank[x], 1)[0])
+            return ",".join(ret)
+        else:
+            return random.sample(self.prompts_bank[group], 3)  
+        
+    def generate_image(self, add_prompt=""):
+        full_prompt = char_id + add_prompt
+        print("Generating image, please wait...")
+        start_time = time.time()
+        
+        seed = np.random.randint(0, 1000000)
+        g = np.random.RandomState(seed)
+        image = pl(full_prompt, negative_prompt=neg_prompt, height=height, width=width, num_inference_steps=3, generator=g, guidance_scale=1.0).images[0]
+        dialogBox = draw_text_on_dialog(dialog_image_path, ascii_table_image_path, add_prompt + f"\n[{seed}]", text_area_start, text_area_end)
+        curImage = process_image(image, dialogBox)
+        hex_pixels = image_to_header_file(curImage)
 
-# prompt option design
-word_type = "accessories, clothes, facial details, facial expression,"
-char_id = "perfect face, seducing looking, looking at viewer, 1girl, solo, naked half body, from above, peer proportional face"
-options = []
+        if use_eink: 
+            eink.epd_w21_init_4g()
+            eink.pic_display_4g(hex_pixels)
+            # for i in range(100):
+            #         newBox = draw_text_on_dialog(dialog_image_path, ascii_table_image_path, str(i), text_area_start, text_area_end)
+            #         curImage.paste(newBox, (0, eink_height-dialogBox.height))
+            #         hex_pixels = image_to_header_file(curImage)
+
+            #         eink.epd_w21_init_4g()
+            #         eink.pic_display_4g(hex_pixels)s
+            eink.epd_sleep()
+
+
+        end_time = time.time()
+        iter_t += end_time - start_time
+        print(f"Image generation completed in {end_time - start_time:.2f} seconds.")
+        
+
+        time_iter.append(iter_t)
+        print(f" \n\n----{sum(time_iter) / len(time_iter) / 60.0} min / iter----- \n\n")
+
+        image_bytes = io.BytesIO()
+        image.save(image_bytes, format='PNG')
+        image_bytes.seek(0)
+        filename = f"./Asset/generated_image_seed_{seed}_{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}.png"
+        with open(filename, "wb") as f:
+            f.write(image_bytes.read())
+        print(f"Image saved as {filename}")
+        curImage.save(f"./Asset/dialogBox_image_seed_{seed}_{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}.png")
+        is_generating_image = False
+
+
+
+
 
 
 def llm_call(sd_prompt_mods):
