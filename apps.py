@@ -8,7 +8,7 @@ import io
 import time
 import numpy as np
 import random
-from utils import ORTModelTiledVaeWrapper
+import threading
 
 dialog_image_path = 'dialogBox.png'
 ascii_table_image_path = 'asciiTable.png'
@@ -23,11 +23,11 @@ class SdBaker:
     prompt_groups = ['face', 'clothing', 'body', 'style', 'pose', 'other_shit']
     model_path =  '../yefamix_V3-lcm-lora-fused-mar-02-onnx'
     width, height = 128*2, 128*3
+    num_inference_steps = 3
 
     def __init__(self):
         self.prompts_bank = {}
         self.pl = None
-
         # init func
         self._load_prompt_bank()
 
@@ -48,54 +48,39 @@ class SdBaker:
         else:
             return random.sample(self.prompts_bank[group], 3)  
         
-    def generate_image(self, add_prompt=""):
-        full_prompt = char_id + add_prompt
+    def _get_generator(self, seed=np.random.randint(0, 1000000)):
+        return np.random.RandomState(seed)
+
+    def generate_image(self, add_prompt="", callback=None):
+        event = threading.Event()
+        thread = threading.Thread(target=self._generate_image_thread, args=(add_prompt, event, callback))
+        thread.start()
+        return event
+
+    def _generate_image_thread(self, add_prompt, event, callback=None):
+        full_prompt = f"{self.char_id} {add_prompt}"
         print("Generating image, please wait...")
         start_time = time.time()
+        image = self.pl(full_prompt,
+                        negative_prompt=self.neg_prompt,
+                        height=self.height,
+                        width=self.width,
+                        num_inference_steps=self.num_inference_steps,
+                        generator=self._get_generator(),
+                        guidance_scale=1.0).images[0]
+        print(f"Image generation completed in {time.time() - start_time:.2f} seconds.")
         
-        seed = np.random.randint(0, 1000000)
-        g = np.random.RandomState(seed)
-        image = pl(full_prompt, negative_prompt=neg_prompt, height=height, width=width, num_inference_steps=3, generator=g, guidance_scale=1.0).images[0]
-        dialogBox = draw_text_on_dialog(dialog_image_path, ascii_table_image_path, add_prompt + f"\n[{seed}]", text_area_start, text_area_end)
-        curImage = process_image(image, dialogBox)
-        hex_pixels = image_to_header_file(curImage)
-
-        if use_eink: 
-            eink.epd_w21_init_4g()
-            eink.pic_display_4g(hex_pixels)
-            # for i in range(100):
-            #         newBox = draw_text_on_dialog(dialog_image_path, ascii_table_image_path, str(i), text_area_start, text_area_end)
-            #         curImage.paste(newBox, (0, eink_height-dialogBox.height))
-            #         hex_pixels = image_to_header_file(curImage)
-
-            #         eink.epd_w21_init_4g()
-            #         eink.pic_display_4g(hex_pixels)s
-            eink.epd_sleep()
-
-
-        end_time = time.time()
-        iter_t += end_time - start_time
-        print(f"Image generation completed in {end_time - start_time:.2f} seconds.")
+        if callback:
+            callback(image)
         
-
-        time_iter.append(iter_t)
-        print(f" \n\n----{sum(time_iter) / len(time_iter) / 60.0} min / iter----- \n\n")
-
-        image_bytes = io.BytesIO()
-        image.save(image_bytes, format='PNG')
-        image_bytes.seek(0)
-        filename = f"./Asset/generated_image_seed_{seed}_{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}.png"
-        with open(filename, "wb") as f:
-            f.write(image_bytes.read())
-        print(f"Image saved as {filename}")
-        curImage.save(f"./Asset/dialogBox_image_seed_{seed}_{datetime.datetime.now().strftime('%Y%m%d%H%M%S')}.png")
-        is_generating_image = False
+        event.set()
 
 
 
 
 
 
+### legacy code below deal with it later
 def llm_call(sd_prompt_mods):
     pick_idx = random.randint(0, len(sd_prompt_mods.split(",")) - 1)
     word2replace = sd_prompt_mods.split(",")[pick_idx].strip()
