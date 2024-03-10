@@ -3,6 +3,8 @@ from typing import Any, Dict, Optional, Union
 from PIL import Image
 from numba import jit
 
+import logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 dialog_image_path = 'dialogBox.png'
 ascii_table_image_path = 'asciiTable.png'
@@ -287,9 +289,10 @@ def process_image(image, dialogBox=None, height=128*3, width=128*2):
 
 def override_dialogBox(image, dialogBox):
     image.paste(dialogBox, (3, 416-dialogBox.height-4))
+    logging.info('Dialog box overriden')
     return image
 
-@jit(nopython=True)
+@jit(nopython=True,cache = True)
 def dump_2bit(pixels):
     pixels = np.clip(pixels, 0, 255)
     pixels_quantized = np.digitize(pixels, bins=[64, 128, 192], right=True)
@@ -303,7 +306,6 @@ def dump_2bit(pixels):
         if i % 8 == 0 and i > 0:
             index += 1
         int_pixels[index] |= bit << (7 - (i % 8))
-    
     return int_pixels
 
 

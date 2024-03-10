@@ -3,53 +3,84 @@ import requests
 import datetime
 from optimum.onnxruntime import ORTStableDiffusionPipeline
 from PIL import Image, ImageDraw, ImageFont, ImageOps
+from PIL.PngImagePlugin import PngInfo
+
 import sys
 import io
 import time
 import numpy as np
 import random
 import threading
-
-dialog_image_path = 'dialogBox.png'
-ascii_table_image_path = 'asciiTable.png'
-text_area_start = (9, 12)
-text_area_end = (226, 80)
+import torch
+import logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
-class SdBaker:
-    # CONSTANTS
-    neg_prompt = "ng_deepnegative_v1_75t, bad hand, bad face, worst quality, low quality, logo, text, watermark, username, harsh shadow, shadow, artifacts, blurry, smooth texture, bad quality, distortions, unrealistic, distorted image, bad proportions, duplicate"
-    char_id = "perfect face, seducing looking, looking at viewer, 1girl, solo, peer proportional face"
+class PromptsBank:
     prompt_groups = ['face', 'clothing', 'body', 'style', 'pose', 'other_shit']
-    model_path =  '../yefamix_V3-lcm-lora-fused-mar-02-onnx'
-    width, height = 128*2, 128*3
-    num_inference_steps = 3
+    with open('./prompt_pool.json') as f:
+        prompts_bank = json.load(f)
+    
+    selection_len = 3
 
     def __init__(self):
-        self.prompts_bank = {}
-        self.pl = None
-        # init func
-        self._load_prompt_bank()
+        self.prompt_selections = {}
+        self.prompt = self.get_prompts()
 
-    def _load_model(self):
-        self.pl = ORTStableDiffusionPipeline.from_pretrained(self.model_path)
-
-    def _load_prompt_bank(self):
-        # load prompt bank
-        with open('./prompt_pool.json') as f:
-            self.prompts_bank = json.load(f)
+    def fresh_prompt_selects(self):
+        for prompt, group in zip(self.prompt, self.prompt_groups):
+            self.prompt_selections[prompt] = random.sample(self.prompts_bank[group], self.selection_len)
     
+
+    def load_prompt(self, prompt):
+        self.prompt = prompt.split(',')
+
+    def to_str(self):
+        return ','.join(self.prompt)
+
+    def get_candidates(self, prompt):
+        return self.prompt_selections[prompt]
+
+    def update_prompt(self, pending_swap_prompt, selection):
+        # update prompt
+        self.prompt[self.prompt.index(pending_swap_prompt)] = selection
+
+        # update selection
+        self.prompt_selections.update({selection : self.prompt_selections[pending_swap_prompt]})
+        if pending_swap_prompt != selection: 
+            del self.prompt_selections[pending_swap_prompt]
+
     def get_prompts(self, group=None):
         if not group:
             ret = []
             for x in self.prompt_groups:
                 ret.append(random.sample(self.prompts_bank[x], 1)[0])
-            return ",".join(ret)
+            return ret
         else:
             return random.sample(self.prompts_bank[group], 3)  
+
+class SdBaker:
+    # CONSTANTS
+    neg_prompt = "ng_deepnegative_v1_75t, bad hand, bad face, worst quality, low quality, logo, text, watermark, username, harsh shadow, shadow, artifacts, blurry, smooth texture, bad quality, distortions, unrealistic, distorted image, bad proportions, duplicate"
+    char_id = "perfect face, seducing looking, looking at viewer, 1girl, solo, peer proportional face"
+    model_path =  '../yefamix_V3-lcm-lora-fused-mar-02-onnx'
+    width, height = 128*2, 128*3
+    num_inference_steps = 3
+    guidance_scale = 1.0
+
+    def __init__(self, prompts_bank):
+        self.pl = None
+        self.prompts_bank = prompts_bank
+        # init func
+        self._load_model()
+        logging.info('SdBaker instance created')
+
+    def _load_model(self):
+        self.pl = ORTStableDiffusionPipeline.from_pretrained(self.model_path)
         
-    def _get_generator(self, seed=np.random.randint(0, 1000000)):
-        return np.random.RandomState(seed)
+    def _get_generator(self, seed = np.random.randint(0, 1000000) ):
+        torch.manual_seed(seed)
+        return np.random.RandomState(seed) , seed
 
     def generate_image(self, add_prompt="", callback=None):
         event = threading.Event()
@@ -61,23 +92,35 @@ class SdBaker:
         full_prompt = f"{self.char_id} {add_prompt}"
         print("Generating image, please wait...")
         start_time = time.time()
+        g, seed = self._get_generator()
         image = self.pl(full_prompt,
                         negative_prompt=self.neg_prompt,
                         height=self.height,
                         width=self.width,
                         num_inference_steps=self.num_inference_steps,
-                        generator=self._get_generator(),
-                        guidance_scale=1.0).images[0]
+                        generator=g,
+                        guidance_scale=self.guidance_scale).images[0]
         print(f"Image generation completed in {time.time() - start_time:.2f} seconds.")
         
-        if callback:
-            callback(image)
+        # encode meta data and cache
+        metadata = PngInfo()
+        metadata.add_text("seed", str(seed))
+        metadata.add_text("pre_prompt", self.char_id)
+        metadata.add_text("prompt", add_prompt)
+        metadata.add_text("neg_prompt", self.neg_prompt)
+        metadata.add_text("height", str(self.height))
+        metadata.add_text("width", str(self.width))
+        metadata.add_text("num_inference_steps", str(self.num_inference_steps))
+        metadata.add_text("guidance_scale", str(self.guidance_scale))
+
+        self._save_img(image, metadata)
+
+        if callback: callback(image)
         
         event.set()
-
-
-
-
+    
+    def _save_img(self, image, metadata):
+        image.save("./temp.png", pnginfo=metadata, optimize=True)
 
 
 ### legacy code below deal with it later

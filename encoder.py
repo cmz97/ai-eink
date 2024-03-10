@@ -68,13 +68,15 @@ class Button:
         if p == 1:
             ellapse_t = time.time() - self.last_call
             self.last_call = time.time()
+            print("ellapse_t", ellapse_t)
             if ellapse_t < 0.1: # reject noise
                 return
-            if ellapse_t < 0.3: # double click quit program
-                self.shut_down()
+            if ellapse_t < 1.0: # double click
+                self.callback(1)
+                # self.shut_down()
+                return 
 
-
-        if self.callback and p == 1: self.callback()
+        if self.callback and p == 1: self.callback(0)
         return
 
     def getValue(self):
