@@ -11,6 +11,18 @@ ascii_table_image_path = 'asciiTable.png'
 text_area_start = (9, 12)
 text_area_end = (226, 80)
 
+
+# load image in ram to save time
+dialog_image = Image.open(dialog_image_path)
+ascii_table_image = Image.open(ascii_table_image_path)
+loading_box_image1 = Image.open('./loading1_v1.png')
+loading_box_image2 = Image.open('./loading2_v1.png')
+
+# Calculate the size of each character cell
+ascii_table_width, ascii_table_height = ascii_table_image.size
+char_width = ascii_table_width // 16
+char_height = ascii_table_height // 14
+
 ORT_TO_NP_TYPE = {
     "tensor(bool)": np.bool_,
     "tensor(int8)": np.int8,
@@ -216,17 +228,35 @@ class ORTModelTiledVaeWrapper(object):
         return DecoderOutput(sample=dec)
 
 
+def draw_text_on_img(text, image):
+    x, y = (240-150)//2 + 10 , (416-150)//2 + 10
+    for idx, char in enumerate(text):
+        # Calculate the ASCII value, then find the row and column in the ASCII image
+        ascii_value = ord(char)
+        if 32 <= ascii_value <= 255:
+            row = (ascii_value - 32) // 16
+            col = (ascii_value - 32) % 16
+        else:
+            continue  # Skip characters not in the range 32-255
+
+        # Calculate the position to slice the character from the ASCII image
+        char_x = col * char_width
+        char_y = row * char_height
+        # Slice the character image from the ASCII image
+        char_image = ascii_table_image.crop((char_x, char_y, char_x + char_width, char_y + char_height))
+        # Paste the character image onto the dialog box image
+        image.paste(char_image, (x, y))
+        # Move to the next character position
+        x += char_width
+        if x + char_width > text_area_end[0]:  # Newline if we run out of space
+            x = text_area_start[0]
+            y += char_height
+            if y + char_height > text_area_end[1]:  # Stop if we run out of vertical space
+                break
+    return image
+
 def draw_text_on_dialog(text, dialog_image_path=dialog_image_path, ascii_table_image_path=ascii_table_image_path, text_area_start=text_area_start, text_area_end=text_area_end):
-    # Load the dialog box image
-    dialog_image = Image.open(dialog_image_path)
-
-    # Load the ASCII character image asset
-    ascii_table_image = Image.open(ascii_table_image_path)
-
-    # Calculate the size of each character cell
-    ascii_table_width, ascii_table_height = ascii_table_image.size
-    char_width = ascii_table_width // 16
-    char_height = ascii_table_height // 14
+    dialog_image_ref = dialog_image.copy()
 
     # Calculate the position and size of the text area
     text_area_width = text_area_end[0] - text_area_start[0]
@@ -262,7 +292,7 @@ def draw_text_on_dialog(text, dialog_image_path=dialog_image_path, ascii_table_i
         char_image = ascii_table_image.crop((char_x, char_y, char_x + char_width, char_y + char_height))
 
         # Paste the character image onto the dialog box image
-        dialog_image.paste(char_image, (x, y))
+        dialog_image_ref.paste(char_image, (x, y))
 
         # Move to the next character position
         x += char_width
@@ -272,7 +302,7 @@ def draw_text_on_dialog(text, dialog_image_path=dialog_image_path, ascii_table_i
             if y + char_height > text_area_end[1]:  # Stop if we run out of vertical space
                 break
 
-    return dialog_image
+    return dialog_image_ref
 
 def process_image(image, dialogBox=None, height=128*3, width=128*2):
     eink_width, eink_height = 240, 416
@@ -291,6 +321,19 @@ def override_dialogBox(image, dialogBox):
     image.paste(dialogBox, (3, 416-dialogBox.height-4))
     logging.info('Dialog box overriden')
     return image
+
+
+# def get_loading_screen(image):
+#     frame1 = paste_loadingBox(image, loading_box_image1)
+#     frame2 = paste_loadingBox(image, loading_box_image2)
+#     return dump_2bit(np.array(frame1, dtype=np.float32)).tolist(), dump_2bit(np.array(frame2, dtype=np.float32)).tolist()
+        
+
+def paste_loadingBox(image, frame):
+    # loading_box size = 150 x 150
+    image_ref = image.copy()
+    image_ref.paste(loading_box_image1 if frame==0 else loading_box_image2, ((240-150)//2 , (416-150)//2))
+    return image_ref
 
 @jit(nopython=True,cache = True)
 def dump_2bit(pixels):

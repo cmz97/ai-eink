@@ -35,6 +35,23 @@ class Controller:
 
         # threading issues
         self.locked = False
+        self.loading_thread = None
+        self.stop_loading_event = threading.Event()
+
+    def show_loading_screen(self):
+        start_time = time.time()
+        frame0 = paste_loadingBox(self.image, frame=0)
+        frame1 = paste_loadingBox(self.image, frame=1)
+            
+        while not self.stop_loading_event.is_set():
+            time.sleep(0.5)
+            draw_text_on_img("{:.0f}s".format(time.time() - start_time), frame0)
+            pixels = dump_2bit(np.array(frame0.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
+            self.part_screen(pixels)
+            time.sleep(0.5)
+            draw_text_on_img("{:.0f}s".format(time.time() - start_time), frame1)
+            pixels = dump_2bit(np.array(frame1.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
+            self.part_screen(pixels)
 
     def transit(self):
         self.eink.epd_init_fast()
@@ -114,8 +131,18 @@ class Controller:
             self.image_callback(self.image, False)
             return
 
+        self.sd_process()
+
+    def sd_process(self, prompts=None):
+        if not prompts: prompts = pb.to_str() 
+        self.locked = True
+
+        # Start a new thread for the loading screen
+        self.stop_loading_event.clear()
+        self.loading_thread = threading.Thread(target=self.show_loading_screen)
+        self.loading_thread.start()
         # prepare prompt and trigger gen
-        event = sd_baker.generate_image(add_prompt=pb.to_str(), callback=self.image_callback)
+        event = sd_baker.generate_image(add_prompt=prompts, callback=self.image_callback)
         event.wait()
 
     def butCallback(self, option):
@@ -134,7 +161,6 @@ class Controller:
         return dialogBox
 
     def image_callback(self, image, update=True):
-        self.locked = True
 
         if update:
             # cache current prompts 
@@ -147,9 +173,16 @@ class Controller:
             hex_pixels = image_to_header_file(post_img)
         else:
             hex_pixels = image_to_header_file(image)
-            
+
+        # handle threadings
+        self.stop_loading_event.set()
+        if self.loading_thread : 
+            self.loading_thread.join()
+            self.loading_thread = None 
+        time.sleep(0.5)    
+        
+        # show and update states
         self.full_screen(hex_pixels)
-        # update states
         self.in_4g = True
         self.image = post_img
         self.locked = False
@@ -169,8 +202,8 @@ if __name__ == "__main__":
         pb.load_prompt(prompt_str)  
         controller.image_callback(image)
     else:
-        event = sd_baker.generate_image(add_prompt=pb.to_str(), callback=controller.image_callback)
-    
+        controller.sd_process()
+        
     try:
         while True:
             time.sleep(3)
