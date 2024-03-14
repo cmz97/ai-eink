@@ -36,7 +36,8 @@ echo "Python version : $python_version"
 BASEDIR=$(pwd)
 # pip installs
 pip install --upgrade-strategy eager optimum[onnxruntime]
-pip install pillow sshkeyboard diffusers transformers
+pip install pillow sshkeyboard diffusers transformers 
+pip spidev RPi.GPIO numba
 
 # llm ollama
 curl -fsSL https://ollama.com/install.sh | sh
