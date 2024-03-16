@@ -263,6 +263,32 @@ def invert_image(image):
     return inverted_image
 
 
+# now using window sliding to fit
+def get_all_text_imgs(text, highlighted_lines):
+    buffer = []
+    lines = text.split('\n')
+    for line_idx, line in enumerate(lines):
+        for char in line:
+            # Calculate the ASCII value, then find the row and column in the ASCII image
+            ascii_value = ord(char)
+            if 32 <= ascii_value <= 255:
+                row = (ascii_value - 32) // 16
+                col = (ascii_value - 32) % 16
+            else:
+                continue  # Skip characters not in the range 32-255
+            # Calculate the position to slice the character from the ASCII image
+            char_x = col * char_width
+            char_y = row * char_height
+            # Slice the character image from the ASCII image
+            char_image = ascii_table_image.crop((char_x, char_y, char_x + char_width, char_y + char_height))
+
+            # Paste the character image onto the dialog box image
+            if highlighted_lines and line_idx in highlighted_lines:
+                char_image = invert_image(char_image)
+            
+            buffer.append(char_image)
+    return buffer
+            
 def draw_text_on_dialog(text, image_ref=None, text_area_start=text_area_start, text_area_end=text_area_end, aligned=False, highlighted_lines=[]):
     dialog_image_ref = dialog_image.copy() if not image_ref else image_ref
 

@@ -35,6 +35,8 @@ class Controller:
             2 : self._butAction2,
         }
         self.selection_idx = [0] * len(self.layout)
+        self.text_cache = [] * len(self.layout)
+
         logging.info('Controller instance created')
 
         # threading issues
@@ -279,6 +281,8 @@ class Controller:
         self.update_screen()
 
     def _prepare_menu(self):
+        self.text_cache[self.page] = get_all_text_imgs(text,self.selection_idx[self.page])
+        
         text = ""
         for option_idx, option in enumerate(self.current_screen_selects):
             text += f"> {option}\n" if option_idx == self.selection_idx[self.page] else option+"\n"
