@@ -17,7 +17,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 
 class PromptsBank:
-    prompt_groups = ['face', 'clothing', 'body', 'style', 'pose', 'other_shit']
+    prompt_groups = ['body', 'clothing', 'face_1', 'face_2', 'look angle', 'pose', 'shot angle']
     with open('./prompt_pool.json') as f:
         prompts_bank = json.load(f)
     
@@ -62,8 +62,8 @@ class PromptsBank:
 class SdBaker:
     # CONSTANTS
     neg_prompt = "ng_deepnegative_v1_75t, bad hand, bad face, worst quality, low quality, logo, text, watermark, username, harsh shadow, shadow, artifacts, blurry, smooth texture, bad quality, distortions, unrealistic, distorted image, bad proportions, duplicate"
-    char_id = "perfect face, seducing looking, looking at viewer, 1girl, solo, peer proportional face"
-    model_path =  '../yefamix_V3-lcm-lora-fused-mar-02-onnx'
+    char_id = "perfect face, upper body, 1girl, solo, peer proportional face, simple background, looking at viewer,"
+    # model_path =  '../anyloracleanlinearmix_v10-zelda-merge-onnx'
     width, height = 128*2, 128*3
     num_inference_steps = 3
     guidance_scale = 1.0
@@ -72,12 +72,26 @@ class SdBaker:
         self.pl = None
         self.prompts_bank = prompts_bank
         # init func
-        self._load_model()
+        # self._load_model()
         logging.info('SdBaker instance created')
 
-    def _load_model(self):
+        # swap models
+        self.model_path = None
+        self.model_name = ""
+        self.trigger_words = ""
+
+    def load_model(self, model_path, model_name, trigger_words):
+        self.model_path = model_path
+        self.model_name = model_name
+        self.trigger_words = trigger_words
+
+        # print(model_path, model_name, trigger_words)
+        st = time.time()
+        logging.info('start model loading')
         self.pl = ORTStableDiffusionPipeline.from_pretrained(self.model_path)
+        logging.info(f'model loading done took {time.time() - st} sec')
         
+
     def _get_generator(self, seed = np.random.randint(0, 1000000) ):
         torch.manual_seed(seed)
         return np.random.RandomState(seed) , seed
@@ -89,7 +103,8 @@ class SdBaker:
         return event
 
     def _generate_image_thread(self, add_prompt, event, callback=None):
-        full_prompt = f"{self.char_id} {add_prompt}"
+        full_prompt = f"{self.char_id}, {self.trigger_words}, {add_prompt},"
+        logging.info(f" ingesting prompt : {full_prompt}")
         print("Generating image, please wait...")
         start_time = time.time()
         g, seed = self._get_generator()
@@ -120,7 +135,8 @@ class SdBaker:
         event.set()
     
     def _save_img(self, image, metadata):
-        image.save("./temp.png", pnginfo=metadata, optimize=True)
+        file_name = f"./temp-{self.model_name}.png"
+        image.save(file_name, pnginfo=metadata, optimize=True)
 
 
 ### legacy code below deal with it later

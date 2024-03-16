@@ -95,8 +95,6 @@ def butClicked():
     print(time.time())
     init = False
 
-
-
 def pauseDisplay():
     global locked, file_idx
     if not locked : print(f"* locking at {file_idx}")  

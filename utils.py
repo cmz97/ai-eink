@@ -8,6 +8,7 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 dialog_image_path = 'dialogBox.png'
 ascii_table_image_path = 'asciiTable.png'
+ui_elements_path = 'ui_sheet.png'
 text_area_start = (9, 12)
 text_area_end = (226, 80)
 
@@ -15,6 +16,7 @@ text_area_end = (226, 80)
 # load image in ram to save time
 dialog_image = Image.open(dialog_image_path)
 ascii_table_image = Image.open(ascii_table_image_path)
+ui_elements_image = Image.open(ui_elements_path)
 loading_box_image1 = Image.open('./loading1_v1.png')
 loading_box_image2 = Image.open('./loading2_v1.png')
 
@@ -22,6 +24,7 @@ loading_box_image2 = Image.open('./loading2_v1.png')
 ascii_table_width, ascii_table_height = ascii_table_image.size
 char_width = ascii_table_width // 16
 char_height = ascii_table_height // 14
+eink_width, eink_height = 240, 416
 
 ORT_TO_NP_TYPE = {
     "tensor(bool)": np.bool_,
@@ -255,8 +258,8 @@ def draw_text_on_img(text, image):
                 break
     return image
 
-def draw_text_on_dialog(text, dialog_image_path=dialog_image_path, ascii_table_image_path=ascii_table_image_path, text_area_start=text_area_start, text_area_end=text_area_end):
-    dialog_image_ref = dialog_image.copy()
+def draw_text_on_dialog(text, image_ref=None, text_area_start=text_area_start, text_area_end=text_area_end, aligned=False):
+    dialog_image_ref = dialog_image.copy() if not image_ref else image_ref
 
     # Calculate the position and size of the text area
     text_area_width = text_area_end[0] - text_area_start[0]
@@ -264,6 +267,8 @@ def draw_text_on_dialog(text, dialog_image_path=dialog_image_path, ascii_table_i
     
     # Initialize the position for the first character
     x, y = text_area_start
+
+    buffer = []
 
     # Loop through each character in the text
     for idx, char in enumerate(text):
@@ -292,7 +297,8 @@ def draw_text_on_dialog(text, dialog_image_path=dialog_image_path, ascii_table_i
         char_image = ascii_table_image.crop((char_x, char_y, char_x + char_width, char_y + char_height))
 
         # Paste the character image onto the dialog box image
-        dialog_image_ref.paste(char_image, (x, y))
+        if not aligned : dialog_image_ref.paste(char_image, (x, y))
+        else : buffer.append(char_image)
 
         # Move to the next character position
         x += char_width
@@ -301,11 +307,31 @@ def draw_text_on_dialog(text, dialog_image_path=dialog_image_path, ascii_table_i
             y += char_height
             if y + char_height > text_area_end[1]:  # Stop if we run out of vertical space
                 break
+        
+        if buffer:
+            # calculate for x
+            x_len = len(buffer) * char_width
+            x = eink_width//2 - x_len // 2
+            for char in buffer:
+                dialog_image_ref.paste(char, (x, text_area_start[1]))
+                x+=char_width
 
     return dialog_image_ref
 
+def render_thumbnail_page(thumbnail, text):
+    button_size = (32,32)
+    image = Image.new("L", (eink_width, eink_height), "white")
+    image.paste(thumbnail, ((eink_width - 150)//2, eink_height//3))
+    up = ui_elements_image.crop((button_size[0], 0, button_size[0]*2, button_size[1]))
+    down = ui_elements_image.crop((0,0, button_size[0], button_size[1]))
+    image.paste(up, (eink_width//2 - button_size[0]//2, eink_height//6 * 1 - button_size[0]//2), mask = up)
+    image.paste(down, (eink_width//2 - button_size[0]//2, eink_height//6 * 5), mask = down)
+    # titles
+    image = draw_text_on_dialog(text, image, (eink_width//2 - 75, eink_height//3 * 2 + 10), (eink_width//2 + 75, eink_height//3 * 2 + 10), True)
+    return image
+
+
 def process_image(image, dialogBox=None, height=128*3, width=128*2):
-    eink_width, eink_height = 240, 416
     scale_factor = eink_width / width
     new_height = int(height * scale_factor)
     scaled_image = image.resize((eink_width, new_height), Image.ANTIALIAS)

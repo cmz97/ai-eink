@@ -17,8 +17,8 @@ class Controller:
 
     def __init__(self):
         self.eink = einkDSP()
-        self.rot = Encoder(22, 17, callback=self.rotCallback) # 22 17
-        self.but = Button(26, callback=self.butCallback) # gpio 26
+        #self.rot = Encoder(22, 17, callback=self.rotCallback) # 22 17
+        #self.but = Button(26, callback=self.butCallback) # gpio 26
         self.in_4g = True
         self.image = None
         
@@ -196,7 +196,7 @@ file_cache = "./temp.png"
 if __name__ == "__main__":
     sd_baker = SdBaker(pb)        
     while True:
-        time.sleep(3)
+        time.sleep(10)
         prompt = ",".join(pb.get_prompts()) 
         print(f"ST - {prompt}")
         controller.sd_process(prompt)
