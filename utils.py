@@ -1,6 +1,6 @@
 import numpy as np
 from typing import Any, Dict, Optional, Union
-from PIL import Image
+from PIL import Image, ImageOps
 from numba import jit
 
 import logging
@@ -258,7 +258,12 @@ def draw_text_on_img(text, image):
                 break
     return image
 
-def draw_text_on_dialog(text, image_ref=None, text_area_start=text_area_start, text_area_end=text_area_end, aligned=False):
+def invert_image(image):
+    inverted_image = ImageOps.invert(image)
+    return inverted_image
+
+
+def draw_text_on_dialog(text, image_ref=None, text_area_start=text_area_start, text_area_end=text_area_end, aligned=False, highlighted_lines=[]):
     dialog_image_ref = dialog_image.copy() if not image_ref else image_ref
 
     # Calculate the position and size of the text area
@@ -269,52 +274,52 @@ def draw_text_on_dialog(text, image_ref=None, text_area_start=text_area_start, t
     x, y = text_area_start
 
     buffer = []
+    lines = text.split('\n')
+    for line_idx, line in enumerate(lines):
+        for char in line:
 
-    # Loop through each character in the text
-    for idx, char in enumerate(text):
+            # Calculate the ASCII value, then find the row and column in the ASCII image
+            ascii_value = ord(char)
+            if 32 <= ascii_value <= 255:
+                row = (ascii_value - 32) // 16
+                col = (ascii_value - 32) % 16
+            else:
+                continue  # Skip characters not in the range 32-255
 
-        # check if new line
-        if char == '\n':
-            x = text_area_start[0]
-            y += char_height
-            if y + char_height > text_area_end[1]:  # Stop if we run out of vertical space
-                break
+            # Calculate the position to slice the character from the ASCII image
+            char_x = col * char_width
+            char_y = row * char_height
+            # Slice the character image from the ASCII image
+            char_image = ascii_table_image.crop((char_x, char_y, char_x + char_width, char_y + char_height))
 
-        # Calculate the ASCII value, then find the row and column in the ASCII image
-        ascii_value = ord(char)
-        if 32 <= ascii_value <= 255:
-            row = (ascii_value - 32) // 16
-            col = (ascii_value - 32) % 16
-        else:
-            continue  # Skip characters not in the range 32-255
+            # Paste the character image onto the dialog box image
+            if not aligned : 
+                if highlighted_lines and line_idx in highlighted_lines:
+                    dialog_image_ref.paste(invert_image(char_image), (x, y))
+                dialog_image_ref.paste(char_image, (x, y))
+            else : buffer.append(char_image)
 
-
-        # Calculate the position to slice the character from the ASCII image
-        char_x = col * char_width
-        char_y = row * char_height
-
-        # Slice the character image from the ASCII image
-        char_image = ascii_table_image.crop((char_x, char_y, char_x + char_width, char_y + char_height))
-
-        # Paste the character image onto the dialog box image
-        if not aligned : dialog_image_ref.paste(char_image, (x, y))
-        else : buffer.append(char_image)
-
-        # Move to the next character position
-        x += char_width
-        if x + char_width > text_area_end[0]:  # Newline if we run out of space
-            x = text_area_start[0]
-            y += char_height
-            if y + char_height > text_area_end[1]:  # Stop if we run out of vertical space
-                break
-        
-        if buffer:
-            # calculate for x
-            x_len = len(buffer) * char_width
-            x = eink_width//2 - x_len // 2
-            for char in buffer:
-                dialog_image_ref.paste(char, (x, text_area_start[1]))
-                x+=char_width
+            # Move to the next character position
+            x += char_width
+            if x + char_width > text_area_end[0]:  # Newline if we run out of space
+                x = text_area_start[0]
+                y += char_height
+                if y + char_height > text_area_end[1]:  # Stop if we run out of vertical space
+                    break
+        # new line
+        x = text_area_start[0]
+        y += char_height
+        if y + char_height > text_area_end[1]:  # Stop if we run out of vertical space
+            break
+    
+    # for mid aligned text
+    if buffer:
+        # calculate for x
+        x_len = len(buffer) * char_width
+        x = eink_width//2 - x_len // 2
+        for char in buffer:
+            dialog_image_ref.paste(char, (x, text_area_start[1]))
+            x+=char_width
 
     return dialog_image_ref
 

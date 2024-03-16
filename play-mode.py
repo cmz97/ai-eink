@@ -155,9 +155,9 @@ class Controller:
 
     def _prepare_menu(self):
         text = ""
-        for option_idx, option in enumerate(self.current_screen_selects):
-            text += f"> {option}\n" if option_idx == self.selection_idx[self.page] else option+"\n"
-        dialogBox = draw_text_on_dialog(text)
+        for _, option in enumerate(self.current_screen_selects):
+            text += f"{option}\n"
+        dialogBox = draw_text_on_dialog(text, highlighted_lines=[self.selection_idx[self.page]])
         return dialogBox
 
     def image_callback(self, image, update=True):
