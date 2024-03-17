@@ -21,34 +21,35 @@ class PromptsBank:
     with open('./prompt_pool.json') as f:
         prompts_bank = json.load(f)
     
-    selection_len = 3
+    selection_num = 4
 
     def __init__(self):
-        self.prompt_selections = {}
-        self.prompt = self.get_prompts()
+        self.prompt_num = len(self.prompt_groups)
+        self.prompt_selections = [] * self.prompt_num
 
     def fresh_prompt_selects(self):
-        for prompt, group in zip(self.prompt, self.prompt_groups):
-            self.prompt_selections[prompt] = random.sample(self.prompts_bank[group], self.selection_len)
+        for idx, group in enumerate(self.prompt_groups):
+            self.prompt_selections[idx] = random.sample(self.prompts_bank[group], self.selection_num)
     
-
     def load_prompt(self, prompt):
-        self.prompt = prompt.split(',')
+        self.fresh_prompt_selects()
+        for idx, prompt_insert in enumerate(prompt.split(',')):
+            self.prompt_selections[idx][0] = prompt_insert.strip()
 
-    def to_str(self):
-        return ','.join(self.prompt)
+    def to_str(self, delimiter=','):
+        prompt = [x[0] for x in self.prompt_selections]
+        return delimiter.join(prompt)
 
-    def get_candidates(self, prompt):
-        return self.prompt_selections[prompt]
+    def get_candidates_by_group(self, group):
+        idx = self.prompt_groups.index(group)
+        return self.prompt_selections[idx]
 
-    def update_prompt(self, pending_swap_prompt, selection):
-        # update prompt
-        self.prompt[self.prompt.index(pending_swap_prompt)] = selection
+    def get_candidates_by_idx(self, idx):
+        return self.prompt_selections[idx]
 
-        # update selection
-        self.prompt_selections.update({selection : self.prompt_selections[pending_swap_prompt]})
-        if pending_swap_prompt != selection: 
-            del self.prompt_selections[pending_swap_prompt]
+    def update_prompt(self, group_idx, idx):
+        # swap 0 and idx
+        self.prompt_selections[group_idx][0], self.prompt_selections[group_idx][idx] = self.prompt_selections[group_idx][idx], self.prompt_selections[group_idx][0]
 
     def get_prompts(self, group=None):
         if not group:
@@ -57,7 +58,7 @@ class PromptsBank:
                 ret.append(random.sample(self.prompts_bank[x], 1)[0])
             return ret
         else:
-            return random.sample(self.prompts_bank[group], 3)  
+            return random.sample(self.prompts_bank[group], self.selection_num)  
 
 class SdBaker:
     # CONSTANTS

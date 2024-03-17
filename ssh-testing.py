@@ -30,13 +30,18 @@ class Controller:
         self.pending_swap_prompt = None
         self.current_screen_selects = []
         self.layout = {
-            0 : self._butAction0,
-            1 : self._butAction1,
-            2 : self._butAction2,
+            0 : self._model_select_page,
+            1 : self._display_page,
+            2 : self._edit_prompt_page_0,
+            3 : self._edit_prompt_page_1,
         }
         self.selection_idx = [0] * len(self.layout)
-        self.text_cache = [] * len(self.layout)
-
+        self.display_cache = {
+            1 : [text_to_image("[edit]"), text_to_image("[back]")],
+            2 : [text_to_image(f"{group}") for group in pb.prompt_groups],
+            3 : [] # pending to be init
+        }
+        
         logging.info('Controller instance created')
 
         # threading issues
@@ -47,6 +52,16 @@ class Controller:
         # model specific
         self.trigger_words = []
 
+    def _reload_prompt_cache(self):
+        self.display_cache[3] = [
+            [text_to_image(prompt)
+            for prompt in prompts]
+            for prompts in pb.prompt_selections
+        ]
+
+    def _update_prompt_cache(self, idx):
+        self.display_cache[3][idx] = [text_to_image(prompts) for prompts in pb.prompt_selections[idx]]
+        
     def start_loading_screen(self):
         logging.info("start_loading_screen thread ")
         self.stop_loading_event.clear()
@@ -130,7 +145,7 @@ class Controller:
         # self.in_4g = True
         # self.locked = False
         
-    def _butAction0(self, key): # main page
+    def _model_select_page(self, key): # main page
         # sync status
         self.page = 0
         
@@ -142,7 +157,7 @@ class Controller:
             with open(curr_file) as f: model_info = json.load(f)
             logging.info(f"enter {self.selection_idx[self.page]} , loading {curr_file}")
             self.load_model(curr_file.replace("_add_ons.json",""), model_info)
-            self._butAction1("init") # proceed next
+            self._display_page("init") # proceed next
             return
 
         # rolling        
@@ -160,42 +175,60 @@ class Controller:
         self.full_screen(hex_pixels)
         self.model = model_info['name']
 
-
-    def _butAction1(self, key): # display page + prompt select
+    def _display_page(self, key):
         if not self.model or self.locked: return
 
         # status sync
         self.page = 1
-        self.current_screen_selects = pb.prompt
+
+        # check key states
         if key == "init" : # show last
             # render
             logging.info(f"enter page {self.page}")
             file_cache = f"./temp-{self.model}.png"
-            if os.path.exists(file_cache):
+            if os.path.exists(file_cache): # reload
                     image = Image.open(file_cache)
                     prompt_str = image.info.get("prompt")
                     pb.load_prompt(prompt_str)  
+                    self._reload_prompt_cache()
                     self.image_callback(image)
             else: # show empty
                 # controller.sd_process()
                 image = Image.new("L", (eink_width, eink_height), "white")
                 self.image_callback(image)
             return 
-            
         
+        if key == "up" : self.selection_idx[self.page] -= 1
+        elif key == "down" : self.selection_idx[self.page] += 1
+        elif key == "enter" :  # hit prompt selection
+            if self.selection_idx[self.page] == 0: 
+                self._edit_prompt_page_0("init")
+                return
+            else:
+                self._model_select_page("")
+                return
+            
+        # render selection
+        self._status_check()
+
+        # rolling pin
+        self.selection_idx[self.page] = self.selection_idx[self.page] % len(self.display_cache[self.page])
+        # update screen
+        self.update_screen()        
+
+    def _edit_prompt_page_0(self, key): # display page + prompt select
+        if not self.model or self.locked: return
+
+        # status sync
+        self.page = 2    
+            
         if key == "up" : self.selection_idx[self.page] -= 1 
         elif key == "down" : self.selection_idx[self.page] += 1 
-        elif key == "left" and not self.in_4g: 
-            self._butAction0("") # back to page 0
-            return
         elif key == "enter" :  # hit prompt selection
             # render selection
             self._status_check()
-            # update current selection for next screen
-            self.pending_swap_prompt = self.current_screen_selects[self.selection_idx[self.page]]
-            self.current_screen_selects = pb.get_candidates(self.pending_swap_prompt)
             # update and fresh new screen selects
-            self._butAction2("init")
+            self._edit_prompt_page_1("init")
             return
         elif key == "space" : 
             self._butSubmit()
@@ -205,29 +238,28 @@ class Controller:
         self._status_check()
 
         # rolling pin
-        self.selection_idx[self.page] = self.selection_idx[self.page] % len(self.current_screen_selects)
+        self.selection_idx[self.page] = self.selection_idx[self.page] % pb.prompt_num
         # update screen
         self.update_screen()        
 
-    def _butAction2(self, key): # prompt tuning
+    def _edit_prompt_page_1(self, key): # prompt tuning
         # status sync
-        self.page = 2
+        self.page = 3
         if key == "init":
             self.update_screen()
             return
         if key == "up" : self.selection_idx[self.page] -= 1 
         elif key == "down" : self.selection_idx[self.page] += 1 
-        elif key == "left" : 
-            self._butAction1("") # back to page 1
-            return
-        elif key == "enter" :     
+        elif key == "enter" :
+            if self.selection_idx[self.page] == 0: return # no change    
             # swap the prompt
-            pb.update_prompt(self.pending_swap_prompt, self.current_screen_selects[self.selection_idx[self.page]])
-            self._butAction1("") # back to page 1
+            pb.update_prompt(self.selection_idx[self.page-1], self.selection_idx[self.page])
+            # refresh cache
+            self._update_prompt_cache(self.selection_idx[self.page-1])
             return
         
         # rolling pin
-        self.selection_idx[self.page] = self.selection_idx[self.page] % len(self.current_screen_selects)
+        self.selection_idx[self.page] = self.selection_idx[self.page] % len(pb.selection_num) # include self
         
         # update screen
         self.update_screen()
@@ -266,48 +298,40 @@ class Controller:
     #     if option == 0 : self.layout[self.page]()
     #     if option == 1 : self._butSubmit()
 
-    def rotCallback(self, counter, direction):    
-        # sanity check 
-        if self.locked : return False
-        self._status_check()
-        logging.info("* Direction: {}".format(direction))
+    def _update_text_box(self, text):
+        # case needed : submit prompt tuning and when first time into play page or enter prompt tune page
+        sub_page_id = self.selection_idx[self.page-1] # get the cache based on previous page selection
+        self.display_cache[self.page][sub_page_id] = get_all_text_imgs(text)
 
-        # select prompt to edit
-        self.selection_idx[self.page] += -1 if direction == "U" else 1
-        self.selection_idx[self.page] = self.selection_idx[self.page] % len(self.current_screen_selects)
+    def _prepare_menu(self, image):     
+        if self.page == 1 or self.page == 2:
+            image = apply_dialog_box(
+                image,
+                ui_assets["small_dialog_box"]["image"],
+                box_mat = self.display_cache[self.page],
+                highligh_index = self.selection_idx[self.page],
+                placement_pos = ui_assets["small_dialog_box"]["placement_pos"]
+            )
+        elif self.page == 3:
+            sub_page_id = self.selection_idx[self.page-1] # get the cache based on previous page selection
+            image = apply_dialog_box(
+                image,
+                ui_assets["large_dialog_box"]["image"],
+                box_mat = self.display_cache[self.page][sub_page_id],
+                highligh_index = self.selection_idx[self.page],
+                placement_pos = ui_assets["large_dialog_box"]["placement_pos"]
+            )
 
-
-        # update screen
-        self.update_screen()
-
-    def _prepare_menu(self):
-        self.text_cache[self.page] = get_all_text_imgs(text,self.selection_idx[self.page])
-        
-        text = ""
-        for option_idx, option in enumerate(self.current_screen_selects):
-            text += f"> {option}\n" if option_idx == self.selection_idx[self.page] else option+"\n"
-        dialogBox = draw_text_on_dialog(text)
-        return dialogBox
-
-    def image_callback(self, image, update=True):
-
-        if update:
-            # cache current prompts 
-            self.current_screen_selects = pb.prompt
-            # new prompts selection
-            pb.fresh_prompt_selects()
-            logging.info('fresh prompt selects done')
-            # update image
-            post_img = process_image(image, self._prepare_menu())
-            hex_pixels = image_to_header_file(post_img)
-        else:
-            hex_pixels = image_to_header_file(image)
-
+        return image
+    
+    def image_callback(self, image):
+        image = self._prepare_menu(image)
+        hex_pixels = image_to_header_file(image)
         # show and update states
         self.stop_loading_screen()
         self.full_screen(hex_pixels)
         self.in_4g = True
-        self.image = post_img
+        self.image = image
         self.locked = False
         
 

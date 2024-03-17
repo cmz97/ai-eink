@@ -2,6 +2,7 @@ import numpy as np
 from typing import Any, Dict, Optional, Union
 from PIL import Image, ImageOps
 from numba import jit
+import bisect
 
 import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -19,6 +20,23 @@ ascii_table_image = Image.open(ascii_table_image_path)
 ui_elements_image = Image.open(ui_elements_path)
 loading_box_image1 = Image.open('./loading1_v1.png')
 loading_box_image2 = Image.open('./loading2_v1.png')
+
+
+
+ui_assets = {
+    "small_dialog_box" : {
+        "image" : ui_elements_image.crop((3, 263, 236, 324)),
+        "placement_pos" : (3, 350)
+    },
+    "large_dialog_box" : {
+        "image" : ui_elements_image.crop((3, 325, 236, 415)),
+        "placement_pos" : (3, 325)
+    },
+    "reroll_button" : {
+        "image" : ui_elements_image.crop((25, 32, 48, 55)),
+        "position" : (25, 32, 48, 55)
+    }
+}
 
 # Calculate the size of each character cell
 ascii_table_width, ascii_table_height = ascii_table_image.size
@@ -258,16 +276,104 @@ def draw_text_on_img(text, image):
                 break
     return image
 
-def invert_image(image):
-    inverted_image = ImageOps.invert(image)
-    return inverted_image
 
+def get_dialog_text(box_mat, box_size, highligh_index):
+    # TODO The text line should not be bigger than the bounding box
+    def line_wrap(char_imgs, font_width, max_width):
+        lines = []
+        line = []
+        width = 0
+        for img in char_imgs:
+            if width + font_width <= max_width:
+                line.append(img)
+                width += font_width
+            else:
+                lines.append(line)
+                line = [img]
+                width = font_width
+        lines.append(line)
+        return lines
+        
+    text_area_width, text_area_height = box_size 
+    margin = 2
+    text_start = (0+margin, 0+margin)
+    text_end = (text_area_width-margin, text_area_height-margin)
+
+    page = Image.new("L", (text_area_width, text_area_height * 5), "white") # cap at 5 boxes long
+    # cursor
+    x, y = text_start
+
+    highlight_y = None
+
+    # iter per print line
+    for idx, line in enumerate(box_mat):
+        # TODO assime all single box per row for now
+        # check if line wrap
+        rows = line_wrap(line, char_width, text_area_width)
+        for row in rows:
+            for char in row:
+                if idx == highligh_index:
+                    char = ImageOps.invert(char.convert('RGB'))
+                    highlight_y = y
+                page.paste(char, (x, y))
+                x += char_width
+            # update y
+            if y + char_height > page.height:  # Stop if we run out of vertical space
+                break
+            x = text_start[0] # reset x
+            y += char_height # next line
+    
+    # crop around highlight
+    crop_top = max(0, highlight_y - box_size[1]//2)
+    crop_bot = crop_top + box_size[1]
+    crop_box = (0, crop_top, text_area_width, crop_bot)
+    page = page.crop(crop_box)
+    return page
+
+
+def apply_dialog_box(input_image, dialog_image, box_mat, highligh_index, placement_pos):
+    dialog_image_ref = dialog_image.copy()
+    margin = 10
+    box_size = dialog_image.size[0] - 2*margin, dialog_image.size[1] - 2*margin
+    text_image = get_dialog_text(box_mat, box_size, highligh_index)
+    dialog_image_ref.paste(text_image, (margin, margin))
+    input_image.paste(dialog_image_ref, (placement_pos[0], placement_pos[1]))
+    return input_image
+
+def text_to_image(text):
+    buffer = []
+    for char in text:
+        ascii_value = ord(char)
+        if 32 <= ascii_value <= 255:
+            row = (ascii_value - 32) // 16
+            col = (ascii_value - 32) % 16
+        else:
+            continue  # Skip characters not in the range 32-255
+        # Calculate the position to slice the character from the ASCII image
+        char_x = col * char_width
+        char_y = row * char_height
+        # Slice the character image from the ASCII image
+        char_image = ascii_table_image.crop((char_x, char_y, char_x + char_width, char_y + char_height))
+        # Move to the next character position
+        buffer.append(char_image)
+    return buffer
+
+    
 
 # now using window sliding to fit
-def get_all_text_imgs(text, highlighted_lines):
+def get_all_text_imgs(text):
+    x, _ = text_area_start
     buffer = []
     lines = text.split('\n')
+    
+    new_line_maps = []
+
     for line_idx, line in enumerate(lines):
+        # init
+        buffer.append([])
+        line_bunddle = [len(buffer)]
+
+        # iter 
         for char in line:
             # Calculate the ASCII value, then find the row and column in the ASCII image
             ascii_value = ord(char)
@@ -281,14 +387,76 @@ def get_all_text_imgs(text, highlighted_lines):
             char_y = row * char_height
             # Slice the character image from the ASCII image
             char_image = ascii_table_image.crop((char_x, char_y, char_x + char_width, char_y + char_height))
+             # Move to the next character position
+            x += char_width
+            if x + char_width > text_area_end[0]:  # Newline if we run out of space
+                x = text_area_start[0]
+                buffer.append([])
+                line_bunddle.append(len(buffer))
+            buffer[-1].append(char_image)
+        
+        # update
+        new_line_maps.append(line_bunddle)
 
-            # Paste the character image onto the dialog box image
-            if highlighted_lines and line_idx in highlighted_lines:
-                char_image = invert_image(char_image)
+    return buffer, new_line_maps
+
+def augment_text_imgs(buffer, highlight_index_list):
+    # static constants
+    text_area_height = text_area_end[1] - text_area_start[1]
+    window_size = text_area_height // char_height
+
+
+    # get screen candidates, find our page loc
+    highlight_index = highlight_index_list[0]
+    page_turns = [x for x in range(0, len(buffer), window_size)]
+    page_number = bisect.bisect_right(page_turns, highlight_index)
+
+    # prepare window
+    for line_idx, line in enumerate(buffer[page_number : page_number + window_size]):
+        for char_idx, char in enumerate(line):
+            if char == "\n" : continue
+            if line_idx + page_number == highlight_index:
+                buffer[line_idx + page_number][char_idx] = invert_image(char)
             
-            buffer.append(char_image)
-    return buffer
-            
+
+def apply_dialog_box(box_mat, dialog_box, bouding_box, highlight_index = []):
+    # TODO Assert highlight_index must match the box_mat size
+    margin = 10
+    text_area_width = bouding_box[2] - bouding_box[0] - margin*2
+    text_area_height = bouding_box[3] - bouding_box[1] - margin*2
+
+    page = Image.new("L", (text_area_width, text_area_height * 5), "white") # cap at 5 boxes long
+
+    # cursor
+    x, y = bouding_box[0] + margin, bouding_box[1] + margin
+
+    # iter per print line
+    for row_idx, row in enumerate(box_mat):
+        if len(row) > 1: # muti box
+            for box_idx, img_box in enumerate(row):
+                box_width = text_area_width // len(row)
+                for char in img_box:
+                    # box size check
+                    if box_width - char_width <= 0 : break
+                    box_width -= char_width
+                    # paste box images 
+                    x += char_width
+                    page.paste(char, (x, y))
+        else: # single box
+            for char in row:
+                if x + char_width > bouding_box[2]:  # Newline if we run out of space
+                    x = bouding_box[0] + margin
+                    y += char_height
+                x += char_width
+                page.paste(char, (x, y))
+                x += char_width
+        
+        # update y
+        if y + char_height > page.height:  # Stop if we run out of vertical space
+            break
+        y += char_height # next line
+
+
 def draw_text_on_dialog(text, image_ref=None, text_area_start=text_area_start, text_area_end=text_area_end, aligned=False, highlighted_lines=[]):
     dialog_image_ref = dialog_image.copy() if not image_ref else image_ref
 
