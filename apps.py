@@ -25,12 +25,12 @@ class PromptsBank:
 
     def __init__(self):
         self.prompt_num = len(self.prompt_groups)
-        self.prompt_selections = [] * self.prompt_num
+        self.prompt_selections = [random.sample(self.prompts_bank[group], self.selection_num-1) for group in self.prompt_groups]
 
     def fresh_prompt_selects(self):
         for idx, group in enumerate(self.prompt_groups):
-            self.prompt_selections[idx] = random.sample(self.prompts_bank[group], self.selection_num)
-    
+            self.prompt_selections[idx][1:] = random.sample(self.prompts_bank[group], self.selection_num-1)        
+
     def load_prompt(self, prompt):
         self.fresh_prompt_selects()
         for idx, prompt_insert in enumerate(prompt.split(',')):
@@ -63,7 +63,7 @@ class PromptsBank:
 class SdBaker:
     # CONSTANTS
     neg_prompt = "ng_deepnegative_v1_75t, bad hand, bad face, worst quality, low quality, logo, text, watermark, username, harsh shadow, shadow, artifacts, blurry, smooth texture, bad quality, distortions, unrealistic, distorted image, bad proportions, duplicate"
-    char_id = "perfect face, upper body, 1girl, solo, peer proportional face, simple background, looking at viewer,"
+    char_id = "perfect face, upper body, 1girl, solo, peer proportional face, simple background, looking at viewer"
     # model_path =  '../anyloracleanlinearmix_v10-zelda-merge-onnx'
     width, height = 128*2, 128*3
     num_inference_steps = 3

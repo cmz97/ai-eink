@@ -330,15 +330,15 @@ def get_dialog_text(box_mat, box_size, highligh_index):
     page = page.crop(crop_box)
     return page
 
-
 def apply_dialog_box(input_image, dialog_image, box_mat, highligh_index, placement_pos):
+    input_image_ref = input_image.copy()
     dialog_image_ref = dialog_image.copy()
     margin = 10
     box_size = dialog_image.size[0] - 2*margin, dialog_image.size[1] - 2*margin
     text_image = get_dialog_text(box_mat, box_size, highligh_index)
     dialog_image_ref.paste(text_image, (margin, margin))
-    input_image.paste(dialog_image_ref, (placement_pos[0], placement_pos[1]))
-    return input_image
+    input_image_ref.paste(dialog_image_ref, (placement_pos[0], placement_pos[1]))
+    return input_image_ref
 
 def text_to_image(text):
     buffer = []
@@ -418,44 +418,6 @@ def augment_text_imgs(buffer, highlight_index_list):
             if line_idx + page_number == highlight_index:
                 buffer[line_idx + page_number][char_idx] = invert_image(char)
             
-
-def apply_dialog_box(box_mat, dialog_box, bouding_box, highlight_index = []):
-    # TODO Assert highlight_index must match the box_mat size
-    margin = 10
-    text_area_width = bouding_box[2] - bouding_box[0] - margin*2
-    text_area_height = bouding_box[3] - bouding_box[1] - margin*2
-
-    page = Image.new("L", (text_area_width, text_area_height * 5), "white") # cap at 5 boxes long
-
-    # cursor
-    x, y = bouding_box[0] + margin, bouding_box[1] + margin
-
-    # iter per print line
-    for row_idx, row in enumerate(box_mat):
-        if len(row) > 1: # muti box
-            for box_idx, img_box in enumerate(row):
-                box_width = text_area_width // len(row)
-                for char in img_box:
-                    # box size check
-                    if box_width - char_width <= 0 : break
-                    box_width -= char_width
-                    # paste box images 
-                    x += char_width
-                    page.paste(char, (x, y))
-        else: # single box
-            for char in row:
-                if x + char_width > bouding_box[2]:  # Newline if we run out of space
-                    x = bouding_box[0] + margin
-                    y += char_height
-                x += char_width
-                page.paste(char, (x, y))
-                x += char_width
-        
-        # update y
-        if y + char_height > page.height:  # Stop if we run out of vertical space
-            break
-        y += char_height # next line
-
 
 def draw_text_on_dialog(text, image_ref=None, text_area_start=text_area_start, text_area_end=text_area_end, aligned=False, highlighted_lines=[]):
     dialog_image_ref = dialog_image.copy() if not image_ref else image_ref

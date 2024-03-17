@@ -10,8 +10,6 @@ from encoder import Encoder, Button
 from PIL import Image
 from utils import * 
 import threading  # Import threading module
-import concurrent.futures
-
 import RPi.GPIO as GPIO
 from apps import SdBaker, PromptsBank
 import logging
@@ -37,8 +35,8 @@ class Controller:
         }
         self.selection_idx = [0] * len(self.layout)
         self.display_cache = {
-            1 : [text_to_image("[edit]"), text_to_image("[back]")],
-            2 : [text_to_image(f"{group}") for group in pb.prompt_groups],
+            1 : [text_to_image("[edit prompts]"), text_to_image("[generate]"), text_to_image("[back]")],
+            2 : [text_to_image(f"{group}") for group in pb.prompt_groups] + [text_to_image("[back]")],
             3 : [] # pending to be init
         }
         
@@ -113,17 +111,16 @@ class Controller:
             self.transit()
             self.in_4g = False
         
+
     def update_screen(self):
-        # prepare menu
-        updated_img = override_dialogBox(self.image, self._prepare_menu())
+        image = self._prepare_menu(self.image)
         # update screen
-        grayscale = updated_img.transpose(Image.FLIP_TOP_BOTTOM).convert('L')
+        grayscale = image.transpose(Image.FLIP_TOP_BOTTOM).convert('L')
         pixels = np.array(grayscale, dtype=np.float32)
         logging.info('preprocess image done')
         hex_pixels = dump_2bit(pixels).tolist()
         logging.info('2bit pixels dump done')
         self.part_screen(hex_pixels)
-
 
     def load_model(self, model_path, model_info):
         self.transit()
@@ -191,9 +188,10 @@ class Controller:
                     prompt_str = image.info.get("prompt")
                     pb.load_prompt(prompt_str)  
                     self._reload_prompt_cache()
-                    self.image_callback(image)
-            else: # show empty
-                # controller.sd_process()
+                    self.sd_image_callback(image)
+            else: # show empty, init dependencies
+                # pb.fresh_prompt_selects()
+                self._reload_prompt_cache()
                 image = Image.new("L", (eink_width, eink_height), "white")
                 self.image_callback(image)
             return 
@@ -204,6 +202,9 @@ class Controller:
             if self.selection_idx[self.page] == 0: 
                 self._edit_prompt_page_0("init")
                 return
+            elif self.selection_idx[self.page] == 1:
+                self._butSubmit()
+                return 
             else:
                 self._model_select_page("")
                 return
@@ -225,20 +226,21 @@ class Controller:
         if key == "up" : self.selection_idx[self.page] -= 1 
         elif key == "down" : self.selection_idx[self.page] += 1 
         elif key == "enter" :  # hit prompt selection
-            # render selection
-            self._status_check()
-            # update and fresh new screen selects
-            self._edit_prompt_page_1("init")
-            return
-        elif key == "space" : 
-            self._butSubmit()
-            return
-        
+            if self.selection_idx[self.page] != len(self.display_cache[self.page])-1:
+                # render selection
+                self._status_check()
+                # update and fresh new screen selects
+                self._edit_prompt_page_1("init")
+                return
+            else:
+                self._display_page("")
+                return
+                
         # render selection
         self._status_check()
 
         # rolling pin
-        self.selection_idx[self.page] = self.selection_idx[self.page] % pb.prompt_num
+        self.selection_idx[self.page] = self.selection_idx[self.page] % len(self.display_cache[self.page])
         # update screen
         self.update_screen()        
 
@@ -251,25 +253,30 @@ class Controller:
         if key == "up" : self.selection_idx[self.page] -= 1 
         elif key == "down" : self.selection_idx[self.page] += 1 
         elif key == "enter" :
-            if self.selection_idx[self.page] == 0: return # no change    
+            if self.selection_idx[self.page] == 0: 
+                self._edit_prompt_page_0("")
+                return # no change    
             # swap the prompt
             pb.update_prompt(self.selection_idx[self.page-1], self.selection_idx[self.page])
             # refresh cache
             self._update_prompt_cache(self.selection_idx[self.page-1])
+            # back to last page
+            self._edit_prompt_page_0("")
             return
         
         # rolling pin
-        self.selection_idx[self.page] = self.selection_idx[self.page] % len(pb.selection_num) # include self
+        self.selection_idx[self.page] = self.selection_idx[self.page] % pb.selection_num # include self
         
         # update screen
         self.update_screen()
 
     def _butSubmit(self):
         # reset some status
-        self.selection_idx[self.page] = 0
-
+        # self.selection_idx[self.page] = 0
         # run sd and render
         self.sd_process()
+        pb.fresh_prompt_selects()
+        self._reload_prompt_cache()
 
     def sd_process(self, prompts=None):
         if not prompts: prompts = pb.to_str() 
@@ -278,7 +285,7 @@ class Controller:
         # Start a new thread for the loading screen
         self.start_loading_screen()
         # prepare prompt and trigger gen
-        event = sd_baker.generate_image(add_prompt=prompts, callback=self.image_callback)
+        event = sd_baker.generate_image(add_prompt=prompts, callback=self.sd_image_callback)
         event.wait()
 
     def press_callback(self, key):
@@ -305,28 +312,40 @@ class Controller:
 
     def _prepare_menu(self, image):     
         if self.page == 1 or self.page == 2:
-            image = apply_dialog_box(
-                image,
-                ui_assets["small_dialog_box"]["image"],
+            # def apply_dialog_box(input_image, dialog_image, box_mat, highligh_index, placement_pos):
+            image_with_dialog = apply_dialog_box(
+                input_image = image,
+                dialog_image = ui_assets["small_dialog_box"]["image"],
                 box_mat = self.display_cache[self.page],
                 highligh_index = self.selection_idx[self.page],
                 placement_pos = ui_assets["small_dialog_box"]["placement_pos"]
             )
         elif self.page == 3:
             sub_page_id = self.selection_idx[self.page-1] # get the cache based on previous page selection
-            image = apply_dialog_box(
-                image,
-                ui_assets["large_dialog_box"]["image"],
+            image_with_dialog = apply_dialog_box(
+                input_image = image,
+                dialog_image = ui_assets["large_dialog_box"]["image"],
                 box_mat = self.display_cache[self.page][sub_page_id],
                 highligh_index = self.selection_idx[self.page],
                 placement_pos = ui_assets["large_dialog_box"]["placement_pos"]
             )
 
-        return image
+        return image_with_dialog
+
+    def sd_image_callback(self, image):
+        post_img = process_image(image)
+        image_with_dialog = self._prepare_menu(post_img)
+        hex_pixels = image_to_header_file(image_with_dialog)
+        # show and update states
+        self.stop_loading_screen()
+        self.full_screen(hex_pixels)
+        self.in_4g = True
+        self.image = post_img
+        self.locked = False
     
     def image_callback(self, image):
-        image = self._prepare_menu(image)
-        hex_pixels = image_to_header_file(image)
+        image_with_dialog = self._prepare_menu(image)
+        hex_pixels = image_to_header_file(image_with_dialog)
         # show and update states
         self.stop_loading_screen()
         self.full_screen(hex_pixels)
