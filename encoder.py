@@ -49,11 +49,11 @@ class Encoder:
 
 class Button:
 
-    def __init__(self, Pin, callback=None):
+    def __init__(self, Pin, direction=None, callback=None):
         self.Pin = Pin
         self.value = 0
         self.state = '0'
-        self.direction = None
+        self.direction = direction
         self.callback = callback
         self.last_call = time.time()
         GPIO.setmode(GPIO.BCM)
@@ -72,11 +72,11 @@ class Button:
             if ellapse_t < 0.1: # reject noise
                 return
             if ellapse_t < 1.0: # double click
-                self.callback(1)
+                # self.callback(1)
                 # self.shut_down()
                 return 
 
-        if self.callback and p == 1: self.callback(0)
+        if self.callback and p == 1: self.callback(self.direction)
         return
 
     def getValue(self):
