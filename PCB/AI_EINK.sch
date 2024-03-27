@@ -19418,7 +19418,7 @@ grid 2.54 mm</description>
 </classes>
 <parts>
 <part name="RPI-CM1" library="RPI-CM4" deviceset="RPI-CM4" device="" value="DF40C-100DS-0.4V(51)"/>
-<part name="U1" library="microbuilder" deviceset="VREG_TPS6103X" device="" value="TPS61090RSAR"/>
+<part name="U1" library="microbuilder" deviceset="VREG_TPS6103X" device="" value="TPS61092RSAR"/>
 <part name="L1" library="microbuilder" deviceset="INDUCTOR" device="TDK_VLC5045" value="6.8uH"/>
 <part name="U$1" library="microbuilder" deviceset="GND" device=""/>
 <part name="U$2" library="microbuilder" deviceset="GND" device=""/>
@@ -24191,6 +24191,24 @@ LOW=ON</text>
 <wire x1="835.66" y1="281.94" x2="835.66" y2="279.4" width="0.1524" layer="91"/>
 <pinref part="D7" gate="G$1" pin="C"/>
 <pinref part="R14" gate="G$1" pin="1"/>
+</segment>
+</net>
+<net name="N$20" class="0">
+<segment>
+<pinref part="RPI-CM1" gate="G$1" pin="GPIO16"/>
+<wire x1="30.48" y1="109.22" x2="5.08" y2="109.22" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$22" class="0">
+<segment>
+<pinref part="RPI-CM1" gate="G$1" pin="GPIO25"/>
+<wire x1="30.48" y1="93.98" x2="5.08" y2="93.98" width="0.1524" layer="91"/>
+</segment>
+</net>
+<net name="N$28" class="0">
+<segment>
+<pinref part="RPI-CM1" gate="G$1" pin="GPIO14"/>
+<wire x1="30.48" y1="76.2" x2="5.08" y2="76.2" width="0.1524" layer="91"/>
 </segment>
 </net>
 </nets>
