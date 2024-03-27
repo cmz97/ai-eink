@@ -32,6 +32,7 @@ class Controller:
             1 : self._display_page,
             2 : self._edit_prompt_page_0,
             3 : self._edit_prompt_page_1,
+            4 : self._image_browser,
         }
         self.selection_idx = [0] * len(self.layout)
         self.display_cache = {
@@ -50,6 +51,9 @@ class Controller:
         # model specific
         self.trigger_words = []
 
+        # browsing temps
+        self.browsing_file_list = [] 
+
     def _reload_prompt_cache(self):
         self.display_cache[3] = [
             [text_to_image(prompt)
@@ -61,6 +65,7 @@ class Controller:
         self.display_cache[3][idx] = [text_to_image(prompts) for prompts in pb.prompt_selections[idx]]
         
     def start_loading_screen(self):
+        self.locked = True
         logging.info("start_loading_screen thread ")
         self.stop_loading_event.clear()
         if self.loading_screen_thread is None or not self.loading_screen_thread.is_alive():
@@ -75,11 +80,12 @@ class Controller:
             self.loading_screen_thread = None
 
     def show_loading_screen(self):
+        self.locked = True
         start_time = time.time()
         frame0 = paste_loadingBox(self.image, frame=0)
         frame1 = paste_loadingBox(self.image, frame=1)
-        frame0 = draw_text_on_dialog("LOADING...", frame0, (eink_width//2, eink_height//3*2), (eink_width//2+50, eink_height//3*2), True)
-        frame1 = draw_text_on_dialog("LOADING...", frame1, (eink_width//2, eink_height//3*2), (eink_width//2+50, eink_height//3*2), True)
+        frame0 = draw_text_on_dialog("GENERATING...", frame0, (eink_width//2, eink_height//3*2), (eink_width//2+50, eink_height//3*2), True)
+        frame1 = draw_text_on_dialog("GENERATING...", frame1, (eink_width//2, eink_height//3*2), (eink_width//2+50, eink_height//3*2), True)
             
         while not self.stop_loading_event.is_set():
             time.sleep(0.5)
@@ -91,15 +97,22 @@ class Controller:
             draw_text_on_img("{:.0f}s".format(time.time() - start_time), frame1)
             pixels = dump_2bit(np.array(frame1.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
             self.part_screen(pixels)
+        self.locked = False
 
     def transit(self):
+        self.locked = True
         self.eink.epd_init_fast()
         self.eink.PIC_display_Clear()
         logging.info('transit to 2g done')
-
+    
+    def clear_screen(self):
+        self.eink.PIC_display_Clear()
+        
     def part_screen(self, hex_pixels):
+        self.locked = True
         self.eink.epd_init_part()
         self.eink.PIC_display(hex_pixels)
+        self.locked = False
         
     def full_screen(self, hex_pixels):
         self.eink.epd_w21_init_4g()
@@ -111,7 +124,6 @@ class Controller:
             self.transit()
             self.in_4g = False
         
-
     def update_screen(self):
         image = self._prepare_menu(self.image)
         # update screen
@@ -123,6 +135,7 @@ class Controller:
         self.part_screen(hex_pixels)
 
     def load_model(self, model_path, model_info):
+        self.locked = True
         self.transit()
 
         # just show one static image with loading , I'm sure load_model() blocks all threads
@@ -132,17 +145,10 @@ class Controller:
         pixels = dump_2bit(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
         self.part_screen(pixels)
         sd_baker.load_model(model_path, model_info['name'], model_info['trigger_words'])
-        
-        # with concurrent.futures.ThreadPoolExecutor(max_workers=1) as executor: 
-        #     future = executor.submit(worker)
-        #     future.result()
-
-        # job done, reset status
-        # self.stop_loading_screen()
-        # self.in_4g = True
-        # self.locked = False
+        self.locked = False
         
     def _model_select_page(self, key): # main page
+        self.locked = True
         # sync status
         self.page = 0
         
@@ -152,6 +158,10 @@ class Controller:
         elif key == "enter" :  # load model
             curr_file = str(model_list[self.selection_idx[self.page]])
             with open(curr_file) as f: model_info = json.load(f)
+            if model_info['name'] == "Gallery" :
+                # image browsing mode 
+                self._image_browser("init")
+                return
             logging.info(f"enter {self.selection_idx[self.page]} , loading {curr_file}")
             self.load_model(curr_file.replace("_add_ons.json",""), model_info)
             self._display_page("init") # proceed next
@@ -171,6 +181,7 @@ class Controller:
         hex_pixels = image_to_header_file(thumbnail_image)
         self.full_screen(hex_pixels)
         self.model = model_info['name']
+        self.locked = False
 
     def _display_page(self, key):
         if not self.model or self.locked: return
@@ -260,6 +271,7 @@ class Controller:
             pb.update_prompt(self.selection_idx[self.page-1], self.selection_idx[self.page])
             # refresh cache
             self._update_prompt_cache(self.selection_idx[self.page-1])
+            self.selection_idx[self.page] = 0 
             # back to last page
             self._edit_prompt_page_0("")
             return
@@ -274,37 +286,64 @@ class Controller:
         # reset some status
         # self.selection_idx[self.page] = 0
         # run sd and render
+        self.start_loading_screen()
         self.sd_process()
         pb.fresh_prompt_selects()
         self._reload_prompt_cache()
 
+
+    def _image_browser(self, key):
+        self.page = 4
+        def load_cache():
+            images_dir = './Asset/Fav'
+            image_files = [f for f in os.listdir(images_dir) if f.endswith('.png')]
+            self.browsing_file_list = [f"{images_dir}/{f}" for f in image_files]
+            self.browsing_file_list.sort() 
+            return [text_to_image(f) for f in self.browsing_file_list] + [text_to_image("[back]")]
+
+        if key == "init":
+            # init dialog cache
+            self.display_cache[self.page] = load_cache()
+            # display first image
+            image = Image.open(self.browsing_file_list[0])
+            self.image_callback(image)
+            return
+
+        if key == "up" : self.selection_idx[self.page] -= 1 
+        elif key == "down" : self.selection_idx[self.page] += 1 
+        elif key == "enter" :  # load image
+            if self.selection_idx[self.page] == len(self.display_cache[self.page])-1:
+                # back to main page
+                self._model_select_page("init")
+                return
+            image = Image.open(self.browsing_file_list[self.selection_idx[self.page]])
+            self.image_callback(image)
+            return
+
+        # rolling        
+        self.selection_idx[self.page] = self.selection_idx[self.page] % len(self.display_cache[self.page])
+        
+        # render selection
+        self._status_check()
+        # update screen
+        self.update_screen()    
+
     def sd_process(self, prompts=None):
         if not prompts: prompts = pb.to_str() 
-        self.locked = True
-
         # Start a new thread for the loading screen
-        self.start_loading_screen()
         # prepare prompt and trigger gen
         event = sd_baker.generate_image(add_prompt=prompts, callback=self.sd_image_callback)
         event.wait()
 
     def press_callback(self, key):
-        global sd_prompt_mods
+        if self.locked : return
         print(f"Key {key} pressed.")
         if key == "q":
             print("Quitting...")
             exit()
         
         self.layout[self.page](key)
-
-    # def butCallback(self, option):
-    #     # sanity check 
-    #     if self.locked : return False
-    #     self._status_check()
         
-    #     if option == 0 : self.layout[self.page]()
-    #     if option == 1 : self._butSubmit()
-
     def _update_text_box(self, text):
         # case needed : submit prompt tuning and when first time into play page or enter prompt tune page
         sub_page_id = self.selection_idx[self.page-1] # get the cache based on previous page selection
@@ -329,6 +368,15 @@ class Controller:
                 highligh_index = self.selection_idx[self.page],
                 placement_pos = ui_assets["large_dialog_box"]["placement_pos"]
             )
+        elif self.page == 4:
+            image_with_dialog = apply_dialog_box(
+                input_image = image,
+                dialog_image = ui_assets["large_dialog_box"]["image"],
+                box_mat = self.display_cache[self.page],
+                highligh_index = self.selection_idx[self.page],
+                placement_pos = ui_assets["large_dialog_box"]["placement_pos"]
+            )
+
 
         return image_with_dialog
 
@@ -338,6 +386,8 @@ class Controller:
         hex_pixels = image_to_header_file(image_with_dialog)
         # show and update states
         self.stop_loading_screen()
+        self.clear_screen()
+        time.sleep(0.3)
         self.full_screen(hex_pixels)
         self.in_4g = True
         self.image = post_img

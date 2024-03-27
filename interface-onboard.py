@@ -12,7 +12,7 @@ import threading  # Import threading module
 locked = False
 
 # prepare file windows
-images_dir = "./Asset"
+images_dir = "./Asset/Fav"
 buffer = (None, None)
 init = False
 file_idx = 0
@@ -104,8 +104,8 @@ def pauseDisplay():
 if __name__ == "__main__":
 
     if sys.argv[1] and sys.argv[1] == "display-mode":
-        but = Button(26, callback=pauseDisplay) # gpio 26
-        image_files = [f for f in os.listdir(images_dir) if f.endswith('.png') and f.startswith('generated_image')]
+        # but = Button(26, callback=pauseDisplay) # gpio 26
+        image_files = [f for f in os.listdir(images_dir) if f.endswith('.png')]
         image_files.sort()  # Optional: Sort the files if needed
         total_len = len(image_files)
         display_pages = [x for x in range(0, total_len, 6)] # 6 per page
@@ -115,7 +115,7 @@ if __name__ == "__main__":
                 time.sleep(5)
                 continue           
         
-            file_name = "dialogBox_image_seed_224137_20240304010040.png"#image_files[file_idx].replace("generated_image","dialogBox_image")
+            file_name = image_files[file_idx]
             print(f'displaying {file_name}')
             try:
                 image = Image.open(f"{images_dir}/{file_name}")    
@@ -128,7 +128,7 @@ if __name__ == "__main__":
                 #hex_pixels = image_to_header_file(image)
                 #full_screen(hex_pixels)
             file_idx+=1
-            #time.sleep(5)
+            time.sleep(20)
             
         exit()
 
