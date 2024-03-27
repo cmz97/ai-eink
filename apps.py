@@ -140,6 +140,73 @@ class SdBaker:
         image.save(file_name, pnginfo=metadata, optimize=True)
 
 
+
+class BookLoader:
+    def __init__(self, filePath, screenWidth, screenHeight, fontWidth, fontHeight):
+        self.filePath = filePath
+        self.charsPerLine = screenWidth // fontWidth
+        self.linesPerPage = screenHeight // fontHeight
+        self.currentPage = 0
+        self.currentStartWordIndex = 0  # Track the start word index for the current page
+        # self.loadFile(filePath)
+
+    def loadFile(self, filePath):
+        with open(filePath, 'r', encoding='ascii', errors='replace') as file:
+            self.words = file.read().split()
+
+    def getPage(self, pageNumber):
+        logging.info(f'get page {pageNumber}')
+        # Adjust to fetch the correct page directly, considering non-sequential access
+        if pageNumber < self.currentPage:
+            self.currentStartWordIndex = 0  # Reset if we are going back
+            self.currentPage = 1
+
+        pageLines = []
+        while self.currentPage <= pageNumber and self.currentStartWordIndex < len(self.words):
+            line, isNewPage = self._loadNextLine()
+            if isNewPage and self.currentPage < pageNumber:
+                self.currentPage += 1
+                pageLines.clear()
+            pageLines.append(line)
+            
+            if isNewPage and self.currentPage == pageNumber:
+                break
+        
+        if self.currentPage < pageNumber:
+            return []  # Requested page beyond the end of the book
+        
+        self.currentPage = pageNumber
+        return pageLines
+
+    def _loadNextLine(self):
+        lineWords = []
+        lineLength = 0
+        isNewPage = False
+        while self.currentStartWordIndex < len(self.words):
+            word = self.words[self.currentStartWordIndex]
+            if lineLength + len(word) + len(lineWords) <= self.charsPerLine:  # +len(lineWords) for spaces between words
+                lineWords.append(word)
+                lineLength += len(word)
+                self.currentStartWordIndex += 1
+            else:
+                # If the first word in line is too long, force add it to prevent infinite loop
+                if not lineWords:
+                    lineWords.append(word)
+                    self.currentStartWordIndex += 1
+                break  # Move this word to the next line
+            
+            if len(lineWords) >= self.linesPerPage:
+                isNewPage = True
+                break
+        logging.info(f'read line {lineWords}')
+        return lineWords, isNewPage
+
+    def getProgress(self):
+        # This is a simplistic progress measure, can be improved for accuracy
+        return f"Page {self.currentPage}, approximately {self.currentStartWordIndex / len(self.words) * 100:.2f}% through the text"
+
+
+
 ### legacy code below deal with it later
 def llm_call(sd_prompt_mods):
     pick_idx = random.randint(0, len(sd_prompt_mods.split(",")) - 1)

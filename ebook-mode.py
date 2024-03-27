@@ -11,7 +11,7 @@ from PIL import Image
 from utils import * 
 import threading  # Import threading module
 import RPi.GPIO as GPIO
-from apps import SdBaker, PromptsBank
+from apps import SdBaker, PromptsBank, BookLoader
 import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 GPIO.cleanup()
@@ -29,23 +29,19 @@ class Controller:
         self.model = None
         
         # UI states
-        self.page = 0 # 0 : main ,  1: display,  2 : play
+        self.page = 0 # 0 : book read 
         self.pending_swap_prompt = None
         self.current_screen_selects = []
         self.layout = {
-            0 : self._model_select_page,
-            1 : self._display_page,
-            2 : self._edit_prompt_page_0,
-            3 : self._edit_prompt_page_1,
-            4 : self._image_browser,
+            0 : self._select_book,
+            1 : self._read_page,
         }
         self.selection_idx = [0] * len(self.layout)
-        self.display_cache = {
-            1 : [text_to_image("[edit prompts]"), text_to_image("[generate]"), text_to_image("[back]")],
-            2 : [text_to_image(f"{group}") for group in pb.prompt_groups] + [text_to_image("[back]")],
-            3 : [] # pending to be init
-        }
-        
+        # self.display_cache = {
+        #     1 : [text_to_image("[edit prompts]"), text_to_image("[generate]"), text_to_image("[back]")],
+        #     2 : [text_to_image(f"{group}") for group in pb.prompt_groups] + [text_to_image("[back]")],
+        #     3 : [] # pending to be init
+        # }
         logging.info('Controller instance created')
 
         # threading issues
@@ -151,41 +147,53 @@ class Controller:
         self.part_screen(pixels)
         sd_baker.load_model(model_path, model_info['name'], model_info['trigger_words'])
         self.locked = False
-        
-    def _model_select_page(self, key): # main page
+    
+    def _select_book(self, key):
         self.locked = True
         # sync status
         self.page = 0
+        curr_file = str(model_list[self.selection_idx[self.page]])
         
         # process key
         if key == "up" : self.selection_idx[self.page] += 1 
         elif key == "down" : self.selection_idx[self.page] -= 1 
-        elif key == "enter" :  # load model
-            curr_file = str(model_list[self.selection_idx[self.page]])
-            with open(curr_file) as f: model_info = json.load(f)
-            if model_info['name'] == "Gallery" :
-                # image browsing mode 
-                self._image_browser("init")
-                return
-            logging.info(f"enter {self.selection_idx[self.page]} , loading {curr_file}")
-            self.load_model(curr_file.replace("_add_ons.json",""), model_info)
-            self._display_page("init") # proceed next
+        elif key == "enter" :  # load book
+            # load and proceed book
+            ebk.loadFile(curr_file)
+            self._read_page("init")
             return
 
         # rolling        
         self.selection_idx[self.page] = self.selection_idx[self.page] % len(model_list)
 
-        # loading resources
-        curr_file = str(model_list[self.selection_idx[self.page]])
-        with open(curr_file) as f: model_info = json.load(f)
-        
-        # thumbnail 
-        thumbnail_image = render_thumbnail_page(Image.open(curr_file.replace("_add_ons.json", "thumbnail.png")), model_info['name'])
-        
         # print screen
+        thumbnail_image = render_thumbnail_page(Image.open("/".join(curr_file.split("/")[0:-1])+"/thumbnail.png"), "")        
         hex_pixels = image_to_header_file(thumbnail_image)
         self.full_screen(hex_pixels)
-        self.model = model_info['name']
+        self.locked = False
+
+
+    def _read_page(self, key): # main page
+        self.locked = True
+        # sync status
+        self.page = 1
+        # process key
+        if key == "up" : self.selection_idx[self.page] -= 1 
+        elif key == "down" : self.selection_idx[self.page] += 1 
+        
+        # rolling        
+        self.selection_idx[self.page] = max(1, self.selection_idx[self.page]) # % len(self.display_cache[self.page])
+
+        # loading resources
+        text_to_display = ebk.getPage(self.selection_idx[self.page])
+        logger.info(text_to_display)
+        # images 
+        line_img = [text_to_image(line) for line in text_to_display]
+        image = draw_text_on_screen(line_img)
+        
+        # print screen
+        hex_pixels = image_to_header_file(image)
+        self.full_screen(hex_pixels)
         self.locked = False
 
     def _display_page(self, key):
@@ -412,13 +420,18 @@ class Controller:
 def release_callback(key):
     print(f"Key {key} released.")
 
-# model folder
-root_folder = "/home/kevin/ai/models"
-model_list = [file_path for file_path in Path(root_folder).rglob("*/_add_ons.json")]
+# book folder
+model_list = ['/home/kevin/ai/books/dune/Dune.txt']
 
 # init 
 pb = PromptsBank()
-sd_baker = SdBaker(pb)
+# sd_baker = SdBaker(pb)
+screen_buffer = 10
+ebk = BookLoader(filePath='../models/Dune.txt', 
+screenWidth=eink_width - screen_buffer*2,
+screenHeight=eink_height - screen_buffer*2,
+fontWidth=char_width, fontHeight=char_height)
+
 controller = Controller()
 file_cache = "./temp.png"
 

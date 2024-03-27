@@ -479,16 +479,58 @@ def draw_text_on_dialog(text, image_ref=None, text_area_start=text_area_start, t
 
     return dialog_image_ref
 
-def render_thumbnail_page(thumbnail, text):
+def draw_text_on_screen(lines, buffer=10):
+    # new canvas
+    page = Image.new("L", (eink_width, eink_height), "white")
+
+    # Calculate the position and size of the text area
+    text_area_width = eink_width - buffer*2
+    text_area_height = eink_height - buffer*2
+    
+    # Initialize the position for the first character
+    text_area_start = (buffer, buffer)
+    text_area_end = (eink_width - buffer, eink_height - buffer)
+    x, y = text_area_start
+    
+    for line in lines:
+        for char_image in line: 
+            page.paste(char_image, (x, y))
+            x += char_width # step next
+            if x + char_width > text_area_end[0]:  # Newline if we run out of space
+                x = text_area_start[0]
+        y += char_height # new line
+    return page
+
+def render_thumbnail_page(thumbnail, text, border=False):
     button_size = (32,32)
+    thumbnail_width, thumbnail_height = thumbnail.size
+    if thumbnail_width >= eink_width or thumbnail_height >= eink_height:
+        buffer = 50
+        max_width = eink_width - buffer * 2
+        max_height = eink_height - buffer * 2
+        # Calculate the scaling factor
+        width_ratio = max_width / thumbnail.width
+        height_ratio = max_height / thumbnail.height
+        scale_factor = min(width_ratio, height_ratio)
+        # Calculate new dimensions
+        new_width = int(thumbnail.width * scale_factor)
+        new_height = int(thumbnail.height * scale_factor)
+        thumbnail = thumbnail.resize((new_width,new_height), Image.ANTIALIAS)
+
+    if border :
+        thumbnail = ImageOps.expand(thumbnail, border=10, fill='white')
+        thumbnail = ImageOps.expand(thumbnail, border=2, fill='black')
+
+    thumbnail_width, thumbnail_height = thumbnail.size
     image = Image.new("L", (eink_width, eink_height), "white")
-    image.paste(thumbnail, ((eink_width - 150)//2, eink_height//3))
+    image.paste(thumbnail, ((eink_width - thumbnail_width)//2, (eink_height - thumbnail_height)//2))
     up = ui_elements_image.crop((button_size[0], 0, button_size[0]*2, button_size[1]))
     down = ui_elements_image.crop((0,0, button_size[0], button_size[1]))
-    image.paste(up, (eink_width//2 - button_size[0]//2, eink_height//6 * 1 - button_size[0]//2), mask = up)
-    image.paste(down, (eink_width//2 - button_size[0]//2, eink_height//6 * 5), mask = down)
+    image.paste(up, (eink_width//2 - button_size[0]//2, (eink_height - thumbnail_height) // 4 - button_size[0]//2), mask = up)
+    image.paste(down, (eink_width//2 - button_size[0]//2, eink_height - (eink_height - thumbnail_height) // 4 - button_size[1]//2), mask = down)
+    
     # titles
-    image = draw_text_on_dialog(text, image, (eink_width//2 - 75, eink_height//3 * 2 + 10), (eink_width//2 + 75, eink_height//3 * 2 + 10), True)
+    if text : image = draw_text_on_dialog(text, image, (eink_width//2 - 75, eink_height//3 * 2 + 10), (eink_width//2 + 75, eink_height//3 * 2 + 10), True)
     return image
 
 
