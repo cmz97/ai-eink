@@ -19818,9 +19818,9 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <part name="U8" library="2024-03-10_23-40-44_Library" deviceset="ST25DV64K-IER6S3" device="SOIC_IER6S3_STM"/>
 <part name="U$107" library="microbuilder" deviceset="3.3V" device=""/>
 <part name="U$108" library="microbuilder" deviceset="GND" device=""/>
-<part name="S2" library="EVQ-P7A01P" deviceset="EVQ-P7A01P" device=""/>
-<part name="S3" library="EVQ-P7A01P" deviceset="EVQ-P7A01P" device=""/>
-<part name="S4" library="EVQ-P7A01P" deviceset="EVQ-P7A01P" device=""/>
+<part name="BUP" library="EVQ-P7A01P" deviceset="EVQ-P7A01P" device=""/>
+<part name="BUD" library="EVQ-P7A01P" deviceset="EVQ-P7A01P" device=""/>
+<part name="BUS" library="EVQ-P7A01P" deviceset="EVQ-P7A01P" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -21153,15 +21153,15 @@ LOW=ON</text>
 <instance part="U$108" gate="G$1" x="198.12" y="182.88" smashed="yes">
 <attribute name="VALUE" x="196.596" y="180.34" size="1.27" layer="96"/>
 </instance>
-<instance part="S2" gate="G$1" x="708.66" y="76.2" smashed="yes">
+<instance part="BUP" gate="G$1" x="708.66" y="76.2" smashed="yes">
 <attribute name="NAME" x="706.12" y="78.74" size="1.27" layer="95"/>
 <attribute name="VALUE" x="706.12" y="73.66" size="1.27" layer="96"/>
 </instance>
-<instance part="S3" gate="G$1" x="708.66" y="43.18" smashed="yes">
+<instance part="BUD" gate="G$1" x="708.66" y="43.18" smashed="yes">
 <attribute name="NAME" x="706.12" y="45.72" size="1.27" layer="95"/>
 <attribute name="VALUE" x="706.12" y="40.64" size="1.27" layer="96"/>
 </instance>
-<instance part="S4" gate="G$1" x="774.7" y="43.18" smashed="yes">
+<instance part="BUS" gate="G$1" x="774.7" y="43.18" smashed="yes">
 <attribute name="NAME" x="772.16" y="45.72" size="1.27" layer="95"/>
 <attribute name="VALUE" x="772.16" y="40.64" size="1.27" layer="96"/>
 </instance>
@@ -23691,7 +23691,7 @@ LOW=ON</text>
 <label x="698.5" y="68.58" size="1.778" layer="95" rot="R270"/>
 <wire x1="698.5" y1="73.66" x2="718.82" y2="73.66" width="0.1524" layer="91"/>
 <wire x1="718.82" y1="73.66" x2="718.82" y2="76.2" width="0.1524" layer="91"/>
-<pinref part="S2" gate="G$1" pin="2"/>
+<pinref part="BUP" gate="G$1" pin="2"/>
 <wire x1="718.82" y1="76.2" x2="716.28" y2="76.2" width="0.1524" layer="91"/>
 </segment>
 <segment>
@@ -23871,7 +23871,7 @@ LOW=ON</text>
 <wire x1="698.5" y1="43.18" x2="698.5" y2="50.8" width="0.1524" layer="91"/>
 <junction x="698.5" y="43.18"/>
 <label x="698.5" y="50.8" size="1.778" layer="95" xref="yes"/>
-<pinref part="S3" gate="G$1" pin="1"/>
+<pinref part="BUD" gate="G$1" pin="1"/>
 </segment>
 <segment>
 <pinref part="R28" gate="G$1" pin="2"/>
@@ -23880,7 +23880,7 @@ LOW=ON</text>
 <wire x1="698.5" y1="76.2" x2="698.5" y2="83.82" width="0.1524" layer="91"/>
 <junction x="698.5" y="76.2"/>
 <label x="698.5" y="83.82" size="1.778" layer="95" rot="R90" xref="yes"/>
-<pinref part="S2" gate="G$1" pin="1"/>
+<pinref part="BUP" gate="G$1" pin="1"/>
 </segment>
 <segment>
 <pinref part="R17" gate="G$1" pin="2"/>
@@ -23889,7 +23889,7 @@ LOW=ON</text>
 <wire x1="764.54" y1="43.18" x2="764.54" y2="50.8" width="0.1524" layer="91"/>
 <junction x="764.54" y="43.18"/>
 <label x="764.54" y="50.8" size="1.778" layer="95" rot="R90" xref="yes"/>
-<pinref part="S4" gate="G$1" pin="1"/>
+<pinref part="BUS" gate="G$1" pin="1"/>
 </segment>
 </net>
 <net name="SAM_USB_DM" class="0">
@@ -24046,7 +24046,7 @@ LOW=ON</text>
 <label x="698.5" y="35.56" size="1.778" layer="95" rot="R270"/>
 <wire x1="698.5" y1="40.64" x2="718.82" y2="40.64" width="0.1524" layer="91"/>
 <wire x1="718.82" y1="40.64" x2="718.82" y2="43.18" width="0.1524" layer="91"/>
-<pinref part="S3" gate="G$1" pin="2"/>
+<pinref part="BUD" gate="G$1" pin="2"/>
 <wire x1="718.82" y1="43.18" x2="716.28" y2="43.18" width="0.1524" layer="91"/>
 </segment>
 <segment>
@@ -24061,7 +24061,7 @@ LOW=ON</text>
 <label x="764.54" y="35.56" size="1.778" layer="95" rot="R270"/>
 <wire x1="764.54" y1="40.64" x2="784.86" y2="40.64" width="0.1524" layer="91"/>
 <wire x1="784.86" y1="40.64" x2="784.86" y2="43.18" width="0.1524" layer="91"/>
-<pinref part="S4" gate="G$1" pin="2"/>
+<pinref part="BUS" gate="G$1" pin="2"/>
 <wire x1="784.86" y1="43.18" x2="782.32" y2="43.18" width="0.1524" layer="91"/>
 </segment>
 <segment>

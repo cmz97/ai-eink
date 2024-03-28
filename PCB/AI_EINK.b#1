@@ -11542,6 +11542,15 @@ design rules under a new name.</description>
 <signal name="GPO">
 <contactref element="U8" pad="7"/>
 </signal>
+<signal name="N$20">
+<contactref element="RPI-CM1" pad="29"/>
+</signal>
+<signal name="N$22">
+<contactref element="RPI-CM1" pad="41"/>
+</signal>
+<signal name="N$28">
+<contactref element="RPI-CM1" pad="55"/>
+</signal>
 </signals>
 <mfgpreviewcolors>
 <mfgpreviewcolor name="soldermaskcolor" color="0xC8000000"/>

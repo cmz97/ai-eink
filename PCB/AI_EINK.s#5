@@ -19804,7 +19804,7 @@ grid 2.54 mm</description>
 <part name="BUP" library="EVQ-P7A01P" deviceset="EVQ-P7A01P" device=""/>
 <part name="BUD" library="EVQ-P7A01P" deviceset="EVQ-P7A01P" device=""/>
 <part name="BUS" library="EVQ-P7A01P" deviceset="EVQ-P7A01P" device=""/>
-<part name="Q3" library="Transistor" library_urn="urn:adsk.eagle:library:16378713" deviceset="NMOSFET" device="SOT23-GSD" package3d_urn="urn:adsk.eagle:package:28738/2" value="NMOSFET"/>
+<part name="Q3" library="Transistor" library_urn="urn:adsk.eagle:library:16378713" deviceset="NMOSFET" device="SOT23-GSD" package3d_urn="urn:adsk.eagle:package:28738/2" value="NMOS_C7465427"/>
 </parts>
 <sheets>
 <sheet>

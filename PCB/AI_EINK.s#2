@@ -19418,7 +19418,7 @@ grid 2.54 mm</description>
 </classes>
 <parts>
 <part name="RPI-CM1" library="RPI-CM4" deviceset="RPI-CM4" device="" value="DF40C-100DS-0.4V(51)"/>
-<part name="U1" library="microbuilder" deviceset="VREG_TPS6103X" device="" value="TPS61090RSAR"/>
+<part name="U1" library="microbuilder" deviceset="VREG_TPS6103X" device="" value="TPS61092RSAR"/>
 <part name="L1" library="microbuilder" deviceset="INDUCTOR" device="TDK_VLC5045" value="6.8uH"/>
 <part name="U$1" library="microbuilder" deviceset="GND" device=""/>
 <part name="U$2" library="microbuilder" deviceset="GND" device=""/>
