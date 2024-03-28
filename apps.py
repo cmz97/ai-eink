@@ -4,8 +4,10 @@ import datetime
 from optimum.onnxruntime import ORTStableDiffusionPipeline
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from PIL.PngImagePlugin import PngInfo
+from diffusers import AutoencoderTiny
 
 import sys
+import re
 import io
 import time
 import numpy as np
@@ -69,9 +71,8 @@ class SdBaker:
     num_inference_steps = 3
     guidance_scale = 1.0
 
-    def __init__(self, prompts_bank):
+    def __init__(self, vae_override=None):
         self.pl = None
-        self.prompts_bank = prompts_bank
         # init func
         # self._load_model()
         logging.info('SdBaker instance created')
@@ -80,6 +81,9 @@ class SdBaker:
         self.model_path = None
         self.model_name = ""
         self.trigger_words = ""
+        self.vae = None
+        if vae_override:
+            self.vae = AutoencoderTiny.from_pretrained(vae_override)
 
     def load_model(self, model_path, model_name, trigger_words):
         self.model_path = model_path
@@ -91,7 +95,6 @@ class SdBaker:
         logging.info('start model loading')
         self.pl = ORTStableDiffusionPipeline.from_pretrained(self.model_path)
         logging.info(f'model loading done took {time.time() - st} sec')
-        
 
     def _get_generator(self, seed = np.random.randint(0, 1000000) ):
         torch.manual_seed(seed)
@@ -103,19 +106,34 @@ class SdBaker:
         thread.start()
         return event
 
-    def _generate_image_thread(self, add_prompt, event, callback=None):
+    def _generate_image_thread(self, add_prompt, event, callback=None, image_prefix=None):
         full_prompt = f"{self.char_id}, {self.trigger_words}, {add_prompt},"
-        logging.info(f" ingesting prompt : {full_prompt}")
+        # logging.info(f" ingesting prompt : {full_prompt}")
         print("Generating image, please wait...")
         start_time = time.time()
         g, seed = self._get_generator()
-        image = self.pl(full_prompt,
-                        negative_prompt=self.neg_prompt,
-                        height=self.height,
-                        width=self.width,
-                        num_inference_steps=self.num_inference_steps,
-                        generator=g,
-                        guidance_scale=self.guidance_scale).images[0]
+
+        if self.vae:
+            latents = self.pl(full_prompt,
+                negative_prompt=self.neg_prompt,
+                height=self.height,
+                width=self.width,
+                num_inference_steps=self.num_inference_steps,
+                generator=g,
+                guidance_scale=self.guidance_scale,
+                output_type="latent").images
+            with torch.no_grad():
+                latents = self.vae.decode(torch.from_numpy(latents) / self.vae.config.scaling_factor, return_dict=False)[0]
+                do_denormalize = [True] * latents.shape[0]
+                image = self.pl.image_processor.postprocess(latents.numpy(), output_type='pil', do_denormalize=do_denormalize)[0]
+        else:
+            image = self.pl(full_prompt,
+                            negative_prompt=self.neg_prompt,
+                            height=self.height,
+                            width=self.width,
+                            num_inference_steps=self.num_inference_steps,
+                            generator=g,
+                            guidance_scale=self.guidance_scale).images[0]
         print(f"Image generation completed in {time.time() - start_time:.2f} seconds.")
         
         # encode meta data and cache
@@ -129,16 +147,15 @@ class SdBaker:
         metadata.add_text("num_inference_steps", str(self.num_inference_steps))
         metadata.add_text("guidance_scale", str(self.guidance_scale))
 
-        self._save_img(image, metadata)
+        self._save_img(image, metadata, image_prefix)
 
         if callback: callback(image)
         
         event.set()
     
-    def _save_img(self, image, metadata):
-        file_name = f"./temp-{self.model_name}.png"
+    def _save_img(self, image, metadata, image_prefix):
+        file_name = f"./temp-{self.model_name}.png" if not image_prefix else image_prefix+".png"
         image.save(file_name, pnginfo=metadata, optimize=True)
-
 
 
 class BookLoader:
@@ -146,7 +163,7 @@ class BookLoader:
         self.filePath = filePath
         self.charsPerLine = screenWidth // fontWidth
         self.linesPerPage = screenHeight // fontHeight
-        self.currentPage = 0
+        self.currentPage = 1
         self.currentStartWordIndex = 0  # Track the start word index for the current page
         # self.loadFile(filePath)
 
@@ -155,55 +172,113 @@ class BookLoader:
             self.words = file.read().split()
 
     def getPage(self, pageNumber):
-        logging.info(f'get page {pageNumber}')
-        # Adjust to fetch the correct page directly, considering non-sequential access
+        if pageNumber < 1: return []  # Page number out of range
+        
         if pageNumber < self.currentPage:
-            self.currentStartWordIndex = 0  # Reset if we are going back
+            # If going back, reset to start from the beginning
+            self.currentStartWordIndex = 0
             self.currentPage = 1
 
-        pageLines = []
-        while self.currentPage <= pageNumber and self.currentStartWordIndex < len(self.words):
-            line, isNewPage = self._loadNextLine()
-            if isNewPage and self.currentPage < pageNumber:
-                self.currentPage += 1
-                pageLines.clear()
-            pageLines.append(line)
-            
-            if isNewPage and self.currentPage == pageNumber:
-                break
-        
-        if self.currentPage < pageNumber:
-            return []  # Requested page beyond the end of the book
-        
-        self.currentPage = pageNumber
-        return pageLines
+        pageContent = []
+        linesFilled = 0
+
+        while self.currentStartWordIndex < len(self.words) and linesFilled < self.linesPerPage:
+            lineContent, isNewLine = self._loadNextLine()
+            # logging.info(lineContent)
+            if isNewLine or self.currentStartWordIndex >= len(self.words):
+                pageContent.append(lineContent)
+                linesFilled += 1
+
+            # Break if we've filled the page or reached the end of text, but only increment page counter if full page
+            if linesFilled == self.linesPerPage or self.currentStartWordIndex >= len(self.words):
+                if self.currentPage == pageNumber:
+                    break
+                else:
+                    pageContent.clear()
+                    linesFilled = 0
+                    self.currentPage += 1
+
+        return pageContent
 
     def _loadNextLine(self):
-        lineWords = []
+        line = []
         lineLength = 0
-        isNewPage = False
+        isNewLine = False
+
         while self.currentStartWordIndex < len(self.words):
             word = self.words[self.currentStartWordIndex]
-            if lineLength + len(word) + len(lineWords) <= self.charsPerLine:  # +len(lineWords) for spaces between words
-                lineWords.append(word)
-                lineLength += len(word)
+            # handle corner case
+            if len(word) > self.charsPerLine:  # need to break word
+                line.append(word[:self.charsPerLine])
+                lineLength += self.charsPerLine + (1 if line else 0)
+                self.currentStartWordIndex += 1
+                continue
+
+            # logging.info(f"word -> {word}")
+
+            if lineLength + len(word) + (1 if line else 0) <= self.charsPerLine:
+                # Add word to line
+                line.append(word)
+                lineLength += len(word) + (1 if line else 0)  # Add space for next word
                 self.currentStartWordIndex += 1
             else:
-                # If the first word in line is too long, force add it to prevent infinite loop
-                if not lineWords:
-                    lineWords.append(word)
-                    self.currentStartWordIndex += 1
-                break  # Move this word to the next line
-            
-            if len(lineWords) >= self.linesPerPage:
-                isNewPage = True
+                # Word doesn't fit, start a new line
+                isNewLine = True
                 break
-        logging.info(f'read line {lineWords}')
-        return lineWords, isNewPage
+
+        return " ".join(line), isNewLine
 
     def getProgress(self):
         # This is a simplistic progress measure, can be improved for accuracy
         return f"Page {self.currentPage}, approximately {self.currentStartWordIndex / len(self.words) * 100:.2f}% through the text"
+
+
+
+class SceneBaker:
+    def __init__(self, book_name):
+        self.scene_buffer = [""]
+        self.prompt = """<|user|>
+Scene: {book_paragraph}
+Convert the scene above into a visual picture.<|endoftext|>
+<|assistant|>(response with 6 words total, separate by commas) :
+"""
+        self.book_name = book_name
+    
+    def get_next_scene(self, book_paragraph):
+        def strip_all_numbers(s):
+            pattern = r"\d+, "
+            return re.sub(pattern, "", s)
+
+        st = time.time()
+        prompt = self.prompt.format(
+            # book_name=self.book_name,
+            # last_scene=self.scene_buffer[-1],
+            book_paragraph=book_paragraph
+        )
+        data = {
+            "prompt": prompt,
+            "model": "stablelm2",
+            # "format": "json",
+            "stream": False,
+            "options": {
+                "temperature": 1.5, 
+                "top_p": 0.99, 
+                "top_k": 100,
+                "num_ctx" : 500,
+                "num_predict": 25,  
+                # "stop": ["]"]
+            },
+        }
+        # logging.info(f"llm trggerd, prompt -> {prompt} ")
+        response = requests.post("http://localhost:11434/api/generate", json=data, stream=False)
+        json_data = json.loads(response.text)["response"]
+        text = strip_all_numbers(json_data.replace("\n", ",").replace('"', '').replace(".", ","))
+        logging.info(f"llm return recived  ->  time took {time.time() - st}  sec")
+        # update
+        self.scene_buffer.append(text)
+        return text
+
+
 
 
 

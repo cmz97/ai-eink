@@ -418,7 +418,7 @@ model_list = [file_path for file_path in Path(root_folder).rglob("*/_add_ons.jso
 
 # init 
 pb = PromptsBank()
-sd_baker = SdBaker(pb)
+sd_baker = SdBaker()
 controller = Controller()
 file_cache = "./temp.png"
 

@@ -8,7 +8,7 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 dialog_image_path = 'dialogBox.png'
-ascii_table_image_path = 'asciiTable.png'
+ascii_table_image_path = 'asciiTable_1.5x.png'
 ui_elements_path = 'ui_sheet.png'
 text_area_start = (9, 12)
 text_area_end = (226, 80)
@@ -496,9 +496,10 @@ def draw_text_on_screen(lines, buffer=10):
         for char_image in line: 
             page.paste(char_image, (x, y))
             x += char_width # step next
-            if x + char_width > text_area_end[0]:  # Newline if we run out of space
-                x = text_area_start[0]
-        y += char_height # new line
+            # if x + char_width > text_area_end[0]:  # Newline if we run out of space
+        # new line
+        x = text_area_start[0]
+        y += char_height 
     return page
 
 def render_thumbnail_page(thumbnail, text, border=False):
@@ -532,6 +533,28 @@ def render_thumbnail_page(thumbnail, text, border=False):
     # titles
     if text : image = draw_text_on_dialog(text, image, (eink_width//2 - 75, eink_height//3 * 2 + 10), (eink_width//2 + 75, eink_height//3 * 2 + 10), True)
     return image
+
+
+def insert_image(canvas, illustration):
+    illustration_width, illustration_height = illustration.size
+    if illustration_width >= eink_width or illustration_height >= eink_height:
+        buffer = 15
+        max_width = eink_width - buffer * 2
+        max_height = eink_height - buffer * 2
+        # Calculate the scaling factor
+        width_ratio = max_width / illustration.width
+        height_ratio = max_height / illustration.height
+        scale_factor = min(width_ratio, height_ratio)
+        # Calculate new dimensions
+        new_width = int(illustration.width * scale_factor)
+        new_height = int(illustration.height * scale_factor)
+        illustration = illustration.resize((new_width,new_height), Image.ANTIALIAS)
+        illustration = ImageOps.expand(illustration, border=10, fill='white')
+        illustration = ImageOps.expand(illustration, border=2, fill='black')
+
+    illustration_width, illustration_height = illustration.size
+    canvas.paste(illustration, ((eink_width - illustration_width)//2, (eink_height - illustration_height)//2))
+    return canvas
 
 
 def process_image(image, dialogBox=None, height=128*3, width=128*2):
