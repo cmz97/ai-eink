@@ -104,9 +104,9 @@ class SdBaker:
         torch.manual_seed(seed)
         return np.random.RandomState(seed) , seed
 
-    def generate_image(self, add_prompt="", callback=None):
+    def generate_image(self, add_prompt="", callback=None, prefix=None):
         event = threading.Event()
-        thread = threading.Thread(target=self._generate_image_thread, args=(add_prompt, event, callback))
+        thread = threading.Thread(target=self._generate_image_thread, args=(add_prompt, event, callback, prefix))
         thread.start()
         return event
 

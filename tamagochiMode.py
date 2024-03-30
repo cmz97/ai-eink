@@ -4,6 +4,7 @@ import sys
 import time 
 import random
 import json
+import collections
 from pathlib import Path
 from einkDSP import einkDSP
 from encoder import Encoder, Button
@@ -38,13 +39,17 @@ class Controller:
         }
         self.selection_idx = [0] * len(self.layout)
         self.display_cache = {
-            1 : [text_to_image("Waifu doing ok  ⸜(｡ ˃ ᵕ ˂ )⸝♡")],
+            0 : [text_to_image("Waifu doing ok  \(. > w < .)/ ")],
             2 : [text_to_image("[save]")] + [text_to_image("[back]")],
         }
         logging.info('Controller instance created')
 
+        self.action_choices = {
+            "feed" : ["eating cake", "eating apple", "drinking milk", "eating bread", "eating bowl of rice"],
+            "play" : ["play balls", "tied by rope, sm play", "reading book", "play computer", "play phone"],
+            "clean" : ["taking bath, bathing bubbles"],
+        }
         # buffers
-        self.text_buffer = ["", ]
         self.image_buffer = []
         self.action_buffer = []
 
@@ -57,13 +62,7 @@ class Controller:
         self.pending_image = False
         self.image_preview_page = None
 
-        
-
-
-    def background_task(self):
-        # llm
-        # prompt = sb.get_next_scene(" ".join(self.text_buffer[-1]))
-        # sd gen
+    def background_task(self, prompt):
         # TODO change prompt given state
         self.sd_process("")
 
@@ -122,10 +121,10 @@ class Controller:
         if self.page == 0:
             image_with_dialog = apply_dialog_box(
                 input_image = image,
-                dialog_image = ui_assets["large_dialog_box"]["image"],
+                dialog_image = ui_assets["small_dialog_box"]["image"],
                 box_mat = self.display_cache[self.page],
-                highligh_index = self.selection_idx[self.page],
-                placement_pos = ui_assets["large_dialog_box"]["placement_pos"]
+                highligh_index = self.selection_idx[self.page] if self.action_buffer != [] else None,
+                placement_pos = ui_assets["small_dialog_box"]["placement_pos"]
             )
         elif self.page == 1:
             sub_page_id = self.selection_idx[self.page-1] # get the cache based on previous page selection
@@ -140,18 +139,20 @@ class Controller:
 
 
     def trigger_background_job(self):
-        logger.info("background_task triggered")
-        background_thread = threading.Thread(target=self.background_task, daemon=True)
-        background_thread.start()
-        # update flag
-        self.pending_image = False
-        logger.info("pending image flag off")
+        # pick a prmpt from action_choices
+        action = random.choice(list(self.action_choices.keys()))
+        prompt = random.choice(self.action_choices[action])
+        prefix = f"temp-{sd_baker.model_name}-{len(self.action_buffer)}"
+        self.action_buffer.append((action, len(self.action_buffer)))
 
-    def sd_process(self, prompts=None):
-        if not prompts: prompts = pb.to_str() 
-        # Start a new thread for the loading screen
-        # prepare prompt and trigger gen
-        event = sd_baker.generate_image(add_prompt=prompts, callback=self.sd_image_callback)
+        logger.info("background_task triggered")
+        background_thread = threading.Thread(target=self.background_task, args=(prompt, prefix))
+        background_thread.start()
+        
+
+    def sd_process(self, prompts=None, prefix=""):
+        self.cooking = True
+        event = sd_baker.generate_image(add_prompt=prompts, callback=self.sd_image_callback, prefix=prefix)
         event.wait()
 
     # STATE MACHINE
@@ -180,11 +181,11 @@ class Controller:
             # frame0 = draw_text_on_dialog("COOKING...", frame0, (eink_width//2, eink_height//3*2), (eink_width//2+50, eink_height//3*2), True)
             # frame1 = draw_text_on_dialog("COOKING...", frame1, (eink_width//2, eink_height//3*2), (eink_width//2+50, eink_height//3*2), True)
             while not self.stop_animation_event.is_set():
-                draw_text_on_img("{:.0f}s".format(time.time() - start_time), frame0)            
+                # draw_text_on_img("{:.0f}s".format(time.time() - start_time), frame0)            
                 pixels = dump_2bit(np.array(frame0.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
                 self.part_screen(pixels)
                 time.sleep(0.5)
-                draw_text_on_img("{:.0f}s".format(time.time() - start_time), frame1)
+                # draw_text_on_img("{:.0f}s".format(time.time() - start_time), frame1)
                 pixels = dump_2bit(np.array(frame1.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
                 self.part_screen(pixels)
                 time.sleep(0.5)
@@ -192,35 +193,53 @@ class Controller:
         self.locked = False
 
 
-    def _show_status(self, actions=[]):
+    def _show_status(self, key):
         self.page = 0
         self._status_check()
 
-        if not actions: 
+        if not self.action_buffer: 
             # prepare image and dialog
             image = Image.new("L", (eink_width, eink_height), "white")
-            self._prepare_menu(image)
+            self.image = self._prepare_menu(image)
             # display animation and default status
             self.start_animation()
         else:
-            pass # for now
+            status = collections.Counter(self.action_buffer.keys())
+            self.display_cache[0] = [text_to_image(f"{k} : {v}") for k, v in status.items()]
 
+        if key == "up":
+            self.selection_idx[self.page] = (self.selection_idx[self.page] - 1) % len(self.display_cache[self.page])
+        elif key == "down":
+            self.selection_idx[self.page] = (self.selection_idx[self.page] + 1) % len(self.display_cache[self.page])
+        elif key == "enter":
+            self.stop_start_animation() # stop animation
+            self.clear_screen() # prepare for 4g display
 
-    def _image_display(self, retrieve_key):
-        self.page = 1
-        # retrieve image
-        action, num = retrieve_key
-        file_prefix = f"./temp-{sd_baker.model_name}-{action}-{num}.png"
-        if not os.path.exists(file_prefix):
-            logging.info(f"file {file_prefix} not found")
+            # pick the selected action
+            action_choice = list(status.keys())[self.selection_idx[self.page]]
+            # get and pop the action from buffer
+            for i, action in enumerate(self.action_buffer):
+                if action[0] == action_choice:
+                    action, id = self.action_buffer.pop(i)
+                    file_prefix = f"./temp-{sd_baker.model_name}-{id}.png"
+                    if not os.path.exists(file_prefix):
+                        logging.info(f"file {file_prefix} not found")
+                        return
+                    image = Image.open(file_prefix)
+                    # prepare image and dialog
+                    image = self._prepare_menu(image)
+                    # display
+                    self.show_last_image(image)
+                    self._image_display("init")
+                    break
+            # reset selection
+            self.selection_idx[self.page] = 0
+
+    def _image_display(self, key):
+        self.page = 1        
+        if key == "enter": # get back to status page
+            self._show_status("init")
             return
-        image = Image.open(file_prefix)
-        # prepare image and dialog
-        image = self._prepare_menu(image)
-        # display
-        self.show_last_image(image)
-        # wait for use click to continue
-
 
 
     def press_callback(self, key):
@@ -238,8 +257,6 @@ class Controller:
         # self.image_buffer.append(image)
         # self.image_preview_page = self.selection_idx[self.page] + 2
         # TODO update states
-
-
         # image finished cooking done
         self.cooking = False
 
@@ -276,7 +293,10 @@ if __name__ == "__main__":
                 # trigger sd cooking tasks
                 logger.info("background tasks triggerd")
                 controller.cooking = True
-                # controller.trigger_background_job()
+
+                # background job condition
+                if len(controller.action_buffer) < 5:
+                    controller.trigger_background_job()
 
     except Exception:
         pass
