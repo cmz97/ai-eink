@@ -130,10 +130,14 @@ class MultiButtonMonitor:
             self.monitor_thread.start()
 
     def monitor_pins(self):
-        while self.running:
-            for button in self.buttons:
-                self.monitor_pin(button)
-            time.sleep(0.1)  # Adjust for sensitivity vs CPU usage
+        try:
+            while self.running:
+                for button in self.buttons:
+                    self.monitor_pin(button)
+                time.sleep(0.1)  # Adjust for sensitivity vs CPU usage
+        except Exception as e:
+            print(f"An exception occurred in monitor_pins thread: {e}")
+            # Handle the exception, log it, or clean up resources here
 
     def monitor_pin(self, button):
         current_state = GPIO.input(button['pin'])
@@ -142,17 +146,24 @@ class MultiButtonMonitor:
             button['last_state'] = current_state
 
     def transitionOccurred(self, button):
-        current_time = time.time()
-        ellapse_t = current_time - button['last_call']
-        if ellapse_t < 0.1:  # reject noise
-            return
-        button['last_call'] = current_time
-        if GPIO.input(button['pin']) == 1:  # Only act on 'high' transition
-            if ellapse_t < 0.5:  # double click, adjust as needed
+        p = GPIO.input(button['pin'])
+        if p == 1:
+            ellapse_t = time.time() - button['last_call']
+            button['last_call'] = time.time()
+            print("ellapse_t", ellapse_t)
+            if ellapse_t < 0.1: # reject noise
                 return
+            if ellapse_t < 0.5: # double click
+                # self.callback(1)
+                # self.shut_down()
+                return 
+
+        if button['callback'] and p == 1:
             print(f"{button['direction']} pressed")
-            if button['callback']:
-                button['callback'](button['direction'])
+            button['callback'](button['direction'])
+        return
+
+
 
     def stop_monitoring(self):
         self.running = False

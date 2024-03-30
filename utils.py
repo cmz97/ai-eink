@@ -535,7 +535,7 @@ def render_thumbnail_page(thumbnail, text, border=False):
     return image
 
 
-def insert_image(canvas, illustration):
+def insert_image(canvas, illustration, border=True):
     illustration_width, illustration_height = illustration.size
     if illustration_width >= eink_width or illustration_height >= eink_height:
         buffer = 15
@@ -549,8 +549,9 @@ def insert_image(canvas, illustration):
         new_width = int(illustration.width * scale_factor)
         new_height = int(illustration.height * scale_factor)
         illustration = illustration.resize((new_width,new_height), Image.ANTIALIAS)
-        illustration = ImageOps.expand(illustration, border=10, fill='white')
-        illustration = ImageOps.expand(illustration, border=2, fill='black')
+        if border: 
+            illustration = ImageOps.expand(illustration, border=10, fill='white')
+            illustration = ImageOps.expand(illustration, border=2, fill='black')
 
     illustration_width, illustration_height = illustration.size
     canvas.paste(illustration, ((eink_width - illustration_width)//2, (eink_height - illustration_height)//2))
@@ -587,10 +588,21 @@ def paste_loadingBox(image, frame):
     image_ref.paste(loading_box_image1 if frame==0 else loading_box_image2, ((240-150)//2 , (416-150)//2))
     return image_ref
 
+def animation_2frame(image, path):
+    # loading_box size = 150 x 150
+    image_ref = image.copy()
+    image_ref = insert_image(canvas=image_ref,
+    illustration = Image.open(path),
+    border=False)
+    # image_ref.paste(loading_box_image1 if frame==0 else loading_box_image2, ((240-150)//2 , (416-150)//2))
+    return image_ref
+
+
 @jit(nopython=True,cache = True)
 def dump_2bit(pixels):
+    pixels = floydSteinbergDithering_numba(pixels)
     pixels = np.clip(pixels, 0, 255)
-    pixels_quantized = np.digitize(pixels, bins=[64, 128, 192], right=True)
+    pixels_quantized = np.digitize(pixels, bins=[64, 150, 210], right=True) # 64, 128, 192
     
     result_size = (pixels.size + 7) // 8  # Calculate the needed size for the result
     int_pixels = np.zeros(result_size, dtype=np.uint8)
