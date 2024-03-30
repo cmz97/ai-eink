@@ -8,7 +8,7 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 dialog_image_path = 'dialogBox.png'
-ascii_table_image_path = 'asciiTablex1.5.png' # change to 1.5 for book
+ascii_table_image_path = 'asciiTable_1.5x.png' # change to 1.5 for book
 ui_elements_path = 'ui_sheet.png'
 text_area_start = (9, 12)
 text_area_end = (226, 80)
@@ -312,9 +312,9 @@ def get_dialog_text(box_mat, box_size, highligh_index):
         rows = line_wrap(line, char_width, text_area_width)
         for row in rows:
             for char in row:
-                if highligh_index and idx == highligh_index:
+                if highligh_index is not None and idx == highligh_index:
                     char = ImageOps.invert(char.convert('RGB'))
-                    highlight_y = y
+                highlight_y = y
                 page.paste(char, (x, y))
                 x += char_width
             # update y

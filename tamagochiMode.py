@@ -39,7 +39,7 @@ class Controller:
         }
         self.selection_idx = [0] * len(self.layout)
         self.display_cache = {
-            0 : [text_to_image("Waifu doing ok  \(. > w < .)/ ")],
+            0 : [text_to_image("Waifu doing ok    \(. > w < .)/ ")],
             2 : [text_to_image("[save]")] + [text_to_image("[back]")],
         }
         logging.info('Controller instance created')
@@ -61,12 +61,6 @@ class Controller:
         self.cooking = False
         self.pending_image = False
         self.image_preview_page = None
-
-    def background_task(self, prompt):
-        # TODO change prompt given state
-        self.sd_process("")
-
-
 
     # EINK DISPLAY
     def transit(self):
@@ -127,11 +121,10 @@ class Controller:
                 placement_pos = ui_assets["small_dialog_box"]["placement_pos"]
             )
         elif self.page == 1:
-            sub_page_id = self.selection_idx[self.page-1] # get the cache based on previous page selection
             image_with_dialog = apply_dialog_box(
                 input_image = image,
                 dialog_image = ui_assets["small_dialog_box"]["image"],
-                box_mat = self.display_cache[self.page][sub_page_id],
+                box_mat = self.display_cache[self.page],
                 highligh_index = self.selection_idx[self.page],
                 placement_pos = ui_assets["small_dialog_box"]["placement_pos"]
             )
@@ -146,7 +139,7 @@ class Controller:
         self.action_buffer.append((action, len(self.action_buffer)))
 
         logger.info("background_task triggered")
-        background_thread = threading.Thread(target=self.background_task, args=(prompt, prefix))
+        background_thread = threading.Thread(target=self.sd_process, args=(prompt, prefix))
         background_thread.start()
         
 
@@ -198,25 +191,34 @@ class Controller:
         self._status_check()
 
         if not self.action_buffer: 
+            # update display cache
+            self.display_cache[self.page] = [text_to_image("Waifu doing ok    \(. > w < .)/ ")]
             # prepare image and dialog
             image = Image.new("L", (eink_width, eink_height), "white")
             self.image = self._prepare_menu(image)
             # display animation and default status
             self.start_animation()
+            return
         else:
-            status = collections.Counter(self.action_buffer.keys())
-            self.display_cache[0] = [text_to_image(f"{k} : {v}") for k, v in status.items()]
+            status = collections.Counter([x[0] for x in self.action_buffer])
+            self.display_cache[0] = [text_to_image(f"{k}[{v}]") for k, v in status.items()]
+            logger.info(status)
+
+        if self.animation_thread and self.animation_thread.is_alive() : self.stop_start_animation() # stop animation
 
         if key == "up":
             self.selection_idx[self.page] = (self.selection_idx[self.page] - 1) % len(self.display_cache[self.page])
         elif key == "down":
             self.selection_idx[self.page] = (self.selection_idx[self.page] + 1) % len(self.display_cache[self.page])
         elif key == "enter":
-            self.stop_start_animation() # stop animation
             self.clear_screen() # prepare for 4g display
 
             # pick the selected action
             action_choice = list(status.keys())[self.selection_idx[self.page]]
+
+            # reset selection
+            self.selection_idx[self.page] = 0
+
             # get and pop the action from buffer
             for i, action in enumerate(self.action_buffer):
                 if action[0] == action_choice:
@@ -227,13 +229,17 @@ class Controller:
                         return
                     image = Image.open(file_prefix)
                     # prepare image and dialog
-                    image = self._prepare_menu(image)
+                    # image = self._prepare_menu(image)
                     # display
                     self.show_last_image(image)
                     self._image_display("init")
-                    break
-            # reset selection
-            self.selection_idx[self.page] = 0
+                    return
+
+        # update screen
+        # TODO put a action ready screen here
+        image = Image.new("L", (eink_width, eink_height), "white")
+        self.image = self._prepare_menu(image)
+        self.update_screen()       
 
     def _image_display(self, key):
         self.page = 1        
@@ -261,9 +267,10 @@ class Controller:
         self.cooking = False
 
     def show_last_image(self, image):
-        # add some details
-        # image = insert_image(self.image, self.image_buffer.pop(0))
-        hex_pixels = image_to_header_file(image)
+        self.locked = True
+        post_img = process_image(image)
+        image_with_dialog = self._prepare_menu(post_img)
+        hex_pixels = image_to_header_file(image_with_dialog)
         # show and update states
         self.clear_screen()
         self.full_screen(hex_pixels)
@@ -277,11 +284,11 @@ class Controller:
 model_list = ['/home/kevin/ai/models/4_anyloracleanlinearmix_v10-zelda-merge-onnx/_add_ons.json']
 sd_baker = SdBaker()
 # override
-sd_baker.char_id = "perfect face, 1girl, wizard, wizard hat, cape, simple background,"
+sd_baker.char_id = "perfect face, 1girl, wizard, wizard hat, black cape, simple background,"
 controller = Controller()
 
 if __name__ == "__main__":
-    controller.layout[0]() # page 0
+    controller.layout[0](0) # page 0
     controller.load_model() # load model
     controller.pending_image = True
 
@@ -297,6 +304,9 @@ if __name__ == "__main__":
                 # background job condition
                 if len(controller.action_buffer) < 5:
                     controller.trigger_background_job()
+
+            if not self.locked and controller.page == 0:
+                controller.layout[0](0) # page 0 poke
 
     except Exception:
         pass

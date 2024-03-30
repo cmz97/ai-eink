@@ -100,7 +100,8 @@ class SdBaker:
         self.pl = ORTStableDiffusionPipeline.from_pretrained(self.model_path)
         logging.info(f'model loading done took {time.time() - st} sec')
 
-    def _get_generator(self, seed = np.random.randint(0, 1000000) ):
+    def _get_generator(self):
+        seed = np.random.randint(0, 1000000)
         torch.manual_seed(seed)
         return np.random.RandomState(seed) , seed
 
@@ -112,7 +113,7 @@ class SdBaker:
 
     def _generate_image_thread(self, add_prompt, event, callback=None, image_prefix=None):
         full_prompt = f"{self.char_id}, {self.trigger_words}, {add_prompt},"
-        # logging.info(f" ingesting prompt : {full_prompt}")
+        logging.info(f" ingesting prompt : {full_prompt}")
         print("Generating image, please wait...")
         start_time = time.time()
         g, seed = self._get_generator()
