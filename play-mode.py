@@ -89,30 +89,37 @@ class Controller:
         start_time = time.time()
         frame0 = paste_loadingBox(self.image, frame=0)
         frame1 = paste_loadingBox(self.image, frame=1)
-        frame0 = draw_text_on_dialog("GENERATING...", frame0, (eink_width//2, eink_height//3*2), (eink_width//2+50, eink_height//3*2), True)
-        frame1 = draw_text_on_dialog("GENERATING...", frame1, (eink_width//2, eink_height//3*2), (eink_width//2+50, eink_height//3*2), True)
+        frame0 = draw_text_on_dialog("COOKING...", frame0, (eink_width//2, eink_height//3*2), (eink_width//2+50, eink_height//3*2), True)
+        frame1 = draw_text_on_dialog("COOKING...", frame1, (eink_width//2, eink_height//3*2), (eink_width//2+50, eink_height//3*2), True)
             
         while not self.stop_loading_event.is_set():
-            time.sleep(0.5)
-            draw_text_on_img("{:.0f}s".format(time.time() - start_time), frame0)
-            
+            draw_text_on_img("{:.0f}s".format(time.time() - start_time), frame0)            
             pixels = dump_2bit(np.array(frame0.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
             self.part_screen(pixels)
             time.sleep(0.5)
             draw_text_on_img("{:.0f}s".format(time.time() - start_time), frame1)
             pixels = dump_2bit(np.array(frame1.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
             self.part_screen(pixels)
+            time.sleep(0.5)
+
         self.locked = False
 
     def transit(self):
-        self.locked = True
+        # self.locked = True
         self.eink.epd_init_fast()
         self.eink.PIC_display_Clear()
         logging.info('transit to 2g done')
     
     def clear_screen(self):
         self.eink.PIC_display_Clear()
-        
+        image = Image.new("L", (eink_width, eink_height), "white")
+        pixels = dump_2bit(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
+        self.part_screen(pixels)
+        # self.eink.epd_w21_init_4g()
+
+    # def refresh_screen(self):
+    #     self.full_screen(self.image)
+
     def part_screen(self, hex_pixels):
         self.locked = True
         self.eink.epd_init_part()
@@ -150,6 +157,11 @@ class Controller:
         pixels = dump_2bit(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
         self.part_screen(pixels)
         sd_baker.load_model(model_path, model_info['name'], model_info['trigger_words'])
+
+        # check for some overrides
+        if "neg_prompt" in model_info: sd_baker.neg_prompt = model_info['neg_prompt']
+        if "vae" in model_info: sd_baker.load_vae(model_info['vae'])
+        if "num_inference_steps" in model_info: sd_baker.num_inference_steps = model_info['num_inference_steps']
         self.locked = False
         
     def _model_select_page(self, key): # main page
@@ -391,8 +403,9 @@ class Controller:
         hex_pixels = image_to_header_file(image_with_dialog)
         # show and update states
         self.stop_loading_screen()
+        # self.clear_screen()
         self.clear_screen()
-        time.sleep(0.3)
+        time.sleep(0.5)
         self.full_screen(hex_pixels)
         self.in_4g = True
         self.image = post_img
@@ -402,6 +415,7 @@ class Controller:
         image_with_dialog = self._prepare_menu(image)
         hex_pixels = image_to_header_file(image_with_dialog)
         # show and update states
+        # self.clear_screen()
         self.stop_loading_screen()
         self.full_screen(hex_pixels)
         self.in_4g = True

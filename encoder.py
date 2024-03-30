@@ -83,7 +83,7 @@ class Button:
             print("ellapse_t", ellapse_t)
             if ellapse_t < 0.1: # reject noise
                 return
-            if ellapse_t < 1.0: # double click
+            if ellapse_t < 0.5: # double click
                 # self.callback(1)
                 # self.shut_down()
                 return 

@@ -8,7 +8,7 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 dialog_image_path = 'dialogBox.png'
-ascii_table_image_path = 'asciiTable_1.5x.png'
+ascii_table_image_path = 'asciiTable.png' # change to 1.5 for book
 ui_elements_path = 'ui_sheet.png'
 text_area_start = (9, 12)
 text_area_end = (226, 80)

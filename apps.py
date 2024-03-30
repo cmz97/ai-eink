@@ -85,6 +85,9 @@ class SdBaker:
         if vae_override:
             self.vae = AutoencoderTiny.from_pretrained(vae_override)
 
+    def load_vae(self, vae_path):
+        self.vae = AutoencoderTiny.from_pretrained(vae_path)
+
     def load_model(self, model_path, model_name, trigger_words):
         self.model_path = model_path
         self.model_name = model_name
@@ -93,6 +96,7 @@ class SdBaker:
         # print(model_path, model_name, trigger_words)
         st = time.time()
         logging.info('start model loading')
+        self.pl = None # release mem
         self.pl = ORTStableDiffusionPipeline.from_pretrained(self.model_path)
         logging.info(f'model loading done took {time.time() - st} sec')
 
