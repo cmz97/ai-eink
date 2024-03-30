@@ -59,6 +59,7 @@ class Button:
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.Pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         # GPIO.add_event_detect(self.Pin, GPIO.BOTH, callback=self.transitionOccurred)  
+        time.sleep(1)
         self.thread = threading.Thread(target=self.monitor_pin)
         self.thread.daemon = True  # Ensure thread exits when main program does
         self.running = True
@@ -70,7 +71,7 @@ class Button:
             if current_state != self.last_state:
                 self.transitionOccurred()
                 self.last_state = current_state
-            time.sleep(0.01)  # Adjust for sensitivity vs CPU usage
+            time.sleep(0.1)  # Adjust for sensitivity vs CPU usage
 
     def transitionOccurred(self):
         # time.sleep(0.002) # extra 2 mSec de-bounce time
@@ -100,3 +101,82 @@ class Button:
         print('terminating ... ')
         # raise SystemExit
         os.system("pkill -f " + sys.argv[0])
+
+
+class MultiButtonMonitor:
+    def __init__(self, buttons):
+        """
+        buttons: A list of dictionaries, where each dictionary contains:
+                 'pin': The GPIO pin number,
+                 'direction': A descriptive string for the button,
+                 'callback': A function to call when the button is pressed.
+        """
+        self.buttons = buttons
+        for button in self.buttons:
+            button['last_state'] = None
+            button['last_call'] = time.time()
+            GPIO.setmode(GPIO.BCM)
+            GPIO.setup(button['pin'], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+        
+        self.running = False
+        self.monitor_thread = None
+        self.start_monitoring()
+
+    def start_monitoring(self):
+        if self.monitor_thread is None or not self.monitor_thread.is_alive():
+            self.running = True
+            self.monitor_thread = threading.Thread(target=self.monitor_pins)
+            self.monitor_thread.daemon = True
+            self.monitor_thread.start()
+
+    def monitor_pins(self):
+        while self.running:
+            for button in self.buttons:
+                self.monitor_pin(button)
+            time.sleep(0.1)  # Adjust for sensitivity vs CPU usage
+
+    def monitor_pin(self, button):
+        current_state = GPIO.input(button['pin'])
+        if current_state != button['last_state']:
+            self.transitionOccurred(button)
+            button['last_state'] = current_state
+
+    def transitionOccurred(self, button):
+        current_time = time.time()
+        ellapse_t = current_time - button['last_call']
+        if ellapse_t < 0.1:  # reject noise
+            return
+        button['last_call'] = current_time
+        if GPIO.input(button['pin']) == 1:  # Only act on 'high' transition
+            if ellapse_t < 0.5:  # double click, adjust as needed
+                return
+            print(f"{button['direction']} pressed")
+            if button['callback']:
+                button['callback'](button['direction'])
+
+    def stop_monitoring(self):
+        self.running = False
+        if self.monitor_thread is not None:
+            self.monitor_thread.join()
+
+    def shut_down(self):
+        print('Terminating ...')
+        self.stop_monitoring()
+        os.system("pkill -f " + sys.argv[0])
+
+# Usage example:
+# def button_callback(direction):
+#     print("Button", direction, "pressed")
+#
+# buttons = [
+#     {'pin': 17, 'direction': 'Forward', 'callback': button_callback},
+#     {'pin': 27, 'direction': 'Backward', 'callback': button_callback},
+#     {'pin': 22, 'direction': 'Left', 'callback': button_callback}
+# ]
+#
+# multi_button_monitor = MultiButtonMonitor(buttons)
+# try:
+#     while True:
+#         time.sleep(1)
+# except KeyboardInterrupt:
+#     multi_button_monitor.shut_down()

@@ -7,7 +7,7 @@ import json
 import collections
 from pathlib import Path
 from einkDSP import einkDSP
-from encoder import Encoder, Button
+from encoder import Encoder, Button, MultiButtonMonitor
 from PIL import Image
 from utils import * 
 import threading  # Import threading module
@@ -15,15 +15,25 @@ import RPi.GPIO as GPIO
 from apps import SdBaker, PromptsBank, BookLoader, SceneBaker
 import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-GPIO.cleanup()
+# GPIO.cleanup()
 
 class Controller:
 
     def __init__(self):
         self.eink = einkDSP()
-        self.butUp = Button(9, direction='up', callback=self.press_callback) # gpio 26
-        self.butDown = Button(22, direction='down', callback=self.press_callback) # gpio 26
-        self.butEnter = Button(17, direction='enter', callback=self.press_callback) # gpio 26
+        # self.butUp = Button(9, direction='up', callback=self.press_callback) # gpio 26
+        # self.butDown = Button(22, direction='down', callback=self.press_callback) # gpio 26
+        # self.butEnter = Button(17, direction='enter', callback=self.press_callback) # gpio 26
+
+
+        buttons = [
+            {'pin': 9, 'direction': 'up', 'callback': self.press_callback},
+            {'pin': 22, 'direction': 'down', 'callback': self.press_callback},
+            {'pin': 17, 'direction': 'enter', 'callback': self.press_callback}
+        ]
+        
+        self.multi_button_monitor = MultiButtonMonitor(buttons)
+
 
         self.in_4g = True
         self.image = Image.new("L", (eink_width, eink_height), "white")
@@ -279,6 +289,8 @@ class Controller:
     
         
 
+controller = Controller()
+
 # prepare assets
 # hardcode model
 model_list = ['/home/kevin/ai/models/4_anyloracleanlinearmix_v10-zelda-merge-onnx/_add_ons.json']
@@ -305,7 +317,7 @@ if __name__ == "__main__":
                 if len(controller.action_buffer) < 5:
                     controller.trigger_background_job()
 
-            if not self.locked and controller.page == 0:
+            if not controller.locked and controller.page == 0:
                 controller.layout[0](0) # page 0 poke
 
     except Exception:
