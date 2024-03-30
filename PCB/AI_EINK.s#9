@@ -19606,7 +19606,7 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <part name="GND24" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
 <part name="C22" library="Capacitor" library_urn="urn:adsk.eagle:library:16290819" deviceset="C" device="CHIP-0603(1608-METRIC)" package3d_urn="urn:adsk.eagle:package:16290898/5" technology="_" value="1.0uF"/>
 <part name="R29" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-US_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="10K"/>
-<part name="SJ1" library="SparkFun-Passives" deviceset="JUMPER-PAD-2-NC_BY_TRACE" device="" value=""/>
+<part name="SJ1" library="SparkFun-Passives" deviceset="JUMPER-PAD-2-NC_BY_TRACE" device="" value="DNP"/>
 <part name="R33" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-US_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="10K"/>
 <part name="C23" library="Capacitor" library_urn="urn:adsk.eagle:library:16290819" deviceset="C" device="CHIP-0603(1608-METRIC)" package3d_urn="urn:adsk.eagle:package:16290898/5" technology="_" value="10uF"/>
 <part name="GND30" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
@@ -19621,7 +19621,7 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <part name="R7" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-US_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="1.1k">
 <attribute name="PROD_ID" value="RES-10447"/>
 </part>
-<part name="SJ6" library="SparkFun-Passives" deviceset="JUMPER-PAD-2-NC_BY_TRACE" device="" value=""/>
+<part name="SJ6" library="SparkFun-Passives" deviceset="JUMPER-PAD-2-NC_BY_TRACE" device="" value="DNP"/>
 <part name="SUPPLY4" library="SparkFun-PowerSymbols" deviceset="3.3V" device=""/>
 <part name="U$5" library="microbuilder" deviceset="5.0V" device=""/>
 <part name="U2" library="MC74VHC1G14DFT1G" deviceset="MC74VHC1G14DFT1G" device=""/>
@@ -19657,23 +19657,23 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <part name="U$91" library="microbuilder" deviceset="3.3V" device=""/>
 <part name="U$92" library="microbuilder" deviceset="GND" device=""/>
 <part name="U$93" library="microbuilder" deviceset="3.3V" device=""/>
-<part name="JP6" library="SparkFun-Connectors" deviceset="JST_2MM_MALE" device=""/>
+<part name="JP6" library="SparkFun-Connectors" deviceset="JST_2MM_MALE" device="" value="S2B-PH-SM4-TB"/>
 <part name="GND1" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
 <part name="LS1" library="CMS-18138A-SP" deviceset="CMS-18138A-SP" device=""/>
-<part name="RPIBOOT" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3"/>
-<part name="GND" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3"/>
+<part name="RPIBOOT" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
+<part name="GND" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
 <part name="U$94" library="microbuilder" deviceset="MOUNTINGHOLE" device="2.5" value="MOUNTINGHOLE2.5"/>
 <part name="U$95" library="microbuilder" deviceset="MOUNTINGHOLE" device="2.5" value="MOUNTINGHOLE2.5"/>
-<part name="RPIBOOT1" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3"/>
-<part name="GND13" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3"/>
-<part name="RPIBOOT2" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3"/>
-<part name="GND22" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3"/>
-<part name="RPIBOOT3" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3"/>
-<part name="GND25" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3"/>
-<part name="RPIBOOT4" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3"/>
-<part name="GND26" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3"/>
+<part name="RPIBOOT1" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
+<part name="GND13" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
+<part name="RPIBOOT2" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
+<part name="GND22" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
+<part name="RPIBOOT3" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
+<part name="GND25" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
+<part name="RPIBOOT4" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
+<part name="GND26" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
 <part name="RPIBOOT5" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3"/>
-<part name="GND27" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3"/>
+<part name="GND27" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
 <part name="J3" library="2024-02-19_09-48-43_Library" deviceset="524372471" device="CON_524372471_MOL" value="524372471"/>
 <part name="IC3" library="microbuilder" deviceset="WM8960" device=""/>
 <part name="C45" library="Capacitor" library_urn="urn:adsk.eagle:library:16290819" deviceset="C" device="CHIP-0603(1608-METRIC)" package3d_urn="urn:adsk.eagle:package:16290898/5" technology="_" value="10uF"/>
@@ -19783,8 +19783,8 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <part name="C81" library="Capacitor" library_urn="urn:adsk.eagle:library:16290819" deviceset="C" device="CHIP-0603(1608-METRIC)" package3d_urn="urn:adsk.eagle:package:16290898/5" technology="_" value="0.1uF"/>
 <part name="U$154" library="microbuilder" deviceset="GND" device=""/>
 <part name="SPI_FLASH_SAM" library="2024-03-10_02-04-46_Library" deviceset="W25Q128JVBIQ" device="TFBGA_128JVBIQ_WIN"/>
-<part name="USB_BOOT_N" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3"/>
-<part name="GND34" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3"/>
+<part name="USB_BOOT_N" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
+<part name="GND34" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
 <part name="R34" library="resistor" library_urn="urn:adsk.eagle:library:348" deviceset="R-US_" device="R0603" package3d_urn="urn:adsk.eagle:package:23555/3" value="1k"/>
 <part name="U$156" library="microbuilder" deviceset="GND" device=""/>
 <part name="Y1" library="ABM8-272-T3" deviceset="ABM8-272-T3" device=""/>
@@ -19811,8 +19811,8 @@ Source: http://www.murata.com .. GRM43DR72E224KW01.pdf</description>
 <part name="FL3" library="BLM18HE152SN1D" deviceset="BLM18HE152SN1D" device=""/>
 <part name="FL4" library="BLM18HE152SN1D" deviceset="BLM18HE152SN1D" device=""/>
 <part name="FL5" library="BLM18HE152SN1D" deviceset="BLM18HE152SN1D" device=""/>
-<part name="SJ2" library="SparkFun-Passives" deviceset="JUMPER-PAD-3-2OF3_NC_BY_TRACE" device="_SMALL" value=""/>
-<part name="SJ3" library="SparkFun-Passives" deviceset="JUMPER-PAD-3-2OF3_NC_BY_TRACE" device="_SMALL" value=""/>
+<part name="SJ2" library="SparkFun-Passives" deviceset="JUMPER-PAD-3-2OF3_NC_BY_TRACE" device="_SMALL" value="DNP"/>
+<part name="SJ3" library="SparkFun-Passives" deviceset="JUMPER-PAD-3-2OF3_NC_BY_TRACE" device="_SMALL" value="DNP"/>
 <part name="U7" library="2024-03-10_03-34-55_Library" deviceset="TLV74318PDBVR" device="DBV0005A_L"/>
 <part name="U$37" library="adafruit_power" deviceset="3.3V" device=""/>
 <part name="U$38" library="microbuilder" deviceset="GND" device=""/>
@@ -24189,7 +24189,6 @@ LOW=ON</text>
 <approved hash="104,1,-15.24,165.1,IC3,SPKGND1,GND,,,"/>
 <approved hash="104,1,-12.7,165.1,IC3,SPKGND2,GND,,,"/>
 <approved hash="104,1,88.9,246.38,OSC2,VCC,3.3V,,,"/>
-<approved hash="104,1,215.9,208.28,RF1,VCC,3.3V,,,"/>
 <approved hash="104,1,464.82,137.16,U9,VDD,3.3V,,,"/>
 <approved hash="104,1,-25.4,287.02,U10,IN,5.0V,,,"/>
 <approved hash="104,1,662.94,292.1,U11,IN,VOUT,,,"/>
@@ -24198,7 +24197,6 @@ LOW=ON</text>
 <approved hash="104,1,406.4,38.1,U7,OUT,1.8V,,,"/>
 <approved hash="106,1,332.74,43.18,AF_EN,,,,,"/>
 <approved hash="106,1,30.48,22.86,CAM_GPIO,,,,,"/>
-<approved hash="106,1,200.66,190.5,GPO,,,,,"/>
 <approved hash="106,1,497.84,88.9,NC,,,,,"/>
 <approved hash="106,1,728.98,241.3,SAM_GPIO0,,,,,"/>
 <approved hash="106,1,728.98,238.76,SAM_GPIO1,,,,,"/>
@@ -24232,13 +24230,10 @@ LOW=ON</text>
 <approved hash="106,1,332.74,38.1,STROBE,,,,,"/>
 <approved hash="106,1,497.84,76.2,TSCL,,,,,"/>
 <approved hash="106,1,497.84,73.66,TSDA,,,,,"/>
-<approved hash="106,1,200.66,193.04,VEH,,,,,"/>
 <approved hash="108,1,368.3,261.62,VOUT,,,,,"/>
 <approved hash="111,1,568.96,218.44,LBO,,,,,"/>
 <approved hash="112,1,594.36,34.29,,,,,,"/>
 <approved hash="111,1,40.64,246.38,LEFT_N,,,,,"/>
-<approved hash="113,1,659.13,173.998,S1,,,,,"/>
-<approved hash="113,1,371.338,196.85,JP6,,,,,"/>
 <approved hash="115,1,281.94,252.73,TS,,,,,"/>
 </errors>
 </schematic>
