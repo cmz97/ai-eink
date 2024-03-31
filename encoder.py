@@ -5,6 +5,7 @@ import sys
 import RPi.GPIO as GPIO
 import time 
 import threading
+import concurrent.futures
 
 class Encoder:
 
@@ -15,10 +16,11 @@ class Encoder:
         self.state = '00'
         self.direction = None
         self.callback = callback
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self.leftPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(self.rightPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.add_event_detect(self.leftPin, GPIO.BOTH, callback=self.transitionOccurred, bouncetime=200)  
+        self.GPIO = GPIO
+        self.GPIO.setmode(GPIO.BCM)
+        self.GPIO.setup(self.leftPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        self.GPIO.setup(self.rightPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        self.GPIO.add_event_detect(self.leftPin, GPIO.BOTH, callback=self.transitionOccurred, bouncetime=200)  
         # GPIO.add_event_detect(self.rightPin, GPIO.RISING, callback=self.transitionOccurred,  bouncetime=2)  
 
     def transitionOccurred(self, channel):
@@ -103,6 +105,7 @@ class Button:
         os.system("pkill -f " + sys.argv[0])
 
 
+
 class MultiButtonMonitor:
     def __init__(self, buttons):
         """
@@ -112,16 +115,18 @@ class MultiButtonMonitor:
                  'callback': A function to call when the button is pressed.
         """
         self.buttons = buttons
+        self.GPIO = GPIO
         for button in self.buttons:
             button['last_state'] = None
             button['last_call'] = time.time()
-            GPIO.setmode(GPIO.BCM)
-            GPIO.setup(button['pin'], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+            self.GPIO.setmode(GPIO.BCM)
+            self.GPIO.setup(button['pin'], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+            time.sleep(0.1)  # Adjust for sensitivity vs CPU usage
         
         self.running = False
         self.monitor_thread = None
         self.start_monitoring()
-
+    
     def start_monitoring(self):
         if self.monitor_thread is None or not self.monitor_thread.is_alive():
             self.running = True
@@ -133,6 +138,7 @@ class MultiButtonMonitor:
         try:
             while self.running:
                 for button in self.buttons:
+                    time.sleep(0.1)  # Adjust for sensitivity vs CPU usage
                     self.monitor_pin(button)
                 time.sleep(0.1)  # Adjust for sensitivity vs CPU usage
         except Exception as e:
@@ -140,13 +146,12 @@ class MultiButtonMonitor:
             # Handle the exception, log it, or clean up resources here
 
     def monitor_pin(self, button):
-        current_state = GPIO.input(button['pin'])
+        current_state = self.GPIO.input(button['pin'])
         if current_state != button['last_state']:
-            self.transitionOccurred(button)
+            self.transitionOccurred(button, current_state)
             button['last_state'] = current_state
 
-    def transitionOccurred(self, button):
-        p = GPIO.input(button['pin'])
+    def transitionOccurred(self, button, p):
         if p == 1:
             ellapse_t = time.time() - button['last_call']
             button['last_call'] = time.time()
@@ -174,20 +179,3 @@ class MultiButtonMonitor:
         print('Terminating ...')
         self.stop_monitoring()
         os.system("pkill -f " + sys.argv[0])
-
-# Usage example:
-# def button_callback(direction):
-#     print("Button", direction, "pressed")
-#
-# buttons = [
-#     {'pin': 17, 'direction': 'Forward', 'callback': button_callback},
-#     {'pin': 27, 'direction': 'Backward', 'callback': button_callback},
-#     {'pin': 22, 'direction': 'Left', 'callback': button_callback}
-# ]
-#
-# multi_button_monitor = MultiButtonMonitor(buttons)
-# try:
-#     while True:
-#         time.sleep(1)
-# except KeyboardInterrupt:
-#     multi_button_monitor.shut_down()

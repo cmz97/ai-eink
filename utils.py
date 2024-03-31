@@ -595,14 +595,14 @@ def animation_2frame(image, path):
     illustration = Image.open(path),
     border=False)
     # image_ref.paste(loading_box_image1 if frame==0 else loading_box_image2, ((240-150)//2 , (416-150)//2))
-    return image_ref
+    return image_ref.convert('L')
 
 
 @jit(nopython=True,cache = True)
 def dump_2bit(pixels):
     pixels = floydSteinbergDithering_numba(pixels)
     pixels = np.clip(pixels, 0, 255)
-    pixels_quantized = np.digitize(pixels, bins=[64, 150, 210], right=True) # 64, 128, 192
+    pixels_quantized = np.digitize(pixels, bins=[64, 128, 192], right=True) # 64, 128, 192
     
     result_size = (pixels.size + 7) // 8  # Calculate the needed size for the result
     int_pixels = np.zeros(result_size, dtype=np.uint8)

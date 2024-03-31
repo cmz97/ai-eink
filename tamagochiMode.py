@@ -14,8 +14,10 @@ import threading  # Import threading module
 import RPi.GPIO as GPIO
 from apps import SdBaker, PromptsBank, BookLoader, SceneBaker
 import logging
+from concurrent.futures import ThreadPoolExecutor
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-GPIO.cleanup()
+# GPIO.cleanup()
 
 class Controller:
 
@@ -35,7 +37,7 @@ class Controller:
         self.multi_button_monitor = MultiButtonMonitor(buttons)
 
 
-        self.in_4g = True
+        self.in_4g = False # start from false
         self.image = Image.new("L", (eink_width, eink_height), "white")
         self.model = None
         
@@ -150,13 +152,13 @@ class Controller:
             prefix = f"temp-{sd_baker.model_name}-{len(self.action_buffer)}"
             logger.info("background_task triggered")
             self.cooking = action
-            self.background_thread = threading.Thread(target=self.sd_process, args=(prompt, prefix))
+            self.background_thread = threading.Thread(target=sd_baker._generate_image_thread, args=(prompt, self.sd_image_callback, prefix))
             self.background_thread.start()
         
 
-    def sd_process(self, prompts=None, prefix=""):
-        event = sd_baker.generate_image(add_prompt=prompts, callback=self.sd_image_callback, prefix=prefix)
-        event.wait()
+    # def sd_process(self, prompts=None, prefix=""):
+    #     event = sd_baker.generate_image(add_prompt=prompts, callback=self.sd_image_callback, prefix=prefix)
+    #     event.wait()
 
     # STATE MACHINE
     def start_animation(self):
@@ -193,11 +195,11 @@ class Controller:
             # draw_text_on_img("{:.0f}s".format(time.time() - start_time), frame0)            
             pixels = dump_2bit(np.array(frame0.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
             self.part_screen(pixels)
-            time.sleep(1.5)
+            time.sleep(0.5)
             # draw_text_on_img("{:.0f}s".format(time.time() - start_time), frame1)
             pixels = dump_2bit(np.array(frame1.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
             self.part_screen(pixels)
-            time.sleep(1.5)
+            time.sleep(0.5)
 
         self.locked = False
 
@@ -217,18 +219,19 @@ class Controller:
             image = Image.new("L", (eink_width, eink_height), "white")
             self.image = self._prepare_menu(image)
             # display animation and default status
+            if not self.animation_thread or not self.animation_thread.is_alive() : self.start_animation()
         else:
-            if key == "up":
-                self.selection_idx[self.page] = (self.selection_idx[self.page] - 1) % len(self.display_cache[self.page])
-            elif key == "down":
-                self.selection_idx[self.page] = (self.selection_idx[self.page] + 1) % len(self.display_cache[self.page])
+            # if key == "up":
+            #     self.selection_idx[self.page] = (self.selection_idx[self.page] - 1) % len(self.display_cache[self.page])
+            # elif key == "down":
+            #     self.selection_idx[self.page] = (self.selection_idx[self.page] + 1) % len(self.display_cache[self.page])
             self.display_cache[0] = [text_to_image(f"{k}[{v}]") for k, v in status.items()]
             # add menu
             image = Image.new("L", (eink_width, eink_height), "white")
             self.image = self._prepare_menu(image)
+            if not self.animation_thread or not self.animation_thread.is_alive() : self.start_animation()
         # if self.animation_thread and self.animation_thread.is_alive() : self.stop_start_animation() # stop animation
 
-        
         if key == "enter":
             logging.info(f"hit enter")
             # lock
@@ -264,8 +267,8 @@ class Controller:
         # update screen
         # self.update_screen()     
         # if not self.animation_thread or not self.animation_thread.is_alive() : 
-        self.stop_start_animation()
-        self.start_animation() # refresh animation  
+        # self.stop_start_animation()
+        # self.start_animation() # refresh animation  
 
     def _image_display(self, key):
         self.page = 1        
@@ -291,9 +294,11 @@ class Controller:
         # TODO update states
         # image finished cooking done
         self.action_buffer.append((self.cooking, len(self.action_buffer)))
-        self.stop_background_thread()
+        self.stop_start_animation() # stop animation
         self.cooking = None
-
+        if not controller.locked and controller.page == 0:
+            controller.layout[0](0) # page 0 refresh
+            
 
     def show_last_image(self, image):
         self.locked = True
@@ -317,13 +322,12 @@ sd_baker = SdBaker()
 # sd_baker.width = 128*4
 # sd_baker.height = 128*6
 # override
-sd_baker.char_id = "best quality,masterpiece, perfect face, 1girl,solo, peer proportional face,  wizard, wizard hat, black cape, simple background,looking at viewer"
+sd_baker.char_id = "best quality,masterpiece, perfect face, 1girl,solo, peer proportional face, wizard, wizard hat, black cape, simple background,looking at viewer"
 controller = Controller()
 
 if __name__ == "__main__":
     controller.layout[0](0) # page 0
     controller.load_model() # load model
-    previous_actions = controller.action_buffer
     try:
         while True:
             time.sleep(5)
@@ -335,9 +339,9 @@ if __name__ == "__main__":
 
             # if len(controller.action_buffer) != previous_action_num
             # previous_action_num = len(controller.action_buffer)
-            if not controller.locked and controller.page == 0 and controller.action_buffer != previous_action_num:
-                controller.layout[0](0) # page 0 poke
-                previous_action_num = controller.action_buffer
+            # if not controller.locked and controller.page == 0 and controller.action_buffer != previous_action_num:
+            #     controller.layout[0](0) # page 0 poke
+            #     previous_action_num = controller.action_buffer
 
     except Exception:
         pass

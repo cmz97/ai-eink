@@ -5,6 +5,7 @@ from optimum.onnxruntime import ORTStableDiffusionPipeline
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from PIL.PngImagePlugin import PngInfo
 from diffusers import AutoencoderTiny
+import concurrent
 
 import sys
 import re
@@ -76,6 +77,7 @@ class SdBaker:
         # init func
         # self._load_model()
         logging.info('SdBaker instance created')
+        self.executor = concurrent.futures.ThreadPoolExecutor(max_workers=1)  # Adjust as needed
 
         # swap models
         self.model_path = None
@@ -105,13 +107,13 @@ class SdBaker:
         torch.manual_seed(seed)
         return np.random.RandomState(seed) , seed
 
-    def generate_image(self, add_prompt="", callback=None, prefix=None):
-        event = threading.Event()
-        thread = threading.Thread(target=self._generate_image_thread, args=(add_prompt, event, callback, prefix))
-        thread.start()
-        return event
+    # def generate_image(self, add_prompt="", callback=None, prefix=None):
+    #     event = threading.Event()
+    #     thread = threading.Thread(target=self._generate_image_thread, args=(add_prompt, callback, prefix))
+    #     thread.start()
+    #     return event
 
-    def _generate_image_thread(self, add_prompt, event, callback=None, image_prefix=None):
+    def _generate_image_thread(self, add_prompt, callback=None, image_prefix=None):
         full_prompt = f"{self.char_id}, {self.trigger_words}, {add_prompt},"
         logging.info(f" ingesting prompt : {full_prompt}")
         print("Generating image, please wait...")
@@ -156,7 +158,6 @@ class SdBaker:
 
         if callback: callback(image)
         
-        event.set()
     
     def _save_img(self, image, metadata, image_prefix):
         file_name = f"./temp-{self.model_name}.png" if not image_prefix else image_prefix+".png"
