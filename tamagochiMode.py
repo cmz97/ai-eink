@@ -149,7 +149,7 @@ class Controller:
             # pick a prmpt from action_choices
             action = random.choice(list(self.action_choices.keys()))
             prompt = random.choice(self.action_choices[action])
-            prefix = f"temp-{sd_baker.model_name}-{len(self.action_buffer)}"
+            prefix = f"temp-{sd_baker.model_name}-{action}"
             logger.info("background_task triggered")
             self.cooking = action
             self.background_thread = threading.Thread(target=sd_baker._generate_image_thread, args=(prompt, self.sd_image_callback, prefix))
@@ -251,7 +251,7 @@ class Controller:
             for i, action in enumerate(self.action_buffer):
                 if action[0] == action_choice:
                     action, id = self.action_buffer.pop(i)
-                    file_prefix = f"./temp-{sd_baker.model_name}-{id}.png"
+                    file_prefix = f"./temp-{sd_baker.model_name}-{action}.png"
                     if not os.path.exists(file_prefix):
                         logging.info(f"file {file_prefix} not found")
                         return
@@ -334,7 +334,7 @@ if __name__ == "__main__":
             print(f"ping - \n")
             if not controller.cooking:
                 logger.info("background tasks triggerd")
-                if len(controller.action_buffer) < 5:
+                if len(controller.action_buffer) < 3: # max 3
                     controller.trigger_background_job()
 
             # if len(controller.action_buffer) != previous_action_num
