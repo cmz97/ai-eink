@@ -57,9 +57,14 @@ class Controller:
         logging.info('Controller instance created')
 
         self.action_choices = {
-            "feed" : ["eating cake", "eating apple", "drinking milk", "eating pizza"],
-            "play" : ["happy face, play music", "happy face, ropes, role play", "reading book", "play tablet", "play phone"],
-            "clean" : ["naked, nsfw, taking bath, bathing bubbles"],
+            "feed me!" : ["eating cake", "eating apple", "drinking milk", "eating pizza"],
+            "play with me!" : ["happy face, play music", "happy face, ropes, role play", "reading book", "play tablet", "play phone"],
+            "taking a shower~" : ["naked, nsfw, taking bath, bathing bubbles"],
+        }
+        self.folder_name_map = {
+            "feed me!" : "feed",
+            "play with me!" : "play",
+            "taking a shower~" : "clean",
         }
         # buffers
         self.image_buffer = []
@@ -186,7 +191,7 @@ class Controller:
         self.locked = True
         start_time = time.time()
 
-        action = random.choice([x[0] for x in self.action_buffer]) if self.action_buffer != [] else "idle" 
+        action = self.folder_name_map[random.choice([x[0] for x in self.action_buffer])] if self.action_buffer != [] else "idle" 
         frame0 = animation_2frame(self.image, path= f"./tamagochiChar/{action}/animation_0.png")
         frame1 = animation_2frame(self.image, path= f"./tamagochiChar/{action}/animation_1.png")
         # frame0 = draw_text_on_dialog("COOKING...", frame0, (eink_width//2, eink_height//3*2), (eink_width//2+50, eink_height//3*2), True)
@@ -195,11 +200,11 @@ class Controller:
             # draw_text_on_img("{:.0f}s".format(time.time() - start_time), frame0)            
             pixels = dump_2bit(np.array(frame0.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
             self.part_screen(pixels)
-            time.sleep(0.5)
+            time.sleep(1.5)
             # draw_text_on_img("{:.0f}s".format(time.time() - start_time), frame1)
             pixels = dump_2bit(np.array(frame1.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
             self.part_screen(pixels)
-            time.sleep(0.5)
+            time.sleep(1.5)
 
         self.locked = False
 
@@ -225,7 +230,7 @@ class Controller:
             #     self.selection_idx[self.page] = (self.selection_idx[self.page] - 1) % len(self.display_cache[self.page])
             # elif key == "down":
             #     self.selection_idx[self.page] = (self.selection_idx[self.page] + 1) % len(self.display_cache[self.page])
-            self.display_cache[0] = [text_to_image(f"{k}[{v}]") for k, v in status.items()]
+            self.display_cache[0] = [text_to_image(f"{k}") for k, v in status.items()]
             # add menu
             image = Image.new("L", (eink_width, eink_height), "white")
             self.image = self._prepare_menu(image)
@@ -319,8 +324,8 @@ controller = Controller()
 # hardcode model
 model_list = ['/home/kevin/ai/models/4_anyloracleanlinearmix_v10-zelda-merge-onnx/_add_ons.json']
 sd_baker = SdBaker()
-# sd_baker.width = 128*4
-# sd_baker.height = 128*6
+sd_baker.width = 128*4
+sd_baker.height = 128*6
 # override
 sd_baker.char_id = "best quality,masterpiece, perfect face, 1girl,solo, peer proportional face, wizard, wizard hat, black cape, simple background,looking at viewer"
 controller = Controller()

@@ -314,7 +314,7 @@ def get_dialog_text(box_mat, box_size, highligh_index):
             for char in row:
                 if highligh_index is not None and idx == highligh_index:
                     char = ImageOps.invert(char.convert('RGB'))
-                highlight_y = y
+                    highlight_y = y
                 page.paste(char, (x, y))
                 x += char_width
             # update y
@@ -324,10 +324,11 @@ def get_dialog_text(box_mat, box_size, highligh_index):
             y += char_height # next line
     
     # crop around highlight
-    crop_top = max(0, highlight_y - box_size[1]//2)
-    crop_bot = crop_top + box_size[1]
-    crop_box = (0, crop_top, text_area_width, crop_bot)
-    page = page.crop(crop_box)
+    if highlight_y:
+        crop_top = max(0, highlight_y - box_size[1]//2)
+        crop_bot = crop_top + box_size[1]
+        crop_box = (0, crop_top, text_area_width, crop_bot)
+        page = page.crop(crop_box)
     return page
 
 def apply_dialog_box(input_image, dialog_image, box_mat, highligh_index, placement_pos):
