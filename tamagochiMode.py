@@ -7,25 +7,37 @@ import json
 import collections
 from pathlib import Path
 from einkDSP import einkDSP
-from encoder import Encoder, Button
+from encoder import Encoder, Button, MultiButtonMonitor
 from PIL import Image
 from utils import * 
 import threading  # Import threading module
 import RPi.GPIO as GPIO
 from apps import SdBaker, PromptsBank, BookLoader, SceneBaker
 import logging
+from concurrent.futures import ThreadPoolExecutor
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-GPIO.cleanup()
+# GPIO.cleanup()
 
 class Controller:
 
     def __init__(self):
         self.eink = einkDSP()
-        self.butUp = Button(9, direction='up', callback=self.press_callback) # gpio 26
-        self.butDown = Button(22, direction='down', callback=self.press_callback) # gpio 26
-        self.butEnter = Button(17, direction='enter', callback=self.press_callback) # gpio 26
+        # self.butUp = Button(9, direction='up', callback=self.press_callback) # gpio 26
+        # self.butDown = Button(22, direction='down', callback=self.press_callback) # gpio 26
+        # self.butEnter = Button(17, direction='enter', callback=self.press_callback) # gpio 26
 
-        self.in_4g = True
+
+        buttons = [
+            {'pin': 9, 'direction': 'up', 'callback': self.press_callback},
+            {'pin': 22, 'direction': 'down', 'callback': self.press_callback},
+            {'pin': 17, 'direction': 'enter', 'callback': self.press_callback}
+        ]
+        
+        self.multi_button_monitor = MultiButtonMonitor(buttons)
+
+
+        self.in_4g = False # start from false
         self.image = Image.new("L", (eink_width, eink_height), "white")
         self.model = None
         
@@ -39,15 +51,20 @@ class Controller:
         }
         self.selection_idx = [0] * len(self.layout)
         self.display_cache = {
-            0 : [text_to_image("Waifu doing ok  \(. > w < .)/ ")],
-            2 : [text_to_image("[save]")] + [text_to_image("[back]")],
+            0 : [text_to_image("Waifu doing ok    \(. > w < .)/ ")],
+            1 : [text_to_image("[save]")] + [text_to_image("[back]")],
         }
         logging.info('Controller instance created')
 
         self.action_choices = {
-            "feed" : ["eating cake", "eating apple", "drinking milk", "eating bread", "eating bowl of rice"],
-            "play" : ["play balls", "tied by rope, sm play", "reading book", "play computer", "play phone"],
-            "clean" : ["taking bath, bathing bubbles"],
+            "feed me!" : ["eating cake", "eating apple", "drinking milk", "eating pizza"],
+            "play with me!" : ["happy face, play music", "happy face, ropes, role play", "reading book", "play tablet", "play phone"],
+            "taking a shower~" : ["naked, nsfw, taking bath, bathing bubbles"],
+        }
+        self.folder_name_map = {
+            "feed me!" : "feed",
+            "play with me!" : "play",
+            "taking a shower~" : "clean",
         }
         # buffers
         self.image_buffer = []
@@ -57,16 +74,11 @@ class Controller:
         self.locked = False
         self.animation_thread = None
         self.stop_animation_event = threading.Event()
+        self.background_thread = None
 
         self.cooking = False
         self.pending_image = False
         self.image_preview_page = None
-
-    def background_task(self, prompt):
-        # TODO change prompt given state
-        self.sd_process("")
-
-
 
     # EINK DISPLAY
     def transit(self):
@@ -127,11 +139,10 @@ class Controller:
                 placement_pos = ui_assets["small_dialog_box"]["placement_pos"]
             )
         elif self.page == 1:
-            sub_page_id = self.selection_idx[self.page-1] # get the cache based on previous page selection
             image_with_dialog = apply_dialog_box(
                 input_image = image,
                 dialog_image = ui_assets["small_dialog_box"]["image"],
-                box_mat = self.display_cache[self.page][sub_page_id],
+                box_mat = self.display_cache[self.page],
                 highligh_index = self.selection_idx[self.page],
                 placement_pos = ui_assets["small_dialog_box"]["placement_pos"]
             )
@@ -139,21 +150,20 @@ class Controller:
 
 
     def trigger_background_job(self):
-        # pick a prmpt from action_choices
-        action = random.choice(list(self.action_choices.keys()))
-        prompt = random.choice(self.action_choices[action])
-        prefix = f"temp-{sd_baker.model_name}-{len(self.action_buffer)}"
-        self.action_buffer.append((action, len(self.action_buffer)))
-
-        logger.info("background_task triggered")
-        background_thread = threading.Thread(target=self.background_task, args=(prompt, prefix))
-        background_thread.start()
+        if self.background_thread is None or not self.background_thread.is_alive():
+            # pick a prmpt from action_choices
+            action = random.choice(list(self.action_choices.keys()))
+            prompt = random.choice(self.action_choices[action])
+            prefix = f"temp-{sd_baker.model_name}-{action}"
+            logger.info("background_task triggered")
+            self.cooking = action
+            self.background_thread = threading.Thread(target=sd_baker._generate_image_thread, args=(prompt, self.sd_image_callback, prefix))
+            self.background_thread.start()
         
 
-    def sd_process(self, prompts=None, prefix=""):
-        self.cooking = True
-        event = sd_baker.generate_image(add_prompt=prompts, callback=self.sd_image_callback, prefix=prefix)
-        event.wait()
+    # def sd_process(self, prompts=None, prefix=""):
+    #     event = sd_baker.generate_image(add_prompt=prompts, callback=self.sd_image_callback, prefix=prefix)
+    #     event.wait()
 
     # STATE MACHINE
     def start_animation(self):
@@ -171,24 +181,30 @@ class Controller:
             self.animation_thread.join()
             self.animation_thread = None
 
+    def stop_background_thread(self):
+        logging.info("stop background_thread ")
+        if self.background_thread:
+            self.background_thread.join()
+            self.background_thread = None
+
     def show_animation(self):
         self.locked = True
         start_time = time.time()
 
-        if self.action_buffer == []:
-            frame0 = paste_loadingBox(self.image, frame=0)
-            frame1 = paste_loadingBox(self.image, frame=1)
-            # frame0 = draw_text_on_dialog("COOKING...", frame0, (eink_width//2, eink_height//3*2), (eink_width//2+50, eink_height//3*2), True)
-            # frame1 = draw_text_on_dialog("COOKING...", frame1, (eink_width//2, eink_height//3*2), (eink_width//2+50, eink_height//3*2), True)
-            while not self.stop_animation_event.is_set():
-                # draw_text_on_img("{:.0f}s".format(time.time() - start_time), frame0)            
-                pixels = dump_2bit(np.array(frame0.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
-                self.part_screen(pixels)
-                time.sleep(0.5)
-                # draw_text_on_img("{:.0f}s".format(time.time() - start_time), frame1)
-                pixels = dump_2bit(np.array(frame1.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
-                self.part_screen(pixels)
-                time.sleep(0.5)
+        action = self.folder_name_map[random.choice([x[0] for x in self.action_buffer])] if self.action_buffer != [] else "idle" 
+        frame0 = animation_2frame(self.image, path= f"./tamagochiChar/{action}/animation_0.png")
+        frame1 = animation_2frame(self.image, path= f"./tamagochiChar/{action}/animation_1.png")
+        # frame0 = draw_text_on_dialog("COOKING...", frame0, (eink_width//2, eink_height//3*2), (eink_width//2+50, eink_height//3*2), True)
+        # frame1 = draw_text_on_dialog("COOKING...", frame1, (eink_width//2, eink_height//3*2), (eink_width//2+50, eink_height//3*2), True)
+        while not self.stop_animation_event.is_set():
+            # draw_text_on_img("{:.0f}s".format(time.time() - start_time), frame0)            
+            pixels = dump_2bit(np.array(frame0.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
+            self.part_screen(pixels)
+            time.sleep(1.5)
+            # draw_text_on_img("{:.0f}s".format(time.time() - start_time), frame1)
+            pixels = dump_2bit(np.array(frame1.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
+            self.part_screen(pixels)
+            time.sleep(1.5)
 
         self.locked = False
 
@@ -196,44 +212,68 @@ class Controller:
     def _show_status(self, key):
         self.page = 0
         self._status_check()
+        # check status list
+        status = collections.Counter([x[0] for x in self.action_buffer])
+        logger.info(status)
+        logger.info(self.action_buffer)
 
-        if not self.action_buffer: 
+        if not self.action_buffer:  # idle set dialog display
+            # update display cache
+            self.display_cache[self.page] = [text_to_image("Waifu doing ok    \(. > w < .)/ ")]
             # prepare image and dialog
             image = Image.new("L", (eink_width, eink_height), "white")
             self.image = self._prepare_menu(image)
             # display animation and default status
-            self.start_animation()
+            if not self.animation_thread or not self.animation_thread.is_alive() : self.start_animation()
         else:
-            status = collections.Counter(self.action_buffer.keys())
-            self.display_cache[0] = [text_to_image(f"{k} : {v}") for k, v in status.items()]
+            # if key == "up":
+            #     self.selection_idx[self.page] = (self.selection_idx[self.page] - 1) % len(self.display_cache[self.page])
+            # elif key == "down":
+            #     self.selection_idx[self.page] = (self.selection_idx[self.page] + 1) % len(self.display_cache[self.page])
+            self.display_cache[0] = [text_to_image(f"{k}") for k, v in status.items()]
+            # add menu
+            image = Image.new("L", (eink_width, eink_height), "white")
+            self.image = self._prepare_menu(image)
+            if not self.animation_thread or not self.animation_thread.is_alive() : self.start_animation()
+        # if self.animation_thread and self.animation_thread.is_alive() : self.stop_start_animation() # stop animation
 
-        if key == "up":
-            self.selection_idx[self.page] = (self.selection_idx[self.page] - 1) % len(self.display_cache[self.page])
-        elif key == "down":
-            self.selection_idx[self.page] = (self.selection_idx[self.page] + 1) % len(self.display_cache[self.page])
-        elif key == "enter":
-            self.stop_start_animation() # stop animation
+        if key == "enter":
+            logging.info(f"hit enter")
+            # lock
+            self.locked = True
+            self.stop_start_animation()
             self.clear_screen() # prepare for 4g display
-
             # pick the selected action
+            logger.info(status)
+            logger.info(self.action_buffer)
             action_choice = list(status.keys())[self.selection_idx[self.page]]
+            logging.info(f"action_choice {action_choice}")
+
+            # reset selection
+            self.selection_idx[self.page] = 0
+
             # get and pop the action from buffer
             for i, action in enumerate(self.action_buffer):
                 if action[0] == action_choice:
                     action, id = self.action_buffer.pop(i)
-                    file_prefix = f"./temp-{sd_baker.model_name}-{id}.png"
+                    file_prefix = f"./temp-{sd_baker.model_name}-{action}.png"
                     if not os.path.exists(file_prefix):
                         logging.info(f"file {file_prefix} not found")
                         return
                     image = Image.open(file_prefix)
                     # prepare image and dialog
-                    image = self._prepare_menu(image)
+                    # image = self._prepare_menu(image)
                     # display
-                    self.show_last_image(image)
+                    logging.info(f"disply --- triggerd ---- ")
                     self._image_display("init")
-                    break
-            # reset selection
-            self.selection_idx[self.page] = 0
+                    self.show_last_image(image)
+                    return
+
+        # update screen
+        # self.update_screen()     
+        # if not self.animation_thread or not self.animation_thread.is_alive() : 
+        # self.stop_start_animation()
+        # self.start_animation() # refresh animation  
 
     def _image_display(self, key):
         self.page = 1        
@@ -258,12 +298,18 @@ class Controller:
         # self.image_preview_page = self.selection_idx[self.page] + 2
         # TODO update states
         # image finished cooking done
-        self.cooking = False
+        self.action_buffer.append((self.cooking, len(self.action_buffer)))
+        self.stop_start_animation() # stop animation
+        self.cooking = None
+        if not controller.locked and controller.page == 0:
+            controller.layout[0](0) # page 0 refresh
+            
 
     def show_last_image(self, image):
-        # add some details
-        # image = insert_image(self.image, self.image_buffer.pop(0))
-        hex_pixels = image_to_header_file(image)
+        self.locked = True
+        post_img = process_image(image)
+        image_with_dialog = self._prepare_menu(post_img)
+        hex_pixels = image_to_header_file(image_with_dialog)
         # show and update states
         self.clear_screen()
         self.full_screen(hex_pixels)
@@ -272,31 +318,35 @@ class Controller:
     
         
 
+controller = Controller()
+
 # prepare assets
 # hardcode model
 model_list = ['/home/kevin/ai/models/4_anyloracleanlinearmix_v10-zelda-merge-onnx/_add_ons.json']
 sd_baker = SdBaker()
+sd_baker.width = 128*4
+sd_baker.height = 128*6
 # override
-sd_baker.char_id = "perfect face, 1girl, wizard, wizard hat, cape, simple background,"
+sd_baker.char_id = "best quality,masterpiece, perfect face, 1girl,solo, peer proportional face, wizard, wizard hat, black cape, simple background,looking at viewer"
 controller = Controller()
 
 if __name__ == "__main__":
-    controller.layout[0]() # page 0
+    controller.layout[0](0) # page 0
     controller.load_model() # load model
-    controller.pending_image = True
-
     try:
         while True:
-            time.sleep(3)
+            time.sleep(5)
             print(f"ping - \n")
-            if controller.pending_image and not controller.cooking:
-                # trigger sd cooking tasks
+            if not controller.cooking:
                 logger.info("background tasks triggerd")
-                controller.cooking = True
-
-                # background job condition
-                if len(controller.action_buffer) < 5:
+                if len(controller.action_buffer) < 3: # max 3
                     controller.trigger_background_job()
+
+            # if len(controller.action_buffer) != previous_action_num
+            # previous_action_num = len(controller.action_buffer)
+            # if not controller.locked and controller.page == 0 and controller.action_buffer != previous_action_num:
+            #     controller.layout[0](0) # page 0 poke
+            #     previous_action_num = controller.action_buffer
 
     except Exception:
         pass

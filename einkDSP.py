@@ -41,7 +41,7 @@ class einkDSP:
         ]
         self.emptyImage = [0xFF] * 24960
         self.oldData = [0] * 12480
-
+        self.GPIO = GPIO
 
         #Pin Def
         self.DC_PIN = 6
@@ -56,11 +56,11 @@ class einkDSP:
 
     def EPD_GPIO_Init(self):
         # GPIO.cleanup()
-        GPIO.setwarnings(False) 
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self.DC_PIN, GPIO.OUT) #DC 
-        GPIO.setup(self.RST_PIN, GPIO.OUT) #REST
-        GPIO.setup(self.BUSY_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP) #BUSY
+        self.GPIO.setwarnings(False) 
+        self.GPIO.setmode(GPIO.BCM)
+        self.GPIO.setup(self.DC_PIN, GPIO.OUT) #DC 
+        self.GPIO.setup(self.RST_PIN, GPIO.OUT) #REST
+        self.GPIO.setup(self.BUSY_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP) #BUSY
 
 
         bus = 0 # We only have SPI bus 0 available to us on the Pi
@@ -79,12 +79,12 @@ class einkDSP:
 
     def epd_w21_write_cmd(self,command):
         self.SPI_Delay()
-        GPIO.output(self.DC_PIN, GPIO.LOW)  # Command mode
+        self.GPIO.output(self.DC_PIN, GPIO.LOW)  # Command mode
         self.SPI_Write(command)
 
     def epd_w21_write_data(self,data):
         self.SPI_Delay()
-        GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
+        self.GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
         self.SPI_Write(data)
 
     def delay_xms(self,xms):
@@ -92,9 +92,9 @@ class einkDSP:
 
     def epd_w21_init(self):
         self.delay_xms(100)  # At least 10ms delay
-        GPIO.output(self.RST_PIN, False)  # Module reset
+        self.GPIO.output(self.RST_PIN, False)  # Module reset
         self.delay_xms(20)
-        GPIO.output(self.RST_PIN, True)
+        self.GPIO.output(self.RST_PIN, True)
         self.delay_xms(20)
 
    
@@ -117,7 +117,7 @@ class einkDSP:
         # You would need to implement self.lcd_chkstatus here
 
     def lcd_chkstatus(self):
-        while GPIO.input(self.BUSY_PIN) == GPIO.LOW:  # Assuming LOW means busy
+        while self.GPIO.input(self.BUSY_PIN) == GPIO.LOW:  # Assuming LOW means busy
             time.sleep(0.01)  # Wait 10ms before checking again
 
     def epd_sleep(self):
@@ -250,7 +250,7 @@ class einkDSP:
         # Command to start transmitting old data
         buffer = []
         self.epd_w21_write_cmd(0x10)
-        GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
+        self.GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
 
         print("Start Old Data Transmission")
         # Iterate over each byte of the image data
@@ -282,7 +282,7 @@ class einkDSP:
         print("Start New Data Transmission")
         # Command to start transmitting new data
         self.epd_w21_write_cmd(0x13)
-        GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
+        self.GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
 
         for i in range(12480):  # Repeat the process for new data
             temp3 = 0
@@ -321,12 +321,12 @@ class einkDSP:
         
         # Transfer old data
         self.epd_w21_write_cmd(0x10)
-        GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
+        self.GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
         self.spi.xfer3(self.oldData, self.spi.max_speed_hz, 1 ,8)
 
         # Transfer new data
         self.epd_w21_write_cmd(0x13)
-        GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
+        self.GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
         self.spi.xfer3(new_data, self.spi.max_speed_hz, 1 ,8)
         self.oldData = new_data.copy()
         
@@ -338,12 +338,12 @@ class einkDSP:
     def PIC_display_Clear(self,poweroff=False):
         # Transfer old data
         self.epd_w21_write_cmd(0x10)
-        GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
+        self.GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
         self.spi.xfer3(self.oldData, self.spi.max_speed_hz, 1 ,8)
         
         # Transfer new data, setting all to 0xFF (white or clear)
         self.epd_w21_write_cmd(0x13)
-        GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
+        self.GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
         self.spi.xfer3([0] * 12480, self.spi.max_speed_hz, 1 ,8)
         self.oldData = [0] * 12480
 

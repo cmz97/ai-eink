@@ -5,6 +5,7 @@ import sys
 import RPi.GPIO as GPIO
 import time 
 import threading
+import concurrent.futures
 
 class Encoder:
 
@@ -15,10 +16,11 @@ class Encoder:
         self.state = '00'
         self.direction = None
         self.callback = callback
-        GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self.leftPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(self.rightPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.add_event_detect(self.leftPin, GPIO.BOTH, callback=self.transitionOccurred, bouncetime=200)  
+        self.GPIO = GPIO
+        self.GPIO.setmode(GPIO.BCM)
+        self.GPIO.setup(self.leftPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        self.GPIO.setup(self.rightPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        self.GPIO.add_event_detect(self.leftPin, GPIO.BOTH, callback=self.transitionOccurred, bouncetime=200)  
         # GPIO.add_event_detect(self.rightPin, GPIO.RISING, callback=self.transitionOccurred,  bouncetime=2)  
 
     def transitionOccurred(self, channel):
@@ -59,6 +61,7 @@ class Button:
         GPIO.setmode(GPIO.BCM)
         GPIO.setup(self.Pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
         # GPIO.add_event_detect(self.Pin, GPIO.BOTH, callback=self.transitionOccurred)  
+        time.sleep(1)
         self.thread = threading.Thread(target=self.monitor_pin)
         self.thread.daemon = True  # Ensure thread exits when main program does
         self.running = True
@@ -70,7 +73,7 @@ class Button:
             if current_state != self.last_state:
                 self.transitionOccurred()
                 self.last_state = current_state
-            time.sleep(0.01)  # Adjust for sensitivity vs CPU usage
+            time.sleep(0.1)  # Adjust for sensitivity vs CPU usage
 
     def transitionOccurred(self):
         # time.sleep(0.002) # extra 2 mSec de-bounce time
@@ -99,4 +102,80 @@ class Button:
     def shut_down(self):
         print('terminating ... ')
         # raise SystemExit
+        os.system("pkill -f " + sys.argv[0])
+
+
+
+class MultiButtonMonitor:
+    def __init__(self, buttons):
+        """
+        buttons: A list of dictionaries, where each dictionary contains:
+                 'pin': The GPIO pin number,
+                 'direction': A descriptive string for the button,
+                 'callback': A function to call when the button is pressed.
+        """
+        self.buttons = buttons
+        self.GPIO = GPIO
+        for button in self.buttons:
+            button['last_state'] = None
+            button['last_call'] = time.time()
+            self.GPIO.setmode(GPIO.BCM)
+            self.GPIO.setup(button['pin'], GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+            time.sleep(0.1)  # Adjust for sensitivity vs CPU usage
+        
+        self.running = False
+        self.monitor_thread = None
+        self.start_monitoring()
+    
+    def start_monitoring(self):
+        if self.monitor_thread is None or not self.monitor_thread.is_alive():
+            self.running = True
+            self.monitor_thread = threading.Thread(target=self.monitor_pins)
+            self.monitor_thread.daemon = True
+            self.monitor_thread.start()
+
+    def monitor_pins(self):
+        try:
+            while self.running:
+                for button in self.buttons:
+                    time.sleep(0.1)  # Adjust for sensitivity vs CPU usage
+                    self.monitor_pin(button)
+                time.sleep(0.1)  # Adjust for sensitivity vs CPU usage
+        except Exception as e:
+            print(f"An exception occurred in monitor_pins thread: {e}")
+            # Handle the exception, log it, or clean up resources here
+
+    def monitor_pin(self, button):
+        current_state = self.GPIO.input(button['pin'])
+        if current_state != button['last_state']:
+            self.transitionOccurred(button, current_state)
+            button['last_state'] = current_state
+
+    def transitionOccurred(self, button, p):
+        if p == 1:
+            ellapse_t = time.time() - button['last_call']
+            button['last_call'] = time.time()
+            print("ellapse_t", ellapse_t)
+            if ellapse_t < 0.1: # reject noise
+                return
+            if ellapse_t < 0.5: # double click
+                # self.callback(1)
+                # self.shut_down()
+                return 
+
+        if button['callback'] and p == 1:
+            print(f"{button['direction']} pressed")
+            button['callback'](button['direction'])
+        return
+
+
+
+    def stop_monitoring(self):
+        self.running = False
+        if self.monitor_thread is not None:
+            self.monitor_thread.join()
+
+    def shut_down(self):
+        print('Terminating ...')
+        self.stop_monitoring()
         os.system("pkill -f " + sys.argv[0])

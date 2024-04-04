@@ -8,7 +8,7 @@ import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 dialog_image_path = 'dialogBox.png'
-ascii_table_image_path = 'asciiTablex1.5.png' # change to 1.5 for book
+ascii_table_image_path = 'asciiTable_1.5x.png' # change to 1.5 for book
 ui_elements_path = 'ui_sheet.png'
 text_area_start = (9, 12)
 text_area_end = (226, 80)
@@ -312,7 +312,7 @@ def get_dialog_text(box_mat, box_size, highligh_index):
         rows = line_wrap(line, char_width, text_area_width)
         for row in rows:
             for char in row:
-                if highligh_index and idx == highligh_index:
+                if highligh_index is not None and idx == highligh_index:
                     char = ImageOps.invert(char.convert('RGB'))
                     highlight_y = y
                 page.paste(char, (x, y))
@@ -324,10 +324,11 @@ def get_dialog_text(box_mat, box_size, highligh_index):
             y += char_height # next line
     
     # crop around highlight
-    crop_top = max(0, highlight_y - box_size[1]//2)
-    crop_bot = crop_top + box_size[1]
-    crop_box = (0, crop_top, text_area_width, crop_bot)
-    page = page.crop(crop_box)
+    if highlight_y:
+        crop_top = max(0, highlight_y - box_size[1]//2)
+        crop_bot = crop_top + box_size[1]
+        crop_box = (0, crop_top, text_area_width, crop_bot)
+        page = page.crop(crop_box)
     return page
 
 def apply_dialog_box(input_image, dialog_image, box_mat, highligh_index, placement_pos):
@@ -535,7 +536,7 @@ def render_thumbnail_page(thumbnail, text, border=False):
     return image
 
 
-def insert_image(canvas, illustration):
+def insert_image(canvas, illustration, border=True):
     illustration_width, illustration_height = illustration.size
     if illustration_width >= eink_width or illustration_height >= eink_height:
         buffer = 15
@@ -549,8 +550,9 @@ def insert_image(canvas, illustration):
         new_width = int(illustration.width * scale_factor)
         new_height = int(illustration.height * scale_factor)
         illustration = illustration.resize((new_width,new_height), Image.ANTIALIAS)
-        illustration = ImageOps.expand(illustration, border=10, fill='white')
-        illustration = ImageOps.expand(illustration, border=2, fill='black')
+        if border: 
+            illustration = ImageOps.expand(illustration, border=10, fill='white')
+            illustration = ImageOps.expand(illustration, border=2, fill='black')
 
     illustration_width, illustration_height = illustration.size
     canvas.paste(illustration, ((eink_width - illustration_width)//2, (eink_height - illustration_height)//2))
@@ -587,10 +589,21 @@ def paste_loadingBox(image, frame):
     image_ref.paste(loading_box_image1 if frame==0 else loading_box_image2, ((240-150)//2 , (416-150)//2))
     return image_ref
 
+def animation_2frame(image, path):
+    # loading_box size = 150 x 150
+    image_ref = image.copy()
+    image_ref = insert_image(canvas=image_ref,
+    illustration = Image.open(path),
+    border=False)
+    # image_ref.paste(loading_box_image1 if frame==0 else loading_box_image2, ((240-150)//2 , (416-150)//2))
+    return image_ref.convert('L')
+
+
 @jit(nopython=True,cache = True)
 def dump_2bit(pixels):
+    pixels = floydSteinbergDithering_numba(pixels)
     pixels = np.clip(pixels, 0, 255)
-    pixels_quantized = np.digitize(pixels, bins=[64, 128, 192], right=True)
+    pixels_quantized = np.digitize(pixels, bins=[64, 128, 192], right=True) # 64, 128, 192
     
     result_size = (pixels.size + 7) // 8  # Calculate the needed size for the result
     int_pixels = np.zeros(result_size, dtype=np.uint8)
