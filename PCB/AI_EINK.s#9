@@ -14599,12 +14599,15 @@ grid 2.54 mm</description>
 <variantdefs>
 </variantdefs>
 <classes>
-<class number="0" name="default" width="0.1524" drill="0">
+<class number="0" name="default" width="0.0889" drill="0">
 <clearance class="0" value="0.1524"/>
 </class>
 <class number="1" name="BUS" width="0.4572" drill="0.4826">
 </class>
 <class number="2" name="1A" width="0.3048" drill="0.4826">
+</class>
+<class number="3" name="PCIEs" width="0.1905" drill="0">
+<clearance class="3" value="0.0889"/>
 </class>
 </classes>
 <parts>
@@ -17694,7 +17697,7 @@ the power LED. To either:
 <label x="703.58" y="203.2" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="V_BATT" class="0">
+<net name="V_BATT" class="1">
 <segment>
 <pinref part="U3" gate="G$1" pin="SRN"/>
 <pinref part="R12" gate="G$1" pin="1"/>
@@ -17772,7 +17775,7 @@ the power LED. To either:
 <label x="91.44" y="76.2" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="BATTERY_IN" class="0">
+<net name="BATTERY_IN" class="1">
 <segment>
 <pinref part="U3" gate="G$1" pin="SRP"/>
 <wire x1="447.04" y1="215.9" x2="444.5" y2="215.9" width="0.1524" layer="91"/>
@@ -18925,7 +18928,7 @@ the power LED. To either:
 <label x="703.58" y="241.3" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="CAM1_D2_N" class="0">
+<net name="CAM1_D2_N" class="3">
 <segment>
 <wire x1="294.64" y1="96.52" x2="271.78" y2="96.52" width="0.1524" layer="91"/>
 <label x="274.32" y="96.52" size="1.778" layer="95"/>
@@ -18937,7 +18940,7 @@ the power LED. To either:
 <label x="137.16" y="104.14" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="CAM1_D2_P" class="0">
+<net name="CAM1_D2_P" class="3">
 <segment>
 <wire x1="294.64" y1="93.98" x2="271.78" y2="93.98" width="0.1524" layer="91"/>
 <label x="274.32" y="93.98" size="1.778" layer="95"/>
@@ -18949,7 +18952,7 @@ the power LED. To either:
 <label x="137.16" y="101.6" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="CAM1_D3_N" class="0">
+<net name="CAM1_D3_N" class="3">
 <segment>
 <wire x1="294.64" y1="88.9" x2="271.78" y2="88.9" width="0.1524" layer="91"/>
 <label x="274.32" y="88.9" size="1.778" layer="95"/>
@@ -18961,7 +18964,7 @@ the power LED. To either:
 <label x="137.16" y="96.52" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="CAM1_D3_P" class="0">
+<net name="CAM1_D3_P" class="3">
 <segment>
 <wire x1="294.64" y1="86.36" x2="271.78" y2="86.36" width="0.1524" layer="91"/>
 <label x="274.32" y="86.36" size="1.778" layer="95"/>
@@ -18973,7 +18976,7 @@ the power LED. To either:
 <label x="137.16" y="93.98" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="CAM1_D0_N" class="0">
+<net name="CAM1_D0_N" class="3">
 <segment>
 <wire x1="294.64" y1="119.38" x2="271.78" y2="119.38" width="0.1524" layer="91"/>
 <label x="274.32" y="119.38" size="1.778" layer="95"/>
@@ -18985,7 +18988,7 @@ the power LED. To either:
 <label x="137.16" y="127" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="CAM1_D0_P" class="0">
+<net name="CAM1_D0_P" class="3">
 <segment>
 <wire x1="294.64" y1="116.84" x2="271.78" y2="116.84" width="0.1524" layer="91"/>
 <label x="274.32" y="116.84" size="1.778" layer="95"/>
@@ -18997,7 +19000,7 @@ the power LED. To either:
 <label x="137.16" y="124.46" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="CAM1_D1_N" class="0">
+<net name="CAM1_D1_N" class="3">
 <segment>
 <wire x1="294.64" y1="111.76" x2="271.78" y2="111.76" width="0.1524" layer="91"/>
 <label x="274.32" y="111.76" size="1.778" layer="95"/>
@@ -19009,7 +19012,7 @@ the power LED. To either:
 <label x="137.16" y="119.38" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="CAM1_D1_P" class="0">
+<net name="CAM1_D1_P" class="3">
 <segment>
 <wire x1="294.64" y1="109.22" x2="271.78" y2="109.22" width="0.1524" layer="91"/>
 <label x="274.32" y="109.22" size="1.778" layer="95"/>
@@ -19021,7 +19024,7 @@ the power LED. To either:
 <label x="137.16" y="116.84" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="CAM1_C_N" class="0">
+<net name="CAM1_C_N" class="3">
 <segment>
 <wire x1="294.64" y1="104.14" x2="271.78" y2="104.14" width="0.1524" layer="91"/>
 <label x="274.32" y="104.14" size="1.778" layer="95"/>
@@ -19033,7 +19036,7 @@ the power LED. To either:
 <label x="137.16" y="111.76" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="CAM1_C_P" class="0">
+<net name="CAM1_C_P" class="3">
 <segment>
 <wire x1="294.64" y1="101.6" x2="271.78" y2="101.6" width="0.1524" layer="91"/>
 <label x="274.32" y="101.6" size="1.778" layer="95"/>
@@ -19325,7 +19328,7 @@ the power LED. To either:
 <label x="243.84" y="88.9" size="1.778" layer="95" align="bottom-right"/>
 </segment>
 </net>
-<net name="PCIE_!RST" class="0">
+<net name="PCIE_!RST" class="3">
 <segment>
 <pinref part="RPI-CM1" gate="G$2" pin="PCIE_!RST"/>
 <wire x1="160.02" y1="134.62" x2="134.62" y2="134.62" width="0.1524" layer="91"/>
@@ -19337,7 +19340,7 @@ the power LED. To either:
 <pinref part="M.2KEYM(NGFF)" gate="G$1" pin="P50"/>
 </segment>
 </net>
-<net name="PCIE_CLK_!REQ" class="0">
+<net name="PCIE_CLK_!REQ" class="3">
 <segment>
 <pinref part="RPI-CM1" gate="G$2" pin="PCIE_CLK_!REQ"/>
 <wire x1="220.98" y1="144.78" x2="246.38" y2="144.78" width="0.1524" layer="91"/>
@@ -19349,7 +19352,7 @@ the power LED. To either:
 <pinref part="M.2KEYM(NGFF)" gate="G$1" pin="P52"/>
 </segment>
 </net>
-<net name="PCIE_CLK_N" class="0">
+<net name="PCIE_CLK_N" class="3">
 <segment>
 <pinref part="RPI-CM1" gate="G$2" pin="PCIE_CLK_N"/>
 <wire x1="220.98" y1="132.08" x2="246.38" y2="132.08" width="0.1524" layer="91"/>
@@ -19361,7 +19364,7 @@ the power LED. To either:
 <pinref part="M.2KEYM(NGFF)" gate="G$1" pin="P53"/>
 </segment>
 </net>
-<net name="PCIE_CLK_P" class="0">
+<net name="PCIE_CLK_P" class="3">
 <segment>
 <pinref part="RPI-CM1" gate="G$2" pin="PCIE_CLK_P"/>
 <wire x1="220.98" y1="134.62" x2="246.38" y2="134.62" width="0.1524" layer="91"/>
@@ -19373,7 +19376,7 @@ the power LED. To either:
 <pinref part="M.2KEYM(NGFF)" gate="G$1" pin="P55"/>
 </segment>
 </net>
-<net name="PCIE_RX_N" class="0">
+<net name="PCIE_RX_N" class="3">
 <segment>
 <pinref part="RPI-CM1" gate="G$2" pin="PCIE_RX_N"/>
 <wire x1="220.98" y1="124.46" x2="246.38" y2="124.46" width="0.1524" layer="91"/>
@@ -19385,7 +19388,7 @@ the power LED. To either:
 <pinref part="M.2KEYM(NGFF)" gate="G$1" pin="P41"/>
 </segment>
 </net>
-<net name="PCIE_RX_P" class="0">
+<net name="PCIE_RX_P" class="3">
 <segment>
 <pinref part="RPI-CM1" gate="G$2" pin="PCIE_RX_P"/>
 <wire x1="220.98" y1="127" x2="246.38" y2="127" width="0.1524" layer="91"/>
@@ -19397,7 +19400,7 @@ the power LED. To either:
 <pinref part="M.2KEYM(NGFF)" gate="G$1" pin="P43"/>
 </segment>
 </net>
-<net name="PCIE_TX_N" class="0">
+<net name="PCIE_TX_N" class="3">
 <segment>
 <pinref part="RPI-CM1" gate="G$2" pin="PCIE_TX_N"/>
 <wire x1="220.98" y1="116.84" x2="246.38" y2="116.84" width="0.1524" layer="91"/>
@@ -19409,7 +19412,7 @@ the power LED. To either:
 <pinref part="M.2KEYM(NGFF)" gate="G$1" pin="P47"/>
 </segment>
 </net>
-<net name="PCIE_TX_P" class="0">
+<net name="PCIE_TX_P" class="3">
 <segment>
 <pinref part="RPI-CM1" gate="G$2" pin="PCIE_TX_P"/>
 <wire x1="220.98" y1="119.38" x2="246.38" y2="119.38" width="0.1524" layer="91"/>
@@ -19518,22 +19521,6 @@ the power LED. To either:
 <label x="703.58" y="215.9" size="1.778" layer="95"/>
 </segment>
 </net>
-<net name="3V3_PCIE" class="0">
-<segment>
-<pinref part="M.2KEYM(NGFF)" gate="G$1" pin="P74"/>
-<wire x1="403.86" y1="33.02" x2="408.94" y2="33.02" width="0.1524" layer="91"/>
-<pinref part="M.2KEYM(NGFF)" gate="G$1" pin="P72"/>
-<wire x1="403.86" y1="35.56" x2="408.94" y2="35.56" width="0.1524" layer="91"/>
-<wire x1="408.94" y1="33.02" x2="408.94" y2="35.56" width="0.1524" layer="91"/>
-<pinref part="M.2KEYM(NGFF)" gate="G$1" pin="P70"/>
-<wire x1="403.86" y1="38.1" x2="408.94" y2="38.1" width="0.1524" layer="91"/>
-<wire x1="408.94" y1="35.56" x2="408.94" y2="38.1" width="0.1524" layer="91"/>
-<junction x="408.94" y="35.56"/>
-<wire x1="408.94" y1="38.1" x2="408.94" y2="40.64" width="0.1524" layer="91"/>
-<junction x="408.94" y="38.1"/>
-<label x="408.94" y="40.64" size="1.016" layer="95" rot="R90" xref="yes"/>
-</segment>
-</net>
 <net name="EXT_VCC_PCIE" class="0">
 <segment>
 <pinref part="M.2KEYM(NGFF)" gate="G$1" pin="P18"/>
@@ -19560,6 +19547,20 @@ the power LED. To either:
 <wire x1="408.94" y1="121.92" x2="408.94" y2="124.46" width="0.1524" layer="91"/>
 <junction x="408.94" y="121.92"/>
 <label x="408.94" y="124.46" size="1.016" layer="95" rot="R90" xref="yes"/>
+</segment>
+<segment>
+<pinref part="M.2KEYM(NGFF)" gate="G$1" pin="P74"/>
+<wire x1="403.86" y1="33.02" x2="408.94" y2="33.02" width="0.1524" layer="91"/>
+<pinref part="M.2KEYM(NGFF)" gate="G$1" pin="P72"/>
+<wire x1="403.86" y1="35.56" x2="408.94" y2="35.56" width="0.1524" layer="91"/>
+<wire x1="408.94" y1="33.02" x2="408.94" y2="35.56" width="0.1524" layer="91"/>
+<pinref part="M.2KEYM(NGFF)" gate="G$1" pin="P70"/>
+<wire x1="403.86" y1="38.1" x2="408.94" y2="38.1" width="0.1524" layer="91"/>
+<wire x1="408.94" y1="35.56" x2="408.94" y2="38.1" width="0.1524" layer="91"/>
+<junction x="408.94" y="35.56"/>
+<wire x1="408.94" y1="38.1" x2="408.94" y2="40.64" width="0.1524" layer="91"/>
+<junction x="408.94" y="38.1"/>
+<label x="408.94" y="40.64" size="1.016" layer="95" rot="R90" xref="yes"/>
 </segment>
 </net>
 </nets>

@@ -14602,9 +14602,9 @@ grid 2.54 mm</description>
 <class number="0" name="default" width="0.0889" drill="0">
 <clearance class="0" value="0.1524"/>
 </class>
-<class number="1" name="BUS" width="0.4572" drill="0.4826">
+<class number="1" name="BUS" width="0.3048" drill="0.3">
 </class>
-<class number="2" name="1A" width="0.3048" drill="0.4826">
+<class number="2" name="1A" width="0.3048" drill="0.3">
 </class>
 <class number="3" name="PCIEs" width="0.1905" drill="0">
 <clearance class="3" value="0.0889"/>
@@ -14809,8 +14809,6 @@ grid 2.54 mm</description>
 <part name="GND13" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
 <part name="RPIBOOT2" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
 <part name="GND22" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
-<part name="RPIBOOT3" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
-<part name="GND25" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
 <part name="RPIBOOT4" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
 <part name="GND26" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
 <part name="RPIBOOT5" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3"/>
@@ -14889,7 +14887,6 @@ grid 2.54 mm</description>
 <part name="U$138" library="microbuilder" deviceset="GND" device=""/>
 <part name="C43" library="Capacitor" library_urn="urn:adsk.eagle:library:16290819" deviceset="C" device="CHIP-0402(1005-METRIC)" package3d_urn="urn:adsk.eagle:package:16290895/5" technology="_" value="0.1uF"/>
 <part name="C44" library="Capacitor" library_urn="urn:adsk.eagle:library:16290819" deviceset="C" device="CHIP-0402(1005-METRIC)" package3d_urn="urn:adsk.eagle:package:16290895/5" technology="_" value="0.1uF"/>
-<part name="C70" library="Capacitor" library_urn="urn:adsk.eagle:library:16290819" deviceset="C" device="CHIP-0402(1005-METRIC)" package3d_urn="urn:adsk.eagle:package:16290895/5" technology="_" value="0.1uF"/>
 <part name="C71" library="Capacitor" library_urn="urn:adsk.eagle:library:16290819" deviceset="C" device="CHIP-0402(1005-METRIC)" package3d_urn="urn:adsk.eagle:package:16290895/5" technology="_" value="0.1uF"/>
 <part name="C72" library="Capacitor" library_urn="urn:adsk.eagle:library:16290819" deviceset="C" device="CHIP-0402(1005-METRIC)" package3d_urn="urn:adsk.eagle:package:16290895/5" technology="_" value="0.1uF"/>
 <part name="C73" library="Capacitor" library_urn="urn:adsk.eagle:library:16290819" deviceset="C" device="CHIP-0402(1005-METRIC)" package3d_urn="urn:adsk.eagle:package:16290895/5" technology="_" value="0.1uF"/>
@@ -14970,6 +14967,7 @@ grid 2.54 mm</description>
 <part name="M.2KEYM(NGFF)" library="1-2199119-5" deviceset="1-2199119-5" device=""/>
 <part name="GND18" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND29" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="C25" library="rcl" deviceset="C-US" device="C1210" value="100uF"/>
 </parts>
 <sheets>
 <sheet>
@@ -15136,8 +15134,8 @@ the power LED. To either:
 <instance part="U$8" gate="G$1" x="581.66" y="220.98" smashed="yes">
 <attribute name="VALUE" x="580.136" y="218.44" size="1.27" layer="96"/>
 </instance>
-<instance part="U$14" gate="G$1" x="617.22" y="246.38" smashed="yes">
-<attribute name="VALUE" x="615.696" y="243.84" size="1.27" layer="96"/>
+<instance part="U$14" gate="G$1" x="617.22" y="238.76" smashed="yes">
+<attribute name="VALUE" x="615.696" y="236.22" size="1.27" layer="96"/>
 </instance>
 <instance part="R2" gate="G$1" x="520.7" y="203.2" smashed="yes" rot="R90">
 <attribute name="NAME" x="518.16" y="203.2" size="1.27" layer="95" font="vector" rot="R90" align="center"/>
@@ -15628,14 +15626,6 @@ the power LED. To either:
 <attribute name="NAME" x="-27.94" y="83.82" size="1.778" layer="95" font="vector" rot="R180"/>
 <attribute name="VALUE" x="-27.94" y="88.9" size="1.778" layer="96" font="vector" rot="R180"/>
 </instance>
-<instance part="RPIBOOT3" gate="G$1" x="-30.48" y="109.22" smashed="yes" rot="R180">
-<attribute name="NAME" x="-27.94" y="106.68" size="1.778" layer="95" font="vector" rot="R180"/>
-<attribute name="VALUE" x="-27.94" y="111.76" size="1.778" layer="96" font="vector" rot="R180"/>
-</instance>
-<instance part="GND25" gate="G$1" x="-30.48" y="101.6" smashed="yes" rot="R180">
-<attribute name="NAME" x="-27.94" y="99.06" size="1.778" layer="95" font="vector" rot="R180"/>
-<attribute name="VALUE" x="-27.94" y="104.14" size="1.778" layer="96" font="vector" rot="R180"/>
-</instance>
 <instance part="RPIBOOT4" gate="G$1" x="-30.48" y="124.46" smashed="yes" rot="R180">
 <attribute name="NAME" x="-27.94" y="121.92" size="1.778" layer="95" font="vector" rot="R180"/>
 <attribute name="VALUE" x="-27.94" y="127" size="1.778" layer="96" font="vector" rot="R180"/>
@@ -15903,10 +15893,6 @@ the power LED. To either:
 <instance part="C44" gate="G$1" x="787.4" y="281.94" smashed="yes">
 <attribute name="NAME" x="785.11" y="283.19" size="1.27" layer="95" font="vector" rot="R90" align="center"/>
 <attribute name="VALUE" x="789.7" y="283.19" size="1.27" layer="96" font="vector" rot="R90" align="center"/>
-</instance>
-<instance part="C70" gate="G$1" x="795.02" y="281.94" smashed="yes">
-<attribute name="NAME" x="792.73" y="283.19" size="1.27" layer="95" font="vector" rot="R90" align="center"/>
-<attribute name="VALUE" x="797.32" y="283.19" size="1.27" layer="96" font="vector" rot="R90" align="center"/>
 </instance>
 <instance part="C71" gate="G$1" x="802.64" y="281.94" smashed="yes">
 <attribute name="NAME" x="800.35" y="283.19" size="1.27" layer="95" font="vector" rot="R90" align="center"/>
@@ -16187,6 +16173,10 @@ the power LED. To either:
 <instance part="GND29" gate="1" x="408.94" y="22.86" smashed="yes" rot="MR0">
 <attribute name="VALUE" x="411.48" y="20.32" size="1.778" layer="96" rot="MR0"/>
 </instance>
+<instance part="C25" gate="G$1" x="594.36" y="241.3" smashed="yes" rot="R90">
+<attribute name="NAME" x="593.725" y="242.316" size="1.778" layer="95" rot="R90"/>
+<attribute name="VALUE" x="598.551" y="242.316" size="1.778" layer="96" rot="R90"/>
+</instance>
 </instances>
 <busses>
 </busses>
@@ -16230,10 +16220,13 @@ the power LED. To either:
 <wire x1="579.12" y1="226.06" x2="581.66" y2="226.06" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<wire x1="617.22" y1="251.46" x2="617.22" y2="248.92" width="0.1524" layer="91"/>
+<wire x1="617.22" y1="251.46" x2="617.22" y2="241.3" width="0.1524" layer="91"/>
 <pinref part="U$14" gate="G$1" pin="GND"/>
 <pinref part="LED2" gate="G$1" pin="C"/>
 <wire x1="614.68" y1="251.46" x2="617.22" y2="251.46" width="0.1524" layer="91"/>
+<pinref part="C25" gate="G$1" pin="2"/>
+<wire x1="599.44" y1="241.3" x2="617.22" y2="241.3" width="0.1524" layer="91"/>
+<junction x="617.22" y="241.3"/>
 </segment>
 <segment>
 <pinref part="U$1" gate="G$1" pin="GND"/>
@@ -16625,11 +16618,6 @@ the power LED. To either:
 <label x="-25.4" y="86.36" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="GND25" gate="G$1" pin="1"/>
-<wire x1="-30.48" y1="101.6" x2="-20.32" y2="101.6" width="0.1524" layer="91"/>
-<label x="-25.4" y="101.6" size="1.778" layer="95"/>
-</segment>
-<segment>
 <pinref part="GND26" gate="G$1" pin="1"/>
 <wire x1="-30.48" y1="116.84" x2="-20.32" y2="116.84" width="0.1524" layer="91"/>
 <label x="-25.4" y="116.84" size="1.778" layer="95"/>
@@ -16832,16 +16820,13 @@ the power LED. To either:
 <pinref part="C75" gate="G$1" pin="2"/>
 <wire x1="817.88" y1="276.86" x2="810.26" y2="276.86" width="0.1524" layer="91"/>
 <wire x1="810.26" y1="276.86" x2="802.64" y2="276.86" width="0.1524" layer="91"/>
-<wire x1="802.64" y1="276.86" x2="795.02" y2="276.86" width="0.1524" layer="91"/>
-<wire x1="795.02" y1="276.86" x2="787.4" y2="276.86" width="0.1524" layer="91"/>
+<wire x1="802.64" y1="276.86" x2="787.4" y2="276.86" width="0.1524" layer="91"/>
 <wire x1="787.4" y1="276.86" x2="779.78" y2="276.86" width="0.1524" layer="91"/>
 <wire x1="779.78" y1="276.86" x2="767.08" y2="276.86" width="0.1524" layer="91"/>
 <pinref part="C43" gate="G$1" pin="2"/>
 <junction x="779.78" y="276.86"/>
 <pinref part="C44" gate="G$1" pin="2"/>
 <junction x="787.4" y="276.86"/>
-<pinref part="C70" gate="G$1" pin="2"/>
-<junction x="795.02" y="276.86"/>
 <pinref part="C71" gate="G$1" pin="2"/>
 <junction x="802.64" y="276.86"/>
 <pinref part="C72" gate="G$1" pin="2"/>
@@ -17103,8 +17088,9 @@ the power LED. To either:
 <wire x1="568.96" y1="236.22" x2="574.04" y2="236.22" width="0.1524" layer="91"/>
 <wire x1="574.04" y1="236.22" x2="579.12" y2="236.22" width="0.1524" layer="91"/>
 <wire x1="579.12" y1="236.22" x2="591.82" y2="236.22" width="0.1524" layer="91"/>
-<wire x1="591.82" y1="236.22" x2="591.82" y2="251.46" width="0.1524" layer="91"/>
+<wire x1="591.82" y1="236.22" x2="591.82" y2="241.3" width="0.1524" layer="91"/>
 <pinref part="C2" gate="G$1" pin="1"/>
+<wire x1="591.82" y1="241.3" x2="591.82" y2="251.46" width="0.1524" layer="91"/>
 <wire x1="591.82" y1="251.46" x2="591.82" y2="256.54" width="0.1524" layer="91"/>
 <wire x1="574.04" y1="231.14" x2="574.04" y2="236.22" width="0.1524" layer="91"/>
 <junction x="574.04" y="236.22"/>
@@ -17115,6 +17101,8 @@ the power LED. To either:
 <junction x="591.82" y="251.46"/>
 <pinref part="C6" gate="G$1" pin="1"/>
 <junction x="579.12" y="236.22"/>
+<pinref part="C25" gate="G$1" pin="1"/>
+<junction x="591.82" y="241.3"/>
 </segment>
 <segment>
 <pinref part="RPI-CM1" gate="G$1" pin="+5V(INPUT)@77"/>
@@ -17386,13 +17374,6 @@ the power LED. To either:
 <pinref part="C7" gate="G$1" pin="1"/>
 <wire x1="576.58" y1="2.54" x2="576.58" y2="5.08" width="0.1524" layer="91"/>
 <junction x="576.58" y="2.54"/>
-</segment>
-</net>
-<net name="1.8V" class="0">
-<segment>
-<pinref part="RPIBOOT3" gate="G$1" pin="1"/>
-<wire x1="-30.48" y1="109.22" x2="-20.32" y2="109.22" width="0.1524" layer="91"/>
-<label x="-25.4" y="109.22" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="USB_N" class="0">
@@ -18592,8 +18573,7 @@ the power LED. To either:
 <wire x1="767.08" y1="284.48" x2="767.08" y2="289.56" width="0.1524" layer="91"/>
 <wire x1="767.08" y1="289.56" x2="779.78" y2="289.56" width="0.1524" layer="91"/>
 <wire x1="779.78" y1="289.56" x2="787.4" y2="289.56" width="0.1524" layer="91"/>
-<wire x1="787.4" y1="289.56" x2="795.02" y2="289.56" width="0.1524" layer="91"/>
-<wire x1="795.02" y1="289.56" x2="802.64" y2="289.56" width="0.1524" layer="91"/>
+<wire x1="787.4" y1="289.56" x2="802.64" y2="289.56" width="0.1524" layer="91"/>
 <wire x1="802.64" y1="289.56" x2="810.26" y2="289.56" width="0.1524" layer="91"/>
 <wire x1="810.26" y1="289.56" x2="817.88" y2="289.56" width="0.1524" layer="91"/>
 <pinref part="C73" gate="G$1" pin="1"/>
@@ -18605,9 +18585,6 @@ the power LED. To either:
 <pinref part="C71" gate="G$1" pin="1"/>
 <wire x1="802.64" y1="284.48" x2="802.64" y2="289.56" width="0.1524" layer="91"/>
 <junction x="802.64" y="289.56"/>
-<pinref part="C70" gate="G$1" pin="1"/>
-<wire x1="795.02" y1="284.48" x2="795.02" y2="289.56" width="0.1524" layer="91"/>
-<junction x="795.02" y="289.56"/>
 <pinref part="C44" gate="G$1" pin="1"/>
 <wire x1="787.4" y1="284.48" x2="787.4" y2="289.56" width="0.1524" layer="91"/>
 <junction x="787.4" y="289.56"/>
