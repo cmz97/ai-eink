@@ -324,10 +324,10 @@ controller = Controller()
 # hardcode model
 model_list = ['/home/kevin/ai/models/4_anyloracleanlinearmix_v10-zelda-merge-onnx/_add_ons.json']
 sd_baker = SdBaker()
-sd_baker.width = 128*4
-sd_baker.height = 128*6
+sd_baker.width = 128*2
+sd_baker.height = 128*3
 # override
-sd_baker.char_id = "best quality,masterpiece, perfect face, 1girl,solo, peer proportional face, wizard, wizard hat, black cape, simple background,looking at viewer"
+sd_baker.char_id = "best quality,masterpiece, perfect face, 1waifu, milf, solo, blush, seductive face, peer proportional face, wizard, wizard hat, black cape, simple background,looking at viewer"
 controller = Controller()
 
 if __name__ == "__main__":
