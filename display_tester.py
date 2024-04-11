@@ -10,9 +10,9 @@ from einkDSP import einkDSP
 
 @jit(nopython=True,cache = True)
 def dump_1bit(pixels):
-    pixels = np.clip(pixels, 0, 255)
-    pixels_quantized = np.digitize(pixels, bins=[64, 128, 192], right=True) # 64, 128, 192
-    
+    # pixels = np.clip(pixels, 0, 255)
+    # pixels_quantized = np.digitize(pixels, bins=[64, 128, 192], right=True) # 64, 128, 192
+    pixels_quantized = pixels
     result_size = (pixels.size + 7) // 8  # Calculate the needed size for the result
     int_pixels = np.zeros(result_size, dtype=np.uint8)
     
@@ -37,8 +37,11 @@ for i in range(1,2):
     startTime = time.time()
     myGUI.updateIndex(i % 4,(i-1)% 4)  # Update the index
     myGUI.updateStatusBar(f"CPU {i}% / RAM {i}%", ['./Asset/Image/batt.bmp'])  # Update the status bar
+    print(f"GUI time: {time.time() - startTime}")
+    startTime = time.time()
+
     np_canvas = np.array(myGUI.canvas).astype(np.uint8)
     np_canvas = dump_1bit(np_canvas).tolist()
     eink.PIC_display(np_canvas)
-    eink.part(np_canvas)
+    print(f"EINK time: {time.time() - startTime}\n")
     eink.PIC_display_Clear()
