@@ -3,6 +3,7 @@ from einkDSP import einkDSP
 from encoder import *
 from GUI import *
 from utils import *
+import subprocess  # Import subprocess module
 
 import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
@@ -26,6 +27,7 @@ class HomePage(Page):
         self.index = 0
         self.gui = GUI()
         self.display()
+        self.subprogram = ['./app_tiny_diffusion.py', './app_tamago.py', './app_tamago.py', 'app_ebook_kid.py']  # Add all your scripts here
         
     def handle_input(self, input):
         logging.info(f"handle_input {input}")
@@ -40,7 +42,13 @@ class HomePage(Page):
             self.gui.updateIndex(self.index, last)
             self.display()
         elif input == 'enter':
-            pass
+            if 0 <= self.index < len(self.subprogram):
+                script_to_run = self.subprogram[self.index]
+                logging.info(f'Executing script: {script_to_run}')
+                # Run the script and wait for it to complete
+                self.app.multi_button_monitor.stop_monitoring()
+                subprocess.run(['python', script_to_run], check=True)
+                self.app.multi_button_monitor.start_monitoring()
         else:
             pass
     
@@ -64,6 +72,7 @@ class Application:
             {'pin': 22, 'direction': 'down', 'callback': self.press_callback},
             {'pin': 17, 'direction': 'enter', 'callback': self.press_callback}
         ]        
+
         self.multi_button_monitor = MultiButtonMonitor(buttons)
 
     def eink_display_4g(self, hex_pixels):
