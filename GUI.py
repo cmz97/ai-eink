@@ -8,17 +8,19 @@ import textwrap
 
 class GUI:
     def __init__(self, eink_width, eink_height, FONT_PATH, contents = [
-            {"Title": "Tiny\nDiffusion", "Icon": '../Asset/Image/diffuser.bmp'},
-            {"Title": "E-Book\nDiffusion", "Icon": '../Asset/Image/book.bmp'},
-            {"Title": "AI\nTamagotchi", "Icon": '../Asset/Image/toma.bmp'},
-            {"Title": "Camera\nIn-Paint", "Icon": '../Asset/Image/inpain.bmp'}  # Adjusted to have a 'Title' key for consistency
-        ] , icons = ['../Asset/Image/batt.bmp'], default_index = 0):
+            {"Title": "Tiny\nDiffusion", "Icon": './Asset/Image/diffuser.bmp'},
+            {"Title": "E-Book\nDiffusion", "Icon": './Asset/Image/book.bmp'},
+            {"Title": "AI\nTamagotchi", "Icon": './Asset/Image/toma.bmp'},
+            {"Title": "Camera\nIn-Paint", "Icon": './Asset/Image/inpain.bmp'}  # Adjusted to have a 'Title' key for consistency
+        ] , icons = ['./Asset/Image/batt.bmp'], default_index = 0):
         self.eink_width, self.eink_height = eink_width, eink_height
-        self.FONT_PATH = '../Asset/Font/Monorama-Bold.ttf'
+        self.FONT_PATH = './Asset/Font/Monorama-Bold.ttf'
 
         self.contents = contents
 
         self.canvas = Image.new('1', (eink_width, eink_height), 'white')
+        self.draw_plus_pattern(self.canvas, density=10, start_pos=(5, 0), size=5)  # Draw '+' pattern
+
         self.canvas = self.draw_status_bar_with_text_and_icons(self.canvas, "CPU 100% / RAM 100%", icons, 35, 5, FONT_PATH, 15)
         self.masks= []  # Assuming this is defined
         self.maskPosition = []
@@ -47,7 +49,35 @@ class GUI:
 
         self.canvas = self.invert_pixels_within_region(self.canvas, self.masks[default_index], self.maskPosition[default_index])
         # Save the result
+
         self.canvas.save('result.bmp')
+
+    def draw_plus_pattern(self,canvas, density, start_pos, size):
+        """
+        Draw a '+' pattern on the canvas starting from start_pos, with specified size and density.
+
+        :param canvas: PIL Image object where the '+' pattern will be drawn.
+        :param density: Determines how close each '+' is to its neighbor.
+        :param start_pos: A tuple (x, y) indicating the starting position for the pattern.
+        :param size: The size of the '+', which also dictates the width of each stroke. Minimum value is 3.
+        """
+        draw = ImageDraw.Draw(canvas)
+        width, height = canvas.size
+        x_start, y_start = start_pos
+
+        # Ensure size is at least 3
+        size = max(size, 3)
+        half_size = size // 2
+
+        # Calculate the step between each '+' based on density
+        step = max(size, density)
+
+        for y in range(y_start, height, step):
+            for x in range(x_start, width, step):
+                # Vertical line of '+'
+                draw.line([(x, y - half_size), (x, y + half_size)], fill='black')
+                # Horizontal line of '+'
+                draw.line([(x - half_size, y), (x + half_size, y)], fill='black')
 
     def updateIndex(self, index, previousIndex):
         self.canvas = self.invert_pixels_within_region(self.canvas, self.masks[previousIndex], self.maskPosition[previousIndex])
@@ -135,6 +165,8 @@ class GUI:
     def draw_rounded_rectangle_with_mask(self,width, height, corner_radius, padding, line_thickness, fill):
         # Similar setup as before
         image = Image.new('1', (width, height), 'white')
+        self.draw_plus_pattern(image, density=10, start_pos=(5, 5), size=5)  # Draw '+' pattern
+
         mask = Image.new('1', (width, height), 'black')  # Black mask, white for areas to keep
         draw_image = ImageDraw.Draw(image)
         draw_mask = ImageDraw.Draw(mask)
@@ -143,7 +175,7 @@ class GUI:
         padded_rectangle = (padding[3], padding[0], width - padding[2], height - padding[1])
         
         # Draw the rounded rectangle on both image and mask
-        fill_color = 'black' if fill else None
+        fill_color = 'black' if fill else 'white' 
         draw_image.rounded_rectangle(padded_rectangle, radius=corner_radius, fill=fill_color, outline='black', width=line_thickness)
         draw_mask.rounded_rectangle(padded_rectangle, radius=corner_radius, fill='white',  outline='black', width=line_thickness)
 
@@ -296,7 +328,7 @@ class GUI:
             # Process icon (resize and convert colors)
             icon = self.process_icon_for_status_bar(icon_path, new_width, new_height)
 
-            x_position = int(text_area_end + padding * (i + 1) + icon_space * i)
+            x_position = int(190+ icon_space * i)
             y_position = int((bar_height - new_height) // 2)
             screen.paste(icon, (x_position, y_position), icon)
         
@@ -304,11 +336,11 @@ class GUI:
     
 
 
-myGUI = GUI(240, 416, '../Asset/Font/Monorama-Bold.ttf')  # Initialize the GUI
+# myGUI = GUI(240, 416, './Asset/Font/Monorama-Bold.ttf')  # Initialize the GUI
 
-for i in range(1,100):
-    time.sleep(1)
-    startTime = time.time()
-    myGUI.updateIndex(i % 4,(i-1)% 4)  # Update the index
-    myGUI.updateStatusBar(f"CPU {i}% / RAM {i}%", ['../Asset/Image/batt.bmp'])  # Update the status bar
-    print(f"Time taken: {time.time() - startTime:.4f} seconds")
+# for i in range(1,100):
+#     time.sleep(0.1)
+#     startTime = time.time()
+#     myGUI.updateIndex(i % 4,(i-1)% 4)  # Update the index
+#     myGUI.updateStatusBar(f"CPU {i}% / RAM {i}%", ['./Asset/Image/batt.bmp'])  # Update the status bar
+#     print(f"Time taken: {time.time() - startTime:.4f} seconds")
