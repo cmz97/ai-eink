@@ -55,8 +55,8 @@ def clear_screen():
     eink.PIC_display(pixels)
     eink.PIC_display_Clear()
 
+eink.epd_init()
 eink.epd_init_part()
-clear_screen()
 
 for i in range(1,2):
     time.sleep(0.1)
@@ -71,7 +71,6 @@ for i in range(1,2):
     np_canvas = np.array(img).astype(np.uint8)
     np_canvas = dump_1bit(np_canvas)
     # print(np_canvas)
-    eink.epd_init_fast()
     eink.epd_init_part()
     eink.PIC_display(np_canvas)
     print(f"EINK time: {time.time() - startTime}\n")
