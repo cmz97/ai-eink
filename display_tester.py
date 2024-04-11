@@ -73,4 +73,5 @@ for i in range(1,2):
     # print(np_canvas)
     clear_screen()
     eink.PIC_display(np_canvas)
+    time.sleep(0.5)
     print(f"EINK time: {time.time() - startTime}\n")
