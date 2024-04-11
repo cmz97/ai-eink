@@ -71,6 +71,7 @@ for i in range(1,2):
     np_canvas = np.array(img).astype(np.uint8)
     np_canvas = dump_1bit(np_canvas)
     # print(np_canvas)
+    eink.epd_init_fast()
     eink.epd_init_part()
     eink.PIC_display(np_canvas)
     print(f"EINK time: {time.time() - startTime}\n")
