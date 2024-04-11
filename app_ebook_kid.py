@@ -18,35 +18,32 @@ from apps import SdBaker, PromptsBank, BookLoader, SceneBaker
 import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 # GPIO.cleanup()
+from Ebook_GUI import EbookGUI
 
+def format_text(line_buffer, word, boxWidth, boxHeight, fontWidth, fontHeight):
+        # line buffer -> <line_idx, words>
+        charsPerLine = boxWidth // fontWidth
+        linesPerPage = boxHeight // fontHeight
+        # assume buffer = list of words
 
+        lineLength = len(" ".join(line_buffer[-1])) if line_buffer else 0
+        # handle corner case
+        if len(word) > charsPerLine:  # need to break word
+            return line_buffer + word[:charsPerLine]
+            
+        if lineLength + len(word) + (1 if line_buffer else 0) <= charsPerLine: # append and update
+            if line_buffer:
+                line_buffer[-1].append(word)
+            else:
+                line_buffer = [[word]]
+        else: # new line
+            # check if new page
+            if len(line_buffer) >= linesPerPage: # new page
+                return [[word]]
+            line_buffer.append([word])
 
-
-def format_text(line_buffer, word, screenWidth, screenHeight, fontWidth, fontHeight):
-    # line buffer -> <line_idx, words>
-    charsPerLine = screenWidth // fontWidth
-    linesPerPage = screenHeight // fontHeight
-    # assume buffer = list of words
-
-    lineLength = len(" ".join(line_buffer[-1])) if line_buffer else 0
-    # handle corner case
-    if len(word) > charsPerLine:  # need to break word
-        return line_buffer + word[:charsPerLine]
-        
-    if lineLength + len(word) + (1 if line_buffer else 0) <= charsPerLine: # append and update
-        if line_buffer:
-            line_buffer[-1].append(word)
-        else:
-            line_buffer = [[word]]
-    else: # new line
-        # check if new page
-        if len(line_buffer) >= linesPerPage: # new page
-            return [[word]]
-        line_buffer.append([word])
-
-    # update buffer and return
-    return line_buffer 
-
+        # update buffer and return
+        return line_buffer 
 
 class Controller:
 
@@ -56,7 +53,7 @@ class Controller:
         # self.butDown = Button(22, direction='down', callback=self.press_callback) # gpio 26
         # self.butEnter = Button(17, direction='enter', callback=self.press_callback) # gpio 26
         self.in_4g = True
-        self.image = Image.new("L", (eink_width, eink_height), "white")
+        self.image = gui.canvas
         
         # buffers
         self.prompt_buffer = ""
@@ -150,21 +147,18 @@ class Controller:
     
     def stream_text(self, text):
         self._status_check()
-        screen_buffer = 10
+        # screen_buffer = 10
+        w, h = gui.text_area[1][0] - gui.text_area[0][0] , gui.text_area[1][1] - gui.text_area[0][1]
         self.text_buffer = format_text(
             self.text_buffer, 
             text, 
-            screenWidth=eink_width - screen_buffer*2,
-            screenHeight=eink_height - screen_buffer*2,
-            fontWidth=char_width, 
-            fontHeight=char_height)
-
-        line_img = [
-            text_to_image(" ".join(line)) for line in self.text_buffer
-        ]
+            screenWidth= w,
+            screenHeight= h,
+            fontWidth=gui.font_size, 
+            fontHeight=gui.font_size * 1.2)
 
         # call for screen update
-        self.image = draw_text_on_screen(line_img)
+        self.image = gui.draw_text_on_canvas(gui.canvas, self.text_buffer)
         self.update_screen()        
 
     def sd_check(self):
@@ -229,6 +223,7 @@ async def main():
 
 
 # hardcoded parts
+gui = EbookGUI()
 controller = Controller()
 sd_baker = SdBaker(vae_override="../models/sdxs-512-0.9/vae")
 # override sd 
