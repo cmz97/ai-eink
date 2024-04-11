@@ -46,10 +46,10 @@ class HomePage(Page):
                 script_to_run = self.subprogram[self.index]
                 logging.info(f'Executing script: {script_to_run}')
                 # Run the script and wait for it to complete
-                self.app.multi_button_monitor.stop_monitoring()
+                # self.app.multi_button_monitor.stop_monitoring()
                 process = subprocess.Popen(['venv/bin/python', script_to_run],)
                 process.wait()  # Wait for the subprocess to complete       
-                self.app.multi_button_monitor.start_monitoring()
+                # self.app.multi_button_monitor.start_monitoring()
                 print("Sub-Program completed !!!")
                 self.display()
         else:
@@ -104,6 +104,7 @@ class Application:
 async def main():
     app = Application()
     while True:
+        print("Main.py Pring...")
         await asyncio.sleep(1)  # Sleep for a bit to yield control to the event loop
 
 if __name__ == "__main__":
