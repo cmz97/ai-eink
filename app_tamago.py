@@ -329,18 +329,21 @@ sd_baker.height = 128*3
 # override
 sd_baker.char_id = "best quality,masterpiece, perfect face, 1waifu, milf, solo, blush, seductive face, peer proportional face, wizard, wizard hat, black cape, simple background,looking at viewer"
 controller = Controller()
-
+backCounter = 0
 if __name__ == "__main__":
     controller.layout[0](0) # page 0
     controller.load_model() # load model
     try:
         while True:
-            time.sleep(5)
+            time.sleep(1)
             print(f"ping - \n")
             if not controller.cooking:
                 logger.info("background tasks triggerd")
                 if len(controller.action_buffer) < 3: # max 3
                     controller.trigger_background_job()
+            backCounter += 1 if GPIO.input(9) == 1 else 0
+            if backCounter >= 5:
+                os._exit(0)
 
             # if len(controller.action_buffer) != previous_action_num
             # previous_action_num = len(controller.action_buffer)

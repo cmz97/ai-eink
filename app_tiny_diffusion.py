@@ -446,7 +446,7 @@ if __name__ == "__main__":
         while True:
             time.sleep(1)
             backCounter += 1 if GPIO.input(9) == 1 else 0
-            if backCounter >= 4:
+            if backCounter >= 5:
                 os._exit(0)
     except Exception:
         # logger.errors(e)

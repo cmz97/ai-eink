@@ -244,6 +244,7 @@ fontWidth=char_width, fontHeight=char_height)
 
 controller = Controller()
 file_cache = "./temp.png"
+backCounter = 0
 
 if __name__ == "__main__":
     # sd_baker = SdBaker(pb)
@@ -257,13 +258,16 @@ if __name__ == "__main__":
 
     try:
         while True:
-            time.sleep(3)
+            time.sleep(1)
             print(f"ping - \n")
             if controller.pending_image and not controller.cooking:
                 # trigger sd cooking tasks
                 logger.info("background tasks triggerd")
                 controller.cooking = True
                 controller.trigger_background_job()
+            backCounter += 1 if GPIO.input(9) == 1 else 0
+            if backCounter >= 5:
+                os._exit(0)
                 
 
     except Exception:
@@ -271,3 +275,4 @@ if __name__ == "__main__":
 
     GPIO.cleanup()
 
+    
