@@ -47,8 +47,10 @@ class HomePage(Page):
                 logging.info(f'Executing script: {script_to_run}')
                 # Run the script and wait for it to complete
                 self.app.multi_button_monitor.stop_monitoring()
-                subprocess.run(['venv/bin/python', script_to_run], check=True)
+                process = subprocess.Popen(['venv/bin/python', script_to_run],)
+                process.wait()  # Wait for the subprocess to complete       
                 self.app.multi_button_monitor.start_monitoring()
+                print("Sub-Program completed !!!")
                 self.display()
         else:
             pass
