@@ -51,6 +51,7 @@ class HomePage(Page):
                 process.wait()  # Wait for the subprocess to complete       
                 # self.app.multi_button_monitor.start_monitoring()
                 print("Sub-Program completed !!!")
+                self.eink_init()
                 self.display()
         else:
             pass
@@ -84,6 +85,10 @@ class Application:
         self.eink.pic_display_4g(hex_pixels)
         self.eink.epd_sleep()
         self.in_4g = True
+    
+    def eink_init(self):
+        self.eink.epd_init_fast()
+        self.eink.PIC_display_Clear()
 
     def eink_display_2g(self, hex_pixels):
         logging.info('eink_display_2g')
