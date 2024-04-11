@@ -66,8 +66,9 @@ for i in range(1,2):
     myGUI.updateStatusBar(f"CPU {i}% / RAM {i}%", ['./Asset/Image/batt.bmp'])  # Update the status bar
     print(f"GUI time: {time.time() - startTime}")
     startTime = time.time()
-
-    np_canvas = np.array(myGUI.canvas).astype(np.uint8)
+    img = myGUI.canvas.copy()
+    img = img.transpose(Image.FLIP_TOP_BOTTOM)
+    np_canvas = np.array(img).astype(np.uint8)
     np_canvas = dump_1bit(np_canvas)
     # print(np_canvas)
     eink.epd_init_part()
