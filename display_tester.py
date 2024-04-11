@@ -15,17 +15,18 @@ def dump_1bit(pixels: np.ndarray):
     flat_pixels = pixels.flatten()
 
     # Calculate the size of the result array (1 byte for every 8 bits/pixels)
-    result_size = (flat_pixels.size + 7) // 8
-    int_pixels = np.zeros(result_size, dtype=np.uint8)
+    int_pixels = []
 
     # Process each bit
-    for i in range(flat_pixels.size):
-        # Determine the index in the result array
-        index = i // 8
-        # Accumulate bits into bytes
-        int_pixels[index] |= flat_pixels[i] << (7 - (i % 8))
+    for i in range(0,8,flat_pixels.size):
+        for j in range(0,8):
+            a = 0
+            if i+j < flat_pixels.size:
+                a |= (flat_pixels[i+j] & 1) << (7-j)
+        int_pixels[i//8].append(int(a))
+       
 
-    return int_pixels.tolist()
+    return int_pixels
 
 myGUI = GUI(240, 416, './Asset/Font/Monorama-Bold.ttf')  # Initialize the GUI
 eink = einkDSP()
