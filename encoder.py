@@ -90,9 +90,7 @@ class Button:
                 # self.callback(1)
                 # self.shut_down()
                 return 
-            if ellapse_t > 6:
-                # Quite entire python program
-                quit()
+           
 
         if self.callback and p == 1:
             print(f'{self.direction} pressed') 

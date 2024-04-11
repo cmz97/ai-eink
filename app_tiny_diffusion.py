@@ -444,8 +444,8 @@ if __name__ == "__main__":
         
     try:
         while True:
-            time.sleep(3)
-            print(f"ping - \n")
+            time.sleep(1)
+            print(GPIO.input(9), GPIO.input(22), GPIO.input(17))
     except Exception:
         # logger.errors(e)
         pass
