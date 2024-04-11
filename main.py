@@ -2,6 +2,10 @@ import asyncio
 from einkDSP import einkDSP
 from encoder import *
 from GUI import *
+from utils import *
+
+import logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class Page:
     def __init__(self, app):
@@ -21,48 +25,74 @@ class HomePage(Page):
         super().__init__(app)
         self.index = 0
         self.gui = GUI()
+        self.display()
         
-    async def handle_input(self, input):
+    def handle_input(self, input):
+        logging.info(f"handle_input {input}")
         if input == 'up':
             last = self.index
             self.index = (self.index - 1) % len(self.gui.contents)
             self.gui.updateIndex(self.index, last)
+            self.display()
         elif input == 'down':
             last = self.index
             self.index = (self.index + 1) % len(self.gui.contents)
             self.gui.updateIndex(self.index, last)
+            self.display()
         elif input == 'enter':
             pass
         else:
             pass
+    
+    def display(self):
+        logging.info('home page display called')
+        hex_pixels = dump_1bit(np.array(self.gui.canvas.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.uint8))
+        self.app.eink_display_2g(hex_pixels)
 
 # Implement other ProgramPage classes similarly with async methods
 
 class Application:
     def __init__(self):
         self.eink = einkDSP()
+        self.eink.epd_init_fast()
+        self.eink.PIC_display_Clear()
+        self.in_4g = False
         self.current_page = HomePage(self)
 
         buttons = [
             {'pin': 9, 'direction': 'up', 'callback': self.press_callback},
             {'pin': 22, 'direction': 'down', 'callback': self.press_callback},
             {'pin': 17, 'direction': 'enter', 'callback': self.press_callback}
-        ]
-        
+        ]        
         self.multi_button_monitor = MultiButtonMonitor(buttons)
 
-    async def einkDisplay(self, hex_pixels):
+    def eink_display_4g(self, hex_pixels):
+        logging.info('eink_display_4g')
         self.eink.epd_w21_init_4g()
         self.eink.pic_display_4g(hex_pixels)
         self.eink.epd_sleep()
-            
-    async def press_callback(self, key):
-        self.current_page.handle_input(key)
+        self.in_4g = True
+
+    def eink_display_2g(self, hex_pixels):
+        logging.info('eink_display_2g')
+        if self.in_4g : 
+            self.transit()
+            self.in_4g = False
+
+        self.eink.epd_init_part()
+        self.eink.PIC_display(hex_pixels)
+
+    def transit(self):
+        self.eink.epd_init_fast()
+        self.eink.PIC_display_Clear()
         
+    def press_callback(self, key):
+        self.current_page.handle_input(key)
 
 async def main():
     app = Application()
-    await app.run()
+    while True:
+        await asyncio.sleep(1)  # Sleep for a bit to yield control to the event loop
 
 if __name__ == "__main__":
     asyncio.run(main())

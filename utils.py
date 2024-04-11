@@ -659,6 +659,25 @@ def floydSteinbergDithering_numba(pixels):
             pixels[y+1, x+1] += quant_error * 1 / 16
     return pixels
 
+@jit(nopython=True, cache=True)
+def dump_1bit(pixels: np.ndarray):
+    # Flatten the array for processing
+    flat_pixels = pixels.flatten()
+
+    # Calculate the size of the result array (1 byte for every 8 bits/pixels)
+    result_size = (flat_pixels.size + 7) // 8
+    int_pixels = np.zeros(result_size, dtype=np.uint8)
+
+    # Process each bit
+    for i in range(flat_pixels.size):
+        # Determine the index in the result array
+        index = i // 8
+        # Accumulate bits into bytes
+        int_pixels[index] |= flat_pixels[i] << (7 - (i % 8))
+
+    # Convert the NumPy array to a Python list of integers
+    return [int(x) for x in int_pixels]
+
 def image_to_header_file(image):
     grayscale = image.convert('L')
     pixels = np.array(grayscale, dtype=np.float32)
