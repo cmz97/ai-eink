@@ -172,7 +172,7 @@ class MultiButtonMonitor:
 
     def stop_monitoring(self):
         self.running = False
-        if self.monitor_thread is not None:
+        if self.monitor_thread is not None and threading.current_thread() != self.monitor_thread:
             self.monitor_thread.join()
 
     def shut_down(self):
