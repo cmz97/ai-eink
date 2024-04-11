@@ -72,6 +72,6 @@ for i in range(1,2):
     np_canvas = dump_1bit(np_canvas)
     # print(np_canvas)
     clear_screen()
-    eink.PIC_display(np_canvas)
     time.sleep(0.5)
+    eink.PIC_display(np_canvas)
     print(f"EINK time: {time.time() - startTime}\n")
