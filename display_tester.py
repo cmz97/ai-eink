@@ -73,6 +73,6 @@ for i in range(1,2):
     np_canvas = np.array(myGUI.canvas).astype(np.uint8)
     np_canvas = dump_1bit(np_canvas).tolist()
     eink.epd_init_part()
+    eink.PIC_display_Clear()
     eink.PIC_display(np_canvas)
     print(f"EINK time: {time.time() - startTime}\n")
-    eink.PIC_display_Clear()
