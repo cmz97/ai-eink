@@ -29,7 +29,7 @@ def format_text(line_buffer, word, boxWidth, boxHeight, fontWidth, fontHeight):
         lineLength = len(" ".join(line_buffer[-1])) if line_buffer else 0
         # handle corner case
         if len(word) > charsPerLine:  # need to break word
-            return line_buffer + word[:charsPerLine]
+            return line_buffer + word[:charsPerLine], False
             
         if lineLength + len(word) + (1 if line_buffer else 0) <= charsPerLine: # append and update
             if line_buffer:
@@ -39,11 +39,11 @@ def format_text(line_buffer, word, boxWidth, boxHeight, fontWidth, fontHeight):
         else: # new line
             # check if new page
             if len(line_buffer) >= linesPerPage: # new page
-                return [[word]]
+                return [[word]] , True
             line_buffer.append([word])
 
         # update buffer and return
-        return line_buffer 
+        return line_buffer , False
 
 class Controller:
 
@@ -130,7 +130,6 @@ class Controller:
         
     def sd_image_callback(self, image):
         self.image_buffer.append(image)
-        
         # image finished cooking done
         self.cooking = False
 
@@ -149,16 +148,18 @@ class Controller:
         self._status_check()
         # screen_buffer = 10
         w, h = gui.text_area[1][0] - gui.text_area[0][0] , gui.text_area[1][1] - gui.text_area[0][1]
-        self.text_buffer = format_text(
+        scale = 0.55
+        self.text_buffer, new_page = format_text(
             self.text_buffer, 
             text, 
-            screenWidth= w,
-            screenHeight= h,
-            fontWidth=gui.font_size, 
-            fontHeight=gui.font_size * 1.2)
+            boxWidth= w,
+            boxHeight= h,
+            fontWidth=gui.font_size * scale, 
+            fontHeight=gui.font_size * 1.4 * scale)
 
         # call for screen update
-        self.image = gui.draw_text_on_canvas(gui.canvas, self.text_buffer)
+        if new_page : gui.clear_page()
+        self.image = gui.draw_text_on_canvas(gui.canvas, [" ".join(x) for x in self.text_buffer])
         self.update_screen()        
 
     def sd_check(self):
@@ -220,6 +221,11 @@ async def main():
         controller.sd_check()
     c_thread.join()
     output_queue.put(None)  # Signal the generator that the process is done
+    
+    # last image check
+    while controller.cooking:
+        await controller.show_last_image()        
+
 
 
 # hardcoded parts

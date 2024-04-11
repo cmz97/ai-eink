@@ -537,6 +537,7 @@ def render_thumbnail_page(thumbnail, text, border=False):
 
 
 def insert_image(canvas, illustration, border=True):
+    canvas_ref = canvas.copy()
     illustration_width, illustration_height = illustration.size
     if illustration_width >= eink_width or illustration_height >= eink_height:
         buffer = 15
@@ -555,8 +556,8 @@ def insert_image(canvas, illustration, border=True):
             illustration = ImageOps.expand(illustration, border=2, fill='black')
 
     illustration_width, illustration_height = illustration.size
-    canvas.paste(illustration, ((eink_width - illustration_width)//2, (eink_height - illustration_height)//2))
-    return canvas
+    canvas_ref.paste(illustration, ((eink_width - illustration_width)//2, (eink_height - illustration_height)//2))
+    return canvas_ref
 
 
 def process_image(image, dialogBox=None, height=128*3, width=128*2):
