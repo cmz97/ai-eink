@@ -5,24 +5,10 @@ from PIL import Image
 import time
 import numpy as np
 from numba import jit
-
+import sys
 from einkDSP import einkDSP
+# np.set_printoptions(threshold=sys.maxsize)
 
-# @jit(nopython=True,cache = True)
-# def dump_1bit(pixels):
-#     # pixels = np.clip(pixels, 0, 255)
-#     # pixels_quantized = np.digitize(pixels, bins=[64, 128, 192], right=True) # 64, 128, 192
-#     pixels_quantized = pixels
-#     result_size = (pixels.size + 7) // 8  # Calculate the needed size for the result
-#     int_pixels = np.zeros(result_size, dtype=np.uint8)
-    
-#     index = 0
-#     for i in range(pixels_quantized.size):
-#         bit = 1 if pixels_quantized.flat[i] in [2, 3] else 0
-#         if i % 8 == 0 and i > 0:
-#             index += 1
-#         int_pixels[index] |= bit << (7 - (i % 8))
-#     return int_pixels
 
 @jit(nopython=True)
 def floydSteinbergDithering_numba(pixels):
@@ -38,22 +24,24 @@ def floydSteinbergDithering_numba(pixels):
             pixels[y+1, x+1] += quant_error * 1 / 16
     return pixels
 
-@jit(nopython=True,cache = True)
-def dump_1bit(pixels):
-    pixels = floydSteinbergDithering_numba(pixels)
-    pixels = np.clip(pixels, 0, 255)
-    pixels_quantized = np.digitize(pixels, bins=[64, 128, 192], right=True) # 64, 128, 192
-    
-    result_size = (pixels.size + 7) // 8  # Calculate the needed size for the result
+@jit(nopython=True, cache=True)
+def dump_1bit(pixels: np.ndarray):
+    # Flatten the array for processing
+    flat_pixels = pixels.flatten()
+
+    # Calculate the size of the result array (1 byte for every 8 bits/pixels)
+    result_size = (flat_pixels.size + 7) // 8
     int_pixels = np.zeros(result_size, dtype=np.uint8)
-    
-    index = 0
-    for i in range(pixels_quantized.size):
-        bit = 1 if pixels_quantized.flat[i] in [2, 3] else 0
-        if i % 8 == 0 and i > 0:
-            index += 1
-        int_pixels[index] |= bit << (7 - (i % 8))
-    return int_pixels
+
+    # Process each bit
+    for i in range(flat_pixels.size):
+        # Determine the index in the result array
+        index = i // 8
+        # Accumulate bits into bytes
+        int_pixels[index] |= flat_pixels[i] << (7 - (i % 8))
+
+    # Convert the NumPy array to a Python list of integers
+    return [int(x) for x in int_pixels]
 
 myGUI = GUI(240, 416, './Asset/Font/Monorama-Bold.ttf')  # Initialize the GUI
 eink = einkDSP()
@@ -71,7 +59,8 @@ for i in range(1,2):
     startTime = time.time()
 
     np_canvas = np.array(myGUI.canvas).astype(np.uint8)
-    np_canvas = dump_1bit(np_canvas).tolist()
+    np_canvas = dump_1bit(np_canvas)
+    # print(np_canvas)
     eink.epd_init_part()
     eink.PIC_display_Clear()
     eink.PIC_display(np_canvas)
