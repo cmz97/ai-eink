@@ -7,7 +7,7 @@ import textwrap
 # self.eink_width, self.eink_height = 240, 416
 
 class GUI:
-    def __init__(self, eink_width, eink_height, FONT_PATH, contents = [
+    def __init__(self, eink_width=240, eink_height=416, FONT_PATH='./Asset/Font/Monorama-Bold.ttf', contents = [
             {"Title": "Tiny\nDiffusion", "Icon": './Asset/Image/diffuser.bmp'},
             {"Title": "E-Book\nDiffusion", "Icon": './Asset/Image/book.bmp'},
             {"Title": "AI\nTamagotchi", "Icon": './Asset/Image/toma.bmp'},

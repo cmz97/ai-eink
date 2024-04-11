@@ -6,7 +6,7 @@ import random
 import json
 from pathlib import Path
 from einkDSP import einkDSP
-from encoder import Encoder, Button
+from encoder import *
 from PIL import Image
 from utils import * 
 import threading  # Import threading module
