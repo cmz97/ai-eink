@@ -50,7 +50,7 @@ eink = einkDSP()
 def clear_screen():
     # self.eink.PIC_display_Clear()
     image = Image.new("L", (240, 416), "white")
-    pixels = dump_1bit(np.array(image, dtype=np.uint8)).tolist()
+    pixels = dump_1bit(np.array(image, dtype=np.uint8))
     eink.epd_init_part()
     eink.PIC_display(pixels)
     eink.PIC_display_Clear()
