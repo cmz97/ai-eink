@@ -22,6 +22,7 @@ def dump_2bit(pixels:np.ndarray):
         if i % 8 == 0 and i > 0:
             index += 1
         int_pixels[index] |= bit << (7 - (i % 8))
+        int_pixels[index] = int(int_pixels[index])
     return int_pixels
 
 myGUI = GUI(240, 416, './Asset/Font/Monorama-Bold.ttf')  # Initialize the GUI
