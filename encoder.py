@@ -90,6 +90,9 @@ class Button:
                 # self.callback(1)
                 # self.shut_down()
                 return 
+            if ellapse_t > 6:
+                # Quite entire python program
+                quit()
 
         if self.callback and p == 1:
             print(f'{self.direction} pressed') 
@@ -140,6 +143,7 @@ class MultiButtonMonitor:
                 for button in self.buttons:
                     time.sleep(0.1)  # Adjust for sensitivity vs CPU usage
                     self.monitor_pin(button)
+                    
                 time.sleep(0.1)  # Adjust for sensitivity vs CPU usage
         except Exception as e:
             print(f"An exception occurred in monitor_pins thread: {e}")

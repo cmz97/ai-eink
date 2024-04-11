@@ -49,6 +49,7 @@ class HomePage(Page):
                 self.app.multi_button_monitor.stop_monitoring()
                 subprocess.run(['venv/bin/python', script_to_run], check=True)
                 self.app.multi_button_monitor.start_monitoring()
+                self.display()
         else:
             pass
     
