@@ -190,8 +190,10 @@ class Controller:
         if not prompts: prompts = pb.to_str() 
         # Start a new thread for the loading screen
         # prepare prompt and trigger gen
-        event = sd_baker.generate_image(add_prompt=prompts, callback=self.sd_image_callback)
-        event.wait()
+        # event = sd_baker.generate_image(add_prompt=prompts, callback=self.sd_image_callback)
+        # event.wait()
+        sd_baker._generate_image_thread(prompts, self.sd_image_callback)
+
 
     def press_callback(self, key):
         if self.locked : return

@@ -1,28 +1,35 @@
-import torch
-from optimum.onnxruntime import ORTStableDiffusionPipeline
+
+import json
+import random
+import requests
 import time
-from diffusers import DiffusionPipeline, AutoencoderTiny
 
-seed = 42
 st = time.time()
-# Load model.
-pipe = ORTStableDiffusionPipeline.from_pretrained('../models/sdxs-512-0.9-onnx')
-vae = AutoencoderTiny.from_pretrained("../models/sdxs-512-0.9/vae")
-print(f'load {time.time() - st}')
-
-# pipe.vae = AutoencoderKL.from_pretrained("IDKiro/sdxs-512-0.9/vae_large")     # use original VAE
-st = time.time()
-prompt =  "dune, planet, novel graphic"
-# Ensure using the same inference steps as the loaded model and CFG set to 0.
-latents = pipe(prompt,
-            height=128*3,
-            width=128*2,
-            num_inference_steps=1,
-            guidance_scale=1.0,
-            output_type="latent").images #.images[0]
-with torch.no_grad():
-    latents = vae.decode(torch.from_numpy(latents) / vae.config.scaling_factor, return_dict=False)[0]
-    do_denormalize = [True] * latents.shape[0]
-    image = pipe.image_processor.postprocess(latents.numpy(), output_type='pil', do_denormalize=do_denormalize)[0]
-image.save("./output.png")
-print(f'done {time.time() - st}')
+prompt =  """<|system|>
+give me a title for this story<|endoftext|>
+<|user|>
+One day, a boy named Tom was playing in the garden. He had a special stone, he liked to keep it in his pocket. Suddenly, he felt something tickling his face. It was a mosquito! He tried to swat it away, but it kept coming back.
+Tom's dad saw the mosquito and said, "Tom, why don't you give the mosquito a gift?" Tom thought for a minute, then he remembered the stone he had been keeping in his pocket. He took it out and held it up to the mosquito.
+The mosquito flew onto the stone and stayed there. Tom smiled and said, "I'm so glad I kept the stone. Now the mosquito has a place to stay!"
+Tom's dad smiled too. He said, "You're so kind, Tom. You showed that even the smallest things can make a big difference."
+Tom nodded and hugged his dad. He was glad he had been able to help the mosquito.
+<|assistant|>
+title: 
+"""
+data = {
+    "prompt": prompt,
+    "model": "stablelm2",
+    "stream": False,
+    "options": {
+        "temperature": 1.5, 
+        "top_p": 0.99, 
+        "top_k": 100,
+        "num_ctx" : 500,
+        "num_predict": 25,
+    },
+}
+response = requests.post("http://localhost:11434/api/generate", json=data, stream=False)
+json_data = json.loads(response.text)["response"]
+text = json_data.replace("\n", ",").replace('"', '').replace(".", ",")
+print(f" --------- {time.time() - st} --------\n\n")
+print(text)
