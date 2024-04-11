@@ -20,6 +20,9 @@ class Page:
         """Async method to handle user input."""
         pass
 
+    async def eink_init(self):
+        pass
+
 class HomePage(Page):
     
     def __init__(self, app):
