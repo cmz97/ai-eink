@@ -441,11 +441,11 @@ if __name__ == "__main__":
     # sd_baker = SdBaker(pb)
     # start with main screen
     controller.layout[0]('init')
-        
+    backCounter = 0
     try:
         while True:
             time.sleep(1)
-            print(GPIO.input(9), GPIO.input(22), GPIO.input(17))
+            backCounter += 1 if GPIO.input(9) == 1 else 0
     except Exception:
         # logger.errors(e)
         pass
