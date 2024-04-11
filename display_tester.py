@@ -60,6 +60,7 @@ clear_screen()
 
 for i in range(1,2):
     time.sleep(0.1)
+    clear_screen()
     startTime = time.time()
     myGUI.updateIndex(i % 4,(i-1)% 4)  # Update the index
     myGUI.updateStatusBar(f"CPU {i}% / RAM {i}%", ['./Asset/Image/batt.bmp'])  # Update the status bar
@@ -68,10 +69,9 @@ for i in range(1,2):
     img = myGUI.canvas.copy()
     img.transpose(Image.FLIP_TOP_BOTTOM)
     np_canvas = np.array(img).astype(np.uint8)
-    
     np_canvas = dump_1bit(np_canvas)
     # print(np_canvas)
-    clear_screen()
-    time.sleep(0.5)
+    eink.epd_init_part()
     eink.PIC_display(np_canvas)
+    time.sleep(0.5)
     print(f"EINK time: {time.time() - startTime}\n")
