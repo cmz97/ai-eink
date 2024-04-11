@@ -4,7 +4,7 @@ from GUI import GUI
 from PIL import Image
 import time
 import numpy as np
-# import einkDSP
+import einkDSP
 from numba import jit
 
 from einkDSP import einkDSP
