@@ -249,6 +249,12 @@ class ORTModelTiledVaeWrapper(object):
         return DecoderOutput(sample=dec)
 
 
+def fast_text_display(image, text="LOADING ..."):
+    image = image.copy()
+    image = draw_text_on_dialog(text, image, (eink_width//2-150, eink_height//5*4), (eink_width//2+150, eink_height//5*4), True)
+    return image
+
+
 def draw_text_on_img(text, image):
     x, y = (240-150)//2 + 10 , (416-150)//2 + 10
     for idx, char in enumerate(text):

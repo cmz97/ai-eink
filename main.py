@@ -50,6 +50,7 @@ class HomePage(Page):
                 logging.info(f'Executing script: {script_to_run}')
                 # Run the script and wait for it to complete
                 # self.app.multi_button_monitor.stop_monitoring()
+                self._print_text("opening...")
                 process = subprocess.Popen(['venv/bin/python', script_to_run],)
                 process.wait()  # Wait for the subprocess to complete       
                 # self.app.multi_button_monitor.start_monitoring()
@@ -62,6 +63,11 @@ class HomePage(Page):
     def display(self):
         logging.info('home page display called')
         hex_pixels = dump_1bit(np.array(self.gui.canvas.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.uint8))
+        self.app.eink_display_2g(hex_pixels)
+
+    def _print_text(self, text):
+        image = fast_text_display(self.gui.canvas, text)
+        hex_pixels = dump_1bit(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.uint8))
         self.app.eink_display_2g(hex_pixels)
 
 # Implement other ProgramPage classes similarly with async methods

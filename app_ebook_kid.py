@@ -9,7 +9,7 @@ import random
 import json
 from pathlib import Path
 from einkDSP import einkDSP
-from encoder import Encoder, Button
+from encoder import Encoder, Button, MultiButtonMonitor
 from PIL import Image
 from utils import * 
 import threading  # Import threading module
@@ -52,6 +52,16 @@ class Controller:
         # self.butUp = Button(9, direction='up', callback=self.press_callback) # gpio 26
         # self.butDown = Button(22, direction='down', callback=self.press_callback) # gpio 26
         # self.butEnter = Button(17, direction='enter', callback=self.press_callback) # gpio 26
+
+        buttons = [
+            {'pin': 9, 'direction': 'up', 'callback': self.press_callback},
+            {'pin': 22, 'direction': 'down', 'callback': self.press_callback},
+            {'pin': 17, 'direction': 'enter', 'callback': self.press_callback}
+        ]
+        
+        self.multi_button_monitor = MultiButtonMonitor(buttons)
+
+
         self.in_4g = True
         self.image = gui.canvas
         
@@ -161,6 +171,10 @@ class Controller:
         if new_page : gui.clear_page()
         self.image = gui.draw_text_on_canvas(gui.canvas, [" ".join(x) for x in self.text_buffer])
         self.update_screen()        
+
+    def press_callback(self, key): 
+        # only key needed to gen a new story
+        pass
 
     def sd_check(self):
         if self.prompt_buffer.endswith('.') : # send to prompt

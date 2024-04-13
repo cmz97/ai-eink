@@ -6,7 +6,7 @@ import random
 import json
 from pathlib import Path
 from einkDSP import einkDSP
-from encoder import Encoder, Button
+from encoder import Encoder, Button, MultiButtonMonitor
 from PIL import Image
 from utils import * 
 import threading  # Import threading module
@@ -22,9 +22,18 @@ class Controller:
 
     def __init__(self):
         self.eink = einkDSP()
-        self.butUp = Button(9, direction='up', callback=self.press_callback) # gpio 26
-        self.butDown = Button(22, direction='down', callback=self.press_callback) # gpio 26
-        self.butEnter = Button(17, direction='enter', callback=self.press_callback) # gpio 26
+
+        # self.butUp = Button(9, direction='up', callback=self.press_callback) # gpio 26
+        # self.butDown = Button(22, direction='down', callback=self.press_callback) # gpio 26
+        # self.butEnter = Button(17, direction='enter', callback=self.press_callback) # gpio 26
+
+        buttons = [
+            {'pin': 9, 'direction': 'up', 'callback': self.press_callback},
+            {'pin': 22, 'direction': 'down', 'callback': self.press_callback},
+            {'pin': 17, 'direction': 'enter', 'callback': self.press_callback}
+        ]
+        
+        self.multi_button_monitor = MultiButtonMonitor(buttons)
 
         self.in_4g = True
         self.image = Image.new("L", (eink_width, eink_height), "white")

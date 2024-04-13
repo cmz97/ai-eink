@@ -37,7 +37,7 @@ BASEDIR=$(pwd)
 # pip installs
 pip install --upgrade-strategy eager optimum[onnxruntime]
 pip install Pillow==9.5.0 sshkeyboard diffusers transformers accelerate
-pip spidev RPi.GPIO numba
+pip install spidev RPi.GPIO numba
 
 # sudo raspi-config enable SPI I2C
 
