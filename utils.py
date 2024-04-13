@@ -421,7 +421,7 @@ def augment_text_imgs(buffer, highlight_index_list):
             
 
 def draw_text_on_dialog(text, image_ref=None, text_area_start=text_area_start, text_area_end=text_area_end, aligned=False, highlighted_lines=[]):
-    dialog_image_ref = dialog_image.copy() if not image_ref else image_ref
+    dialog_image_ref = dialog_image.copy() if not image_ref else image_ref.copy()
 
     # Calculate the position and size of the text area
     text_area_width = text_area_end[0] - text_area_start[0]

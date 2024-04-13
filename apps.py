@@ -243,10 +243,12 @@ class BookLoader:
 class SceneBaker:
     def __init__(self, book_name):
         self.scene_buffer = [""]
-        self.prompt = """<|user|>
-Scene: {book_paragraph}
-Convert the scene above into a visual picture.<|endoftext|>
-<|assistant|>(response with 6 words total, separate by commas) :
+        self.prompt = """<|system|>
+give me a title for this story<|endoftext|>
+<|user|>
+{book_paragraph}
+<|assistant|>
+title: 
 """
         self.book_name = book_name
     

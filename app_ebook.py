@@ -13,6 +13,8 @@ import threading  # Import threading module
 import RPi.GPIO as GPIO
 from apps import SdBaker, PromptsBank, BookLoader, SceneBaker
 import logging
+from Ebook_GUI import EbookGUI
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 GPIO.cleanup()
 
@@ -55,13 +57,15 @@ class Controller:
         self.image_preview_page = None
 
         
-
-
     def background_task(self):
         # llm
+        # self._fast_text_display("llm ...")
         prompt = sb.get_next_scene(" ".join(self.text_buffer[-1]))
+        # self._fast_refresh()
         # sd gen
+        # self._fast_text_display("sd ...")
         self.sd_process(prompt)
+        # self._fast_refresh()
 
     def transit(self):
         self.locked = True
@@ -91,7 +95,16 @@ class Controller:
         if self.in_4g : 
             self.transit()
             self.in_4g = False
-        
+    
+    def _fast_refresh(self):
+        pixels = dump_2bit(np.array(self.image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
+        self.part_screen(pixels)
+
+    def _fast_text_display(self, text="LOADING ..."):
+        image = draw_text_on_dialog(text, self.image, (eink_width//2-150, eink_height//4*3), (eink_width//2+150, eink_height//4*3), True)
+        pixels = dump_2bit(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
+        self.part_screen(pixels)
+
     def update_screen(self):
         image = self.image
         # image = self._prepare_menu(self.image)
@@ -105,10 +118,12 @@ class Controller:
 
     def load_model(self):
         logger.info("loading model")
+        self._fast_text_display()
         sd_baker.load_model(
             '/home/kevin/ai/models/sdxs-512-0.9-onnx',
             "sdxs",
             "")
+        self._fast_refresh()
     
     def _select_book(self, key):
         self.locked = True
@@ -129,6 +144,7 @@ class Controller:
 
         # print screen
         thumbnail_image = render_thumbnail_page(Image.open("/".join(curr_file.split("/")[0:-1])+"/thumbnail.png"), "")        
+        self.image = thumbnail_image
         hex_pixels = image_to_header_file(thumbnail_image)
         self.full_screen(hex_pixels)
         self.locked = False
@@ -170,8 +186,11 @@ class Controller:
 
         # logger.info(text_to_display)
         # images 
-        line_img = [text_to_image(line) for line in text_to_display]
-        self.image = draw_text_on_screen(line_img)
+        # line_img = [text_to_image(line) for line in text_to_display]
+        gui.clear_page()
+        self.image = gui.draw_text_on_canvas(gui.canvas, ["".join(x) for x in text_to_display])
+    
+        # self.image = draw_text_on_screen(line_img)
         # print screen
         # hex_pixels = image_to_header_file(image)
         # self.full_screen(hex_pixels)
@@ -236,11 +255,15 @@ sd_baker.neg_prompt = "ng_deepnegative_v1_75t, bad hand, bad face, worst quality
 sd_baker.char_id = "graphic novel, dune movie,"
 sd_baker.num_inference_steps = 1
 
-screen_buffer = 10
+# scale with gui box
+gui = EbookGUI()
+w, h = gui.text_area[1][0] - gui.text_area[0][0] , gui.text_area[1][1] - gui.text_area[0][1]
+scale = 0.55
 ebk = BookLoader(filePath='../models/Dune.txt', 
-screenWidth=eink_width - screen_buffer*2,
-screenHeight=eink_height - screen_buffer*2,
-fontWidth=char_width, fontHeight=char_height)
+screenWidth=w,
+screenHeight=h,
+fontWidth=gui.font_size * scale, 
+fontHeight=gui.font_size * scale * 0.95)
 
 controller = Controller()
 file_cache = "./temp.png"

@@ -112,7 +112,7 @@ class Controller:
     def load_model(self):
         logger.info("loading model")
         sd_baker.load_model(
-            '/home/kevin/ai/models/sdxs-512-0.9-onnx',
+            '/home/kevin/ai/models/sdxs-512-dreamshaper-onnx',
             "sdxs",
             "")
 
@@ -207,7 +207,7 @@ def run_c_executable_async(model_file, temperature, max_token, prompt, output_qu
 model_file = "/home/kevin/ai/llama2.c/stories110M.bin"
 temperature = 0.8
 max_token = 256
-prompt = "Once upon a time  "
+prompt = "Once upon a time, a cute rabbit "
 
 async def main():
     output_queue = queue.Queue()
@@ -234,7 +234,7 @@ controller = Controller()
 sd_baker = SdBaker(vae_override="../models/sdxs-512-0.9/vae")
 # override sd 
 sd_baker.neg_prompt = "bad hand, bad face, worst quality, low quality, logo, text, watermark, username, harsh shadow, shadow, artifacts, blurry, smooth texture, bad quality, distortions, unrealistic, distorted image, bad proportions, duplicate"
-sd_baker.char_id = "masterpiece,best quality, graphic novel, kid story illustration,"
+sd_baker.char_id = "masterpiece, lineart, kid hand drawing, detailed story illustration, fantacy story,"
 sd_baker.num_inference_steps = 1
 controller.load_model()
 
