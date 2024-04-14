@@ -85,7 +85,7 @@ class Controller:
     def clear_screen(self):
         # self.eink.PIC_display_Clear()
         image = Image.new("L", (eink_width, eink_height), "white")
-        pixels = dump_2bit(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
+        pixels = dump_1bit_with_dithering(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32))
         self.part_screen(pixels)
         self.eink.PIC_display_Clear()
 
@@ -106,12 +106,12 @@ class Controller:
             self.in_4g = False
     
     def _fast_refresh(self):
-        pixels = dump_2bit(np.array(self.image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
+        pixels = dump_1bit_with_dithering(np.array(self.image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32))
         self.part_screen(pixels)
 
     def _fast_text_display(self, text="LOADING ..."):
         image = draw_text_on_dialog(text, self.image, (eink_width//2-150, eink_height//4*3), (eink_width//2+150, eink_height//4*3), True)
-        pixels = dump_2bit(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
+        pixels = dump_1bit_with_dithering(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32))
         self.part_screen(pixels)
 
     def update_screen(self):
@@ -119,9 +119,8 @@ class Controller:
         # image = self._prepare_menu(self.image)
         # update screen
         grayscale = image.transpose(Image.FLIP_TOP_BOTTOM).convert('L')
-        pixels = np.array(grayscale, dtype=np.float32)
         logging.info('preprocess image done')
-        hex_pixels = dump_2bit(pixels).tolist()
+        hex_pixels = dump_1bit_with_dithering(np.array(grayscale, dtype=np.float32))
         logging.info('2bit pixels dump done')
         self.part_screen(hex_pixels)
 
@@ -220,7 +219,7 @@ class Controller:
         # prepare prompt and trigger gen
         # event = sd_baker.generate_image(add_prompt=prompts, callback=self.sd_image_callback)
         # event.wait()
-        sd_baker._generate_image_thread(prompts, self.sd_image_callback)
+        sd_baker._generate_image_thread(prompts, self.sd_image_callback, "temp-ebook")
 
 
     def press_callback(self, key):
@@ -297,9 +296,9 @@ if __name__ == "__main__":
                 logger.info("background tasks triggerd")
                 controller.cooking = True
                 controller.trigger_background_job()
-            backCounter += 1 if GPIO.input(9) == 1 else 0
-            if backCounter >= 5:
-                os._exit(0)
+            # backCounter += 1 if GPIO.input(9) == 1 else 0
+            # if backCounter >= 5:
+            #     os._exit(0)
                 
 
     except Exception:

@@ -88,7 +88,7 @@ class Controller:
     def clear_screen(self):
         # self.eink.PIC_display_Clear()
         image = Image.new("L", (eink_width, eink_height), "white")
-        pixels = dump_2bit(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
+        pixels = dump_1bit_with_dithering(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32))
         self.part_screen(pixels)
         self.eink.PIC_display_Clear()
 
@@ -113,9 +113,8 @@ class Controller:
         # image = self._prepare_menu(self.image)
         # update screen
         grayscale = image.transpose(Image.FLIP_TOP_BOTTOM).convert('L')
-        pixels = np.array(grayscale, dtype=np.float32)
         logging.info('preprocess image done')
-        hex_pixels = dump_2bit(pixels).tolist()
+        hex_pixels = dump_1bit_with_dithering(np.array(grayscale, dtype=np.float32))
         logging.info('2bit pixels dump done')
         self.part_screen(hex_pixels)
 
@@ -136,7 +135,7 @@ class Controller:
         logger.info("pending image flag off")
 
     def sd_process(self, prompts):
-        sd_baker._generate_image_thread(prompts, self.sd_image_callback)
+        sd_baker._generate_image_thread(prompts, self.sd_image_callback, "temp-ebook-kid")
         
     def sd_image_callback(self, image):
         self.image_buffer.append(image)
@@ -259,9 +258,9 @@ if __name__ == "__main__":
     try:
         while True:
             time.sleep(1)
-            backCounter += 1 if GPIO.input(9) == 1 else 0
-            if backCounter >= 5:
-                os._exit(0)
+            # backCounter += 1 if GPIO.input(9) == 1 else 0
+            # if backCounter >= 5:
+            #     os._exit(0)
     except Exception:
         # logger.errors(e)
         pass

@@ -87,6 +87,7 @@ class Controller:
         if self.loading_screen_thread:
             self.loading_screen_thread.join()
             self.loading_screen_thread = None
+        self.clear_screen()
 
     def show_loading_screen(self):
         self.locked = True
@@ -98,11 +99,11 @@ class Controller:
             
         while not self.stop_loading_event.is_set():
             draw_text_on_img("{:.0f}s".format(time.time() - start_time), frame0)            
-            pixels = dump_2bit(np.array(frame0.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
+            pixels = dump_1bit_with_dithering(np.array(frame0.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)) 
             self.part_screen(pixels)
             time.sleep(0.5)
             draw_text_on_img("{:.0f}s".format(time.time() - start_time), frame1)
-            pixels = dump_2bit(np.array(frame1.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
+            pixels = dump_1bit_with_dithering(np.array(frame1.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)) 
             self.part_screen(pixels)
             time.sleep(0.5)
 
@@ -115,17 +116,18 @@ class Controller:
         logging.info('transit to 2g done')
     
     def clear_screen(self):
+        self.eink.epd_init_part()
         self.eink.PIC_display_Clear()
-        image = Image.new("L", (eink_width, eink_height), "white")
-        pixels = dump_2bit(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
-        self.part_screen(pixels)
-        # self.eink.epd_w21_init_4g()
+        # time.sleep(0.5)
 
-    # def refresh_screen(self):
-    #     self.full_screen(self.image)
+        # image = Image.new("L", (eink_width, eink_height), "white")
+        # pixels = dump_1bit_with_dithering(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)) 
+        # self.part_screen(pixels)
+        # self.eink.epd_w21_init_4g()
 
     def part_screen(self, hex_pixels):
         self.locked = True
+        self._status_check() # 4g to 2g check
         self.eink.epd_init_part()
         self.eink.PIC_display(hex_pixels)
         self.locked = False
@@ -139,14 +141,19 @@ class Controller:
         if self.in_4g : 
             self.transit()
             self.in_4g = False
-        
+    
+    def refresh_2g(self, image):
+        # update screen
+        grayscale = image.transpose(Image.FLIP_TOP_BOTTOM).convert('L')
+        hex_pixels = dump_1bit_with_dithering(np.array(grayscale, dtype=np.float32))
+        self.part_screen(hex_pixels) 
+
     def update_screen(self):
         image = self._prepare_menu(self.image)
         # update screen
         grayscale = image.transpose(Image.FLIP_TOP_BOTTOM).convert('L')
-        pixels = np.array(grayscale, dtype=np.float32)
         logging.info('preprocess image done')
-        hex_pixels = dump_2bit(pixels).tolist()
+        hex_pixels = dump_1bit_with_dithering(np.array(grayscale, dtype=np.float32))
         logging.info('2bit pixels dump done')
         self.part_screen(hex_pixels)
 
@@ -158,7 +165,7 @@ class Controller:
         image = Image.new("L", (eink_width, eink_height), "white")
         image = paste_loadingBox(image, frame=0)
         image = draw_text_on_dialog("LOADING MODEL ...", image, (eink_width//2-150, eink_height//2), (eink_width//2+150, eink_height//2), True)
-        pixels = dump_2bit(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
+        pixels = dump_1bit_with_dithering(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32))
         self.part_screen(pixels)
         sd_baker.load_model(model_path, model_info['name'], model_info['trigger_words'])
 
@@ -166,6 +173,7 @@ class Controller:
         if "neg_prompt" in model_info: sd_baker.neg_prompt = model_info['neg_prompt']
         if "vae" in model_info: sd_baker.load_vae(model_info['vae'])
         if "num_inference_steps" in model_info: sd_baker.num_inference_steps = model_info['num_inference_steps']
+
         self.locked = False
         
     def _model_select_page(self, key): # main page
@@ -185,6 +193,7 @@ class Controller:
                 return
             logging.info(f"enter {self.selection_idx[self.page]} , loading {curr_file}")
             self.load_model(curr_file.replace("_add_ons.json",""), model_info)
+            # self.clear_screen() # clear before go to 4g
             self._display_page("init") # proceed next
             return
 
@@ -199,8 +208,9 @@ class Controller:
         thumbnail_image = render_thumbnail_page(Image.open(curr_file.replace("_add_ons.json", "thumbnail.png")), model_info['name'])
         
         # print screen
-        hex_pixels = image_to_header_file(thumbnail_image)
-        self.full_screen(hex_pixels)
+        # hex_pixels = image_to_header_file(thumbnail_image)
+        
+        self.refresh_2g(thumbnail_image)
         self.model = model_info['name']
         self.locked = False
 
@@ -212,15 +222,16 @@ class Controller:
 
         # check key states
         if key == "init" : # show last
+            self.clear_screen()
             # render
             logging.info(f"enter page {self.page}")
             file_cache = f"./temp-{self.model}.png"
             if os.path.exists(file_cache): # reload
-                    image = Image.open(file_cache)
-                    prompt_str = image.info.get("prompt")
-                    pb.load_prompt(prompt_str)  
-                    self._reload_prompt_cache()
-                    self.sd_image_callback(image)
+                image = Image.open(file_cache)
+                prompt_str = image.info.get("prompt")
+                pb.load_prompt(prompt_str)  
+                self._reload_prompt_cache()
+                self.sd_image_callback(image)
             else: # show empty, init dependencies
                 # pb.fresh_prompt_selects()
                 self._reload_prompt_cache()
@@ -240,9 +251,6 @@ class Controller:
             else:
                 self._model_select_page("")
                 return
-            
-        # render selection
-        self._status_check()
 
         # rolling pin
         self.selection_idx[self.page] = self.selection_idx[self.page] % len(self.display_cache[self.page])
@@ -259,17 +267,12 @@ class Controller:
         elif key == "down" : self.selection_idx[self.page] += 1 
         elif key == "enter" :  # hit prompt selection
             if self.selection_idx[self.page] != len(self.display_cache[self.page])-1:
-                # render selection
-                self._status_check()
                 # update and fresh new screen selects
                 self._edit_prompt_page_1("init")
                 return
             else:
                 self._display_page("")
                 return
-                
-        # render selection
-        self._status_check()
 
         # rolling pin
         self.selection_idx[self.page] = self.selection_idx[self.page] % len(self.display_cache[self.page])
@@ -343,9 +346,7 @@ class Controller:
 
         # rolling        
         self.selection_idx[self.page] = self.selection_idx[self.page] % len(self.display_cache[self.page])
-        
-        # render selection
-        self._status_check()
+
         # update screen
         self.update_screen()    
 
@@ -399,29 +400,27 @@ class Controller:
                 placement_pos = ui_assets["large_dialog_box"]["placement_pos"]
             )
 
-
         return image_with_dialog
 
     def sd_image_callback(self, image):
+        self.stop_loading_screen() # pause loading first
         post_img = process_image(image)
         image_with_dialog = self._prepare_menu(post_img)
         hex_pixels = image_to_header_file(image_with_dialog)
         # show and update states
-        self.stop_loading_screen()
-        # self.clear_screen()
-        self.clear_screen()
-        time.sleep(0.5)
+        # TODO FIX THIS 2g shadow issue 
+        # time.sleep(0.5)
         self.full_screen(hex_pixels)
         self.in_4g = True
         self.image = post_img
         self.locked = False
     
     def image_callback(self, image):
+        self.stop_loading_screen() # pause loading first
         image_with_dialog = self._prepare_menu(image)
         hex_pixels = image_to_header_file(image_with_dialog)
         # show and update states
         # self.clear_screen()
-        self.stop_loading_screen()
         self.full_screen(hex_pixels)
         self.in_4g = True
         self.image = image
@@ -449,9 +448,9 @@ if __name__ == "__main__":
     try:
         while True:
             time.sleep(1)
-            backCounter += 1 if GPIO.input(9) == 1 else 0
-            if backCounter >= 5:
-                os._exit(0)
+            # backCounter += 1 if GPIO.input(9) == 1 else 0
+            # if backCounter >= 5:
+            #     os._exit(0)
     except Exception:
         # logger.errors(e)
         pass

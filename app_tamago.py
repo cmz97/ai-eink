@@ -107,9 +107,8 @@ class Controller:
         # image = self._prepare_menu(self.image)
         # update screen
         grayscale = image.transpose(Image.FLIP_TOP_BOTTOM).convert('L')
-        pixels = np.array(grayscale, dtype=np.float32)
         logging.info('preprocess image done')
-        hex_pixels = dump_2bit(pixels).tolist()
+        hex_pixels = dump_1bit_with_dithering(np.array(grayscale, dtype=np.float32))
         logging.info('2bit pixels dump done')
         self.part_screen(hex_pixels)
 
@@ -198,11 +197,11 @@ class Controller:
         # frame1 = draw_text_on_dialog("COOKING...", frame1, (eink_width//2, eink_height//3*2), (eink_width//2+50, eink_height//3*2), True)
         while not self.stop_animation_event.is_set():
             # draw_text_on_img("{:.0f}s".format(time.time() - start_time), frame0)            
-            pixels = dump_2bit(np.array(frame0.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
+            pixels = dump_1bit_with_dithering(np.array(frame0.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32))
             self.part_screen(pixels)
             time.sleep(1.5)
             # draw_text_on_img("{:.0f}s".format(time.time() - start_time), frame1)
-            pixels = dump_2bit(np.array(frame1.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
+            pixels = dump_1bit_with_dithering(np.array(frame1.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32))
             self.part_screen(pixels)
             time.sleep(1.5)
 
@@ -341,9 +340,9 @@ if __name__ == "__main__":
                 logger.info("background tasks triggerd")
                 if len(controller.action_buffer) < 3: # max 3
                     controller.trigger_background_job()
-            backCounter += 1 if GPIO.input(9) == 1 else 0
-            if backCounter >= 5:
-                os._exit(0)
+            # backCounter += 1 if GPIO.input(9) == 1 else 0
+            # if backCounter >= 5:
+            #     os._exit(0)
 
             # if len(controller.action_buffer) != previous_action_num
             # previous_action_num = len(controller.action_buffer)

@@ -20,8 +20,6 @@ class Page:
         """Async method to handle user input."""
         pass
 
-    async def eink_init(self):
-        pass
 
 class HomePage(Page):
     
@@ -54,8 +52,8 @@ class HomePage(Page):
                 process = subprocess.Popen(['venv/bin/python', script_to_run],)
                 process.wait()  # Wait for the subprocess to complete       
                 # self.app.multi_button_monitor.start_monitoring()
-                print("Sub-Program completed !!!")
-                self.eink_init()
+                print("Sub-Program exited!!!")
+                self.app.eink_init()
                 self.display()
         else:
             pass
