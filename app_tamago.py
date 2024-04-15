@@ -52,7 +52,7 @@ class Controller:
         self.selection_idx = [0] * len(self.layout)
         self.display_cache = {
             0 : [text_to_image("Waifu doing ok    \(. > w < .)/ ")],
-            1 : [text_to_image("[save]")] + [text_to_image("[back]")],
+            1 : [text_to_image("[back]")],
         }
         logging.info('Controller instance created')
 
@@ -87,8 +87,19 @@ class Controller:
         self.eink.PIC_display_Clear()
         logging.info('transit to 2g done')
     
+
+    def _fast_text_display(self, text="loading ..."):
+        image = fast_text_display(self.image, text)
+        grayscale = image.transpose(Image.FLIP_TOP_BOTTOM).convert('L')
+        hex_pixels = dump_1bit_with_dithering(np.array(grayscale, dtype=np.float32))
+        # hex_pixels = dump_1bit(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.uint8))
+        self.part_screen(hex_pixels)
+
     def clear_screen(self):
-        self.eink.PIC_display_Clear()
+        image = Image.new("L", (eink_width, eink_height), "white")
+        hex_pixels = dump_1bit(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.uint8))
+        self.eink.epd_init_part()
+        self.eink.PIC_display(hex_pixels)
         
     def part_screen(self, hex_pixels):
         self.locked = True
@@ -112,8 +123,6 @@ class Controller:
         logging.info('2bit pixels dump done')
         self.part_screen(hex_pixels)
 
-
-
     # UTILS
     def _status_check(self):
         if self.in_4g : 
@@ -123,6 +132,7 @@ class Controller:
 
     def load_model(self):
         logger.info("loading model")
+        self._fast_text_display('loading sd model ~30sec')
         model_path = model_list[0].replace("_add_ons.json","")
         with open(model_list[0]) as f: model_info = json.load(f)
         sd_baker.load_model(model_path, model_info['name'], model_info['trigger_words'])
@@ -209,6 +219,8 @@ class Controller:
 
 
     def _show_status(self, key):
+        self.clear_screen()
+        
         self.page = 0
         self._status_check()
         # check status list

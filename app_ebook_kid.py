@@ -74,7 +74,9 @@ class Controller:
         self.locked = False
         self.cooking = False
         self.pending_image = False
-        self.image_preview_page = None
+        self.pending_story = False
+
+
 
     def background_task(self):
         self.sd_process(self.prompt_buffer)
@@ -86,11 +88,11 @@ class Controller:
         logging.info('transit to 2g done')
     
     def clear_screen(self):
-        # self.eink.PIC_display_Clear()
+        gui.clear_page()
         image = Image.new("L", (eink_width, eink_height), "white")
-        pixels = dump_1bit_with_dithering(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32))
-        self.part_screen(pixels)
-        self.eink.PIC_display_Clear()
+        hex_pixels = dump_1bit(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.uint8))
+        self.eink.epd_init_part()
+        self.eink.PIC_display(hex_pixels)
 
     def part_screen(self, hex_pixels):
         self.locked = True
@@ -108,8 +110,15 @@ class Controller:
             self.transit()
             self.in_4g = False
         
-    def update_screen(self):
-        image = self.image
+    def _fast_text_display(self, text="loading ..."):
+        image = fast_text_display(self.image, text)
+        grayscale = image.transpose(Image.FLIP_TOP_BOTTOM).convert('L')
+        hex_pixels = dump_1bit_with_dithering(np.array(grayscale, dtype=np.float32))
+        # hex_pixels = dump_1bit(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.uint8))
+        self.part_screen(hex_pixels)
+
+    def update_screen(self, image = None):
+        if not image : image = self.image
         # image = self._prepare_menu(self.image)
         # update screen
         grayscale = image.transpose(Image.FLIP_TOP_BOTTOM).convert('L')
@@ -120,10 +129,12 @@ class Controller:
 
     def load_model(self):
         logger.info("loading model")
+        self._fast_text_display('loading sd model ~10sec')
         sd_baker.load_model(
             '/home/kevin/ai/models/sdxs-512-dreamshaper-onnx',
             "sdxs",
             "")
+        self.show_options()
 
     def trigger_background_job(self):
         self.cooking = True
@@ -152,6 +163,17 @@ class Controller:
             self.locked = False
             await asyncio.sleep(10)  # Properly await sleeping
 
+
+    def show_options(self):
+        self.clear_screen()
+        image_with_dialog = apply_dialog_box(
+                input_image = self.image,
+                dialog_image = ui_assets["small_dialog_box"]["image"],
+                box_mat = [text_to_image("[new story]")],
+                highligh_index = 0,
+                placement_pos = ui_assets["small_dialog_box"]["placement_pos"]
+            )
+        self.update_screen(image_with_dialog)        
     
     def stream_text(self, text):
         self._status_check()
@@ -173,7 +195,9 @@ class Controller:
 
     def press_callback(self, key): 
         # only key needed to gen a new story
-        pass
+        if key == "enter" and not self.pending_story:
+            self.pending_story = True
+            self._fast_text_display("preparing the story...")
 
     def sd_check(self):
         if self.prompt_buffer.endswith('.') : # send to prompt
@@ -185,61 +209,56 @@ class Controller:
 def run_c_executable(model_file, temperature, max_token, prompt, output_queue):
     command = f"/home/kevin/ai/llama2.c/run {model_file} -t {temperature} -n {max_token} -i \"{prompt}\""
     with subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, universal_newlines=True, bufsize=1) as proc:
-        while True:
-            output = proc.stdout.read()  # Read the entire output as a single string
-            if not output:  # If no more output, end of process
+        for output in proc.stdout:
+            if output.strip() == '':  # Check for an empty string indicating no more output
                 break
-            
-            words = output.split()  # Split the output into words based on whitespace
+            words = output.split()
             for word in words:
-                output_queue.put(word)  # Put each word into the queue
-        
+                output_queue.put(word)
+
         proc.stdout.close()
         return_code = proc.wait()
         if return_code:
             raise subprocess.CalledProcessError(return_code, command)
 
+    output_queue.put(None)  # Ensure to put None after the subprocess ends
+
 async def async_output_generator(output_queue):
     while True:
-        try:
-            output = output_queue.get_nowait()  # Non-blocking get
-            if output is None:  # Use None as a sentinel value to indicate completion
-                break
-            yield output
-        except queue.Empty:
-            await asyncio.sleep(0.01)  # Briefly yield control to allow other tasks to run
-
+        output = await asyncio.to_thread(output_queue.get)  # Blocking get offloaded to a thread
+        if output is None:
+            break
+        yield output
 
 def run_c_executable_async(model_file, temperature, max_token, prompt, output_queue):
     thread = threading.Thread(target=run_c_executable, args=(model_file, temperature, max_token, prompt, output_queue))
     thread.start()
     return thread
 
-
-# Example usage
-model_file = "/home/kevin/ai/llama2.c/stories110M.bin"
-temperature = 0.8
-max_token = 256
-prompt = "Once upon a time, a cute rabbit "
-
-async def main():
+async def start_story():
     output_queue = queue.Queue()
     c_thread = run_c_executable_async(model_file, temperature, max_token, prompt, output_queue)
-    async for output in async_output_generator(output_queue):
-        # print(output)  # Or handle the output as needed
-        # pass in word to buffer
-        await controller.show_last_image()        
-        controller.stream_text(output)
-        controller.prompt_buffer += " " + output
-        controller.sd_check()
-    c_thread.join()
-    output_queue.put(None)  # Signal the generator that the process is done
-    
+    try:
+        async for output in async_output_generator(output_queue):
+            # print(output)  # Or handle the output as needed
+            # pass in word to buffer
+            await controller.show_last_image()        
+            controller.stream_text(output)
+            controller.prompt_buffer += " " + output
+            controller.sd_check()
+    finally:
+        c_thread.join()
+        output_queue.put(None)  # Signal the generator that the process is done
+    logging.info("done with async_output_generator")
     # last image check
     while controller.cooking:
         await controller.show_last_image()        
 
-
+# Example usage
+model_file = "/home/kevin/ai/llama2.c/stories110M.bin"
+temperature = 0.7
+max_token = 50
+prompt = "Once upon a time in the animal kindom world,  "    
 
 # hardcoded parts
 gui = EbookGUI()
@@ -247,17 +266,27 @@ controller = Controller()
 sd_baker = SdBaker(vae_override="../models/sdxs-512-0.9/vae")
 # override sd 
 sd_baker.neg_prompt = "bad hand, bad face, worst quality, low quality, logo, text, watermark, username, harsh shadow, shadow, artifacts, blurry, smooth texture, bad quality, distortions, unrealistic, distorted image, bad proportions, duplicate"
-sd_baker.char_id = "masterpiece, lineart, kid hand drawing, detailed story illustration, fantacy story,"
+sd_baker.char_id = "masterpiece, lineart, cute drawing, chibi, detailed story illustration, fantacy story,"
 sd_baker.num_inference_steps = 1
 controller.load_model()
 
 # Example usage
 if __name__ == "__main__":
-    asyncio.run(main())
-    backCounter = 0
     try:
         while True:
             time.sleep(1)
+            if controller.pending_story:
+                # Manually setting up the event loop
+                loop = asyncio.new_event_loop()
+                asyncio.set_event_loop(loop)
+                try:
+                    loop.run_until_complete(start_story())
+                finally:
+                    loop.close() 
+                logging.info("out of start_story loop")
+                controller.pending_story = False
+                controller.show_options() # for next
+                # just show option page
             # backCounter += 1 if GPIO.input(9) == 1 else 0
             # if backCounter >= 5:
             #     os._exit(0)

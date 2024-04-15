@@ -15,7 +15,9 @@ prompt = """In the week before their departure to Arrakis, when all the final sc
 output = llm(
     #   f"""<|im_start|>system\n{system_message}<|im_end|>\n<|im_start|>user\n{prompt}<|im_end|>\n<|im_start|>assistant\nTitle:""", # Prompt
       f"""<|system|>\n{system_message}<|endoftext|>\n<|user|>\n{prompt}<|endoftext|>\n<|assistant|>\title:""", # Prompt
-
+      temp=1.5, 
+      top_p=0.99,
+      top_k=100,
       max_tokens=50,
       stop=["</s>", "<|im_end|>", "<|endoftext|>", "\n"], # Stop generating just before the model would generate a new question
       echo=False # Echo the prompt back in the output

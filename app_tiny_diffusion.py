@@ -116,14 +116,10 @@ class Controller:
         logging.info('transit to 2g done')
     
     def clear_screen(self):
+        image = Image.new("L", (eink_width, eink_height), "white")
+        hex_pixels = dump_1bit(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.uint8))
         self.eink.epd_init_part()
-        self.eink.PIC_display_Clear()
-        # time.sleep(0.5)
-
-        # image = Image.new("L", (eink_width, eink_height), "white")
-        # pixels = dump_1bit_with_dithering(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)) 
-        # self.part_screen(pixels)
-        # self.eink.epd_w21_init_4g()
+        self.eink.PIC_display(hex_pixels)
 
     def part_screen(self, hex_pixels):
         self.locked = True

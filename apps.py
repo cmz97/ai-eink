@@ -6,6 +6,7 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 from PIL.PngImagePlugin import PngInfo
 from diffusers import AutoencoderTiny
 import concurrent
+from llama_cpp import Llama
 
 import sys
 import re
@@ -243,15 +244,15 @@ class BookLoader:
 class SceneBaker:
     def __init__(self, book_name):
         self.scene_buffer = [""]
-        self.prompt = """<|system|>
-give me a title for this story<|endoftext|>
-<|user|>
-{book_paragraph}
-<|assistant|>
-title: 
-"""
+        self.prompt = """<|system|>\n{system_message}<|endoftext|>\n<|user|>\n{book_paragraph}<|endoftext|>\n<|assistant|>\ntitle:""" 
         self.book_name = book_name
-    
+        self.llm = Llama(
+            model_path="/home/kevin/ai/models/stablelm-2-zephyr-1_6b.q4_k_m.gguf",
+            n_ctx=500, # Uncomment to increase the context window
+                #   n_threads=3,
+        )
+        logging.info(f"done loading llm")
+
     def get_next_scene(self, book_paragraph):
         def strip_all_numbers(s):
             pattern = r"\d+, "
@@ -259,28 +260,23 @@ title:
 
         st = time.time()
         prompt = self.prompt.format(
-            # book_name=self.book_name,
-            # last_scene=self.scene_buffer[-1],
+            system_message = "Give me a title for this story, return and only return the title.",
             book_paragraph=book_paragraph
         )
-        data = {
-            "prompt": prompt,
-            "model": "stablelm2",
-            # "format": "json",
-            "stream": False,
-            "options": {
-                "temperature": 1.5, 
-                "top_p": 0.99, 
-                "top_k": 100,
-                "num_ctx" : 500,
-                "num_predict": 25,  
-                # "stop": ["]"]
-            },
-        }
+        output = self.llm(
+            prompt,
+            temperature=1.5, 
+            top_p=0.99,
+            top_k=100,
+            max_tokens=50,
+            stop=["</s>", "<|im_end|>", "<|endoftext|>", "\n"], # Stop generating just before the model would generate a new question
+            echo=False # Echo the prompt back in the output
+        )
         # logging.info(f"llm trggerd, prompt -> {prompt} ")
-        response = requests.post("http://localhost:11434/api/generate", json=data, stream=False)
-        json_data = json.loads(response.text)["response"]
-        text = strip_all_numbers(json_data.replace("\n", ",").replace('"', '').replace(".", ","))
+        # response = requests.post("http://localhost:11434/api/generate", json=data, stream=False)
+        # json_data = json.loads(response.text)["response"]
+        text = output['choices'][0]['text']
+        text = strip_all_numbers(text.replace("\n", ",").replace('"', '').replace(".", ","))
         logging.info(f"llm return recived  ->  time took {time.time() - st}  sec")
         # update
         self.scene_buffer.append(text)

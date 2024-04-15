@@ -35,6 +35,11 @@ echo "Python version : $python_version"
 
 BASEDIR=$(pwd)
 # pip installs
+git clone https://github.com/xianyi/OpenBLAS
+cd OpenBLAS
+make
+CMAKE_ARGS="-DLLAMA_BLAS=ON -DLLAMA_BLAS_VENDOR=OpenBLAS" pip install llama-cpp-python
+
 pip install --upgrade-strategy eager optimum[onnxruntime]
 pip install Pillow==9.5.0 sshkeyboard diffusers transformers accelerate
 pip install spidev RPi.GPIO numba

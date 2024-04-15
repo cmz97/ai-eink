@@ -69,6 +69,7 @@ class Controller:
     def background_task(self):
         # llm
         # self._fast_text_display("llm ...")
+        # self._fast_text_display("llm processing ~40sec")
         prompt = sb.get_next_scene(" ".join(self.text_buffer[-1]))
         # self._fast_refresh()
         # sd gen
@@ -83,11 +84,11 @@ class Controller:
         logging.info('transit to 2g done')
     
     def clear_screen(self):
-        # self.eink.PIC_display_Clear()
         image = Image.new("L", (eink_width, eink_height), "white")
-        pixels = dump_1bit_with_dithering(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32))
-        self.part_screen(pixels)
-        self.eink.PIC_display_Clear()
+        hex_pixels = dump_1bit(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.uint8))
+        self.eink.epd_init_part()
+        self.eink.PIC_display(hex_pixels)
+
 
     def part_screen(self, hex_pixels):
         self.locked = True
@@ -109,10 +110,12 @@ class Controller:
         pixels = dump_1bit_with_dithering(np.array(self.image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32))
         self.part_screen(pixels)
 
-    def _fast_text_display(self, text="LOADING ..."):
-        image = draw_text_on_dialog(text, self.image, (eink_width//2-150, eink_height//4*3), (eink_width//2+150, eink_height//4*3), True)
-        pixels = dump_1bit_with_dithering(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32))
-        self.part_screen(pixels)
+    def _fast_text_display(self, text="loading ..."):
+        image = fast_text_display(self.image, text)
+        grayscale = image.transpose(Image.FLIP_TOP_BOTTOM).convert('L')
+        hex_pixels = dump_1bit_with_dithering(np.array(grayscale, dtype=np.float32))
+        # hex_pixels = dump_1bit(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.uint8))
+        self.part_screen(hex_pixels)
 
     def update_screen(self):
         image = self.image
@@ -126,12 +129,13 @@ class Controller:
 
     def load_model(self):
         logger.info("loading model")
-        self._fast_text_display()
+        self._fast_text_display("loading sd model ~40sec")
         sd_baker.load_model(
-            '/home/kevin/ai/models/sdxs-512-0.9-onnx',
+            '/home/kevin/ai/models/sdxs-512-dreamshaper-onnx',
             "sdxs",
             "")
-        self._fast_refresh()
+        self._fast_text_display("sd model loaded!")
+        # self._fast_refresh()
     
     def _select_book(self, key):
         self.locked = True
@@ -150,11 +154,14 @@ class Controller:
         # rolling        
         self.selection_idx[self.page] = self.selection_idx[self.page] % len(model_list)
 
+        self.clear_screen()
         # print screen
         thumbnail_image = render_thumbnail_page(Image.open("/".join(curr_file.split("/")[0:-1])+"/thumbnail.png"), "")        
         self.image = thumbnail_image
-        hex_pixels = image_to_header_file(thumbnail_image)
-        self.full_screen(hex_pixels)
+        # hex_pixels = image_to_header_file(thumbnail_image)
+        grayscale = thumbnail_image.transpose(Image.FLIP_TOP_BOTTOM).convert('L')
+        hex_pixels = dump_1bit_with_dithering(np.array(grayscale, dtype=np.float32))
+        self.part_screen(hex_pixels) 
         self.locked = False
 
 
