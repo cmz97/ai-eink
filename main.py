@@ -4,7 +4,7 @@ from encoder import *
 from GUI import *
 from utils import *
 import subprocess  # Import subprocess module
-
+from Drivers.SAM.sam import SAM
 import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -32,17 +32,17 @@ class HomePage(Page):
         
     def handle_input(self, input):
         logging.info(f"handle_input {input}")
-        if input == 'up':
+        if input == 0:
             last = self.index
             self.index = (self.index - 1) % len(self.gui.contents)
             self.gui.updateIndex(self.index, last)
             self.display()
-        elif input == 'down':
+        elif input == 1:
             last = self.index
             self.index = (self.index + 1) % len(self.gui.contents)
             self.gui.updateIndex(self.index, last)
             self.display()
-        elif input == 'enter':
+        elif input == 2:
             if 0 <= self.index < len(self.subprogram):
                 script_to_run = self.subprogram[self.index]
                 logging.info(f'Executing script: {script_to_run}')
@@ -77,14 +77,8 @@ class Application:
         self.eink.PIC_display_Clear()
         self.in_4g = False
         self.current_page = HomePage(self)
+        self.sam = SAM(self.press_callback)        
 
-        buttons = [
-            {'pin': 9, 'direction': 'up', 'callback': self.press_callback},
-            {'pin': 22, 'direction': 'down', 'callback': self.press_callback},
-            {'pin': 17, 'direction': 'enter', 'callback': self.press_callback}
-        ]        
-
-        self.multi_button_monitor = MultiButtonMonitor(buttons)
 
     def eink_display_4g(self, hex_pixels):
         logging.info('eink_display_4g')
