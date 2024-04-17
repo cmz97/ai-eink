@@ -18,7 +18,7 @@ EncodeTable = {"BTN_UP": 0b001, "BTN_DOWN": 0b010, "BTN_SELECT": 0b100}
 
 try:
     while True:
-        line = ser.readline()  # Read a line from the serial port
+        line = ser.readline().decode().strip()  # Read a line from the serial port
         if line.isdigit():  # Check if the line is a number
             button_state = int(line)
             process_button_state(button_state)
