@@ -11,7 +11,7 @@ class GUI:
             {"Title": "Tiny\nDiffusion", "Icon": './Asset/Image/diffuser.bmp'},
             {"Title": "E-Book\nDiffusion", "Icon": './Asset/Image/book.bmp'},
             {"Title": "AI\nTamagotchi", "Icon": './Asset/Image/toma.bmp'},
-            {"Title": "Camera\nIn-Paint", "Icon": './Asset/Image/inpain.bmp'}  # Adjusted to have a 'Title' key for consistency
+            {"Title": "Bedtime\nStory", "Icon": './Asset/Image/inpain.bmp'}  # Adjusted to have a 'Title' key for consistency
         ] , icons = ['./Asset/Image/batt.bmp'], default_index = 0):
         self.eink_width, self.eink_height = eink_width, eink_height
         self.FONT_PATH = './Asset/Font/Monorama-Bold.ttf'

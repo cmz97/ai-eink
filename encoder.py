@@ -154,23 +154,33 @@ class MultiButtonMonitor:
             button['last_state'] = current_state
 
     def transitionOccurred(self, button, p):
+        print('pressed', p)
         if p == 1:
+            # button clicked, check for exit condition
+            if button['pin'] == 17 \
+            and self.buttons[1]['last_state'] == 1 \
+            and time.time() - self.buttons[1]['last_call'] > 6 : # down button pressed && more than 6 sec $$ this is enter button then exit
+                self.shut_down()
+                return
+
             ellapse_t = time.time() - button['last_call']
             button['last_call'] = time.time()
             print("ellapse_t", ellapse_t)
             if ellapse_t < 0.1: # reject noise
                 return
-            if ellapse_t < 0.5: # double click
-                # self.callback(1)
-                # self.shut_down()
-                return 
+
+            # if button['last_state'] == p and (current_time - button['pressed_time']) > 6:
+            #     print("Shutting down due to long press...")
+            #     self.shut_down()
+            #     return
+
+
+        button['last_state'] = p  # Update last_state to current state
 
         if button['callback'] and p == 1:
             print(f"{button['direction']} pressed")
             button['callback'](button['direction'])
         return
-
-
 
     def stop_monitoring(self):
         self.running = False

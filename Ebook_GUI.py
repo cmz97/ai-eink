@@ -10,21 +10,26 @@ class EbookGUI:
     def __init__(self, eink_width=240, eink_height=416, FONT_PATH='./Asset/Font/Monorama-Bold.ttf', icons = ['./Asset/Image/batt.bmp']):
         self.eink_width, self.eink_height = eink_width, eink_height
         self.FONT_PATH = './Asset/Font/Monorama-Bold.ttf'
-
+        self.icons = icons
         self.contents = ""
 
         self.canvas = Image.new('1', (eink_width, eink_height), 'white')
         self.draw_plus_pattern(self.canvas, density=10, start_pos=(5, 0), size=5)  # Draw '+' pattern
         self.canvas = self.draw_status_bar_with_text_and_icons(self.canvas, "CPU 100% / RAM 100%", icons, 35, 5, FONT_PATH, 15)
-
-
-        itemBox, _ = self.draw_rounded_rectangle_with_mask(eink_width, eink_height, 10, (10, 10, 10, 10), 3, fill=False)
-        top_left = (0, 45)
+        itemBox, _ = self.draw_rounded_rectangle_with_mask(eink_width, eink_height//4*3, 10, (10, 10, 10, 10), 3, fill=False)
+        top_left = (0, 70)
         self.canvas.paste(itemBox, top_left)
-        self.text_area = ((top_left[0] + 10, top_left[1] + 10), (eink_width - 10, eink_height - 10))
-
+        text_start = (top_left[0]+5, top_left[1]+5)
+        self.text_area = ((text_start[0] + 10, text_start[1] + 10), (eink_width - 10, eink_height//2 - 10))
         self.font_size = 15
 
+    def clear_page(self):
+        self.canvas = Image.new('1', (self.eink_width, self.eink_height), 'white')
+        self.draw_plus_pattern(self.canvas, density=10, start_pos=(5, 0), size=5)  # Draw '+' pattern
+        self.canvas = self.draw_status_bar_with_text_and_icons(self.canvas, "CPU 100% / RAM 100%", self.icons, 35, 5, self.FONT_PATH, 15)
+        itemBox, _ = self.draw_rounded_rectangle_with_mask(self.eink_width, self.eink_height//3*2, 10, (10, 10, 10, 10), 3, fill=False)
+        top_left = (0, 70)
+        self.canvas.paste(itemBox, top_left)
         
     def draw_plus_pattern(self,canvas, density, start_pos, size):
         """
@@ -90,11 +95,10 @@ class EbookGUI:
         font = ImageFont.truetype(font_path, font_size)
         canvas_width, canvas_height = canvas.size
         text_area_start, text_area_end = box
-        y_text = text_area_start[1]
-        
+        x_text, y_text = text_area_start 
         for line in wrapped_lines:
             # Draw each line of text
-            draw.text((text_area_start, y_text), line, fill=0, font=font)
+            draw.text((x_text, y_text), line, fill=0, font=font)
             y_text += font_size * 1.2  # Increment y position by line height
         
         return canvas

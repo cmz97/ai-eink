@@ -1,35 +1,26 @@
-
-import json
-import random
-import requests
 import time
+from llama_cpp import Llama
 
 st = time.time()
-prompt =  """<|system|>
-give me a title for this story<|endoftext|>
-<|user|>
-One day, a boy named Tom was playing in the garden. He had a special stone, he liked to keep it in his pocket. Suddenly, he felt something tickling his face. It was a mosquito! He tried to swat it away, but it kept coming back.
-Tom's dad saw the mosquito and said, "Tom, why don't you give the mosquito a gift?" Tom thought for a minute, then he remembered the stone he had been keeping in his pocket. He took it out and held it up to the mosquito.
-The mosquito flew onto the stone and stayed there. Tom smiled and said, "I'm so glad I kept the stone. Now the mosquito has a place to stay!"
-Tom's dad smiled too. He said, "You're so kind, Tom. You showed that even the smallest things can make a big difference."
-Tom nodded and hugged his dad. He was glad he had been able to help the mosquito.
-<|assistant|>
-title: 
-"""
-data = {
-    "prompt": prompt,
-    "model": "stablelm2",
-    "stream": False,
-    "options": {
-        "temperature": 1.5, 
-        "top_p": 0.99, 
-        "top_k": 100,
-        "num_ctx" : 500,
-        "num_predict": 25,
-    },
-}
-response = requests.post("http://localhost:11434/api/generate", json=data, stream=False)
-json_data = json.loads(response.text)["response"]
-text = json_data.replace("\n", ",").replace('"', '').replace(".", ",")
-print(f" --------- {time.time() - st} --------\n\n")
-print(text)
+llm = Llama(
+      model_path="/home/kevin/ai/models/stablelm-2-zephyr-1_6b.q4_k_m.gguf",
+      n_ctx=500, # Uncomment to increase the context window
+    #   n_threads=3,
+)
+print(f'load time {time.time() - st}')
+st = time.time()
+system_message = "Give me a title for this story, return and only return the title."
+prompt = """In the week before their departure to Arrakis, when all the final scurrying about had reached a nearly unbearable frenzy, an old crone came to visit the mother of the boy, Paul.
+    It was a warm night at Castle Caladan, and the ancient pile of stone that had served the Atreides family as home for twenty-six generations bore that cooled-sweat feeling it acquired before a change in the weather."""
+output = llm(
+    #   f"""<|im_start|>system\n{system_message}<|im_end|>\n<|im_start|>user\n{prompt}<|im_end|>\n<|im_start|>assistant\nTitle:""", # Prompt
+      f"""<|system|>\n{system_message}<|endoftext|>\n<|user|>\n{prompt}<|endoftext|>\n<|assistant|>\title:""", # Prompt
+      temp=1.5, 
+      top_p=0.99,
+      top_k=100,
+      max_tokens=50,
+      stop=["</s>", "<|im_end|>", "<|endoftext|>", "\n"], # Stop generating just before the model would generate a new question
+      echo=False # Echo the prompt back in the output
+) # Generate a completion, can also call create_completion
+print(f'inference time {time.time() - st}')
+print(output)

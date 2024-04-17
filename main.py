@@ -20,8 +20,6 @@ class Page:
         """Async method to handle user input."""
         pass
 
-    async def eink_init(self):
-        pass
 
 class HomePage(Page):
     
@@ -30,7 +28,7 @@ class HomePage(Page):
         self.index = 0
         self.gui = GUI()
         self.display()
-        self.subprogram = ['./app_tiny_diffusion.py', './app_ebook.py', './app_tamago.py', 'app_ebook_kid.py']  # Add all your scripts here
+        self.subprogram = ['./app_tiny_diffusion.py', './app_ebook.py', './app_tamago.py', './app_ebook_kid.py']  # Add all your scripts here
         
     def handle_input(self, input):
         logging.info(f"handle_input {input}")
@@ -50,11 +48,12 @@ class HomePage(Page):
                 logging.info(f'Executing script: {script_to_run}')
                 # Run the script and wait for it to complete
                 # self.app.multi_button_monitor.stop_monitoring()
+                self._print_text("opening...")
                 process = subprocess.Popen(['venv/bin/python', script_to_run],)
                 process.wait()  # Wait for the subprocess to complete       
                 # self.app.multi_button_monitor.start_monitoring()
-                print("Sub-Program completed !!!")
-                self.eink_init()
+                print("Sub-Program exited!!!")
+                self.app.eink_init()
                 self.display()
         else:
             pass
@@ -62,6 +61,11 @@ class HomePage(Page):
     def display(self):
         logging.info('home page display called')
         hex_pixels = dump_1bit(np.array(self.gui.canvas.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.uint8))
+        self.app.eink_display_2g(hex_pixels)
+
+    def _print_text(self, text):
+        image = fast_text_display(self.gui.canvas, text)
+        hex_pixels = dump_1bit(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.uint8))
         self.app.eink_display_2g(hex_pixels)
 
 # Implement other ProgramPage classes similarly with async methods

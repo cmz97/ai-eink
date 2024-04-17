@@ -6,13 +6,15 @@ import random
 import json
 from pathlib import Path
 from einkDSP import einkDSP
-from encoder import Encoder, Button
+from encoder import Encoder, Button, MultiButtonMonitor
 from PIL import Image
 from utils import * 
 import threading  # Import threading module
 import RPi.GPIO as GPIO
 from apps import SdBaker, PromptsBank, BookLoader, SceneBaker
 import logging
+from Ebook_GUI import EbookGUI
+
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 GPIO.cleanup()
 
@@ -20,9 +22,18 @@ class Controller:
 
     def __init__(self):
         self.eink = einkDSP()
-        self.butUp = Button(9, direction='up', callback=self.press_callback) # gpio 26
-        self.butDown = Button(22, direction='down', callback=self.press_callback) # gpio 26
-        self.butEnter = Button(17, direction='enter', callback=self.press_callback) # gpio 26
+
+        # self.butUp = Button(9, direction='up', callback=self.press_callback) # gpio 26
+        # self.butDown = Button(22, direction='down', callback=self.press_callback) # gpio 26
+        # self.butEnter = Button(17, direction='enter', callback=self.press_callback) # gpio 26
+
+        buttons = [
+            {'pin': 9, 'direction': 'up', 'callback': self.press_callback},
+            {'pin': 22, 'direction': 'down', 'callback': self.press_callback},
+            {'pin': 17, 'direction': 'enter', 'callback': self.press_callback}
+        ]
+        
+        self.multi_button_monitor = MultiButtonMonitor(buttons)
 
         self.in_4g = True
         self.image = Image.new("L", (eink_width, eink_height), "white")
@@ -55,13 +66,16 @@ class Controller:
         self.image_preview_page = None
 
         
-
-
     def background_task(self):
         # llm
+        # self._fast_text_display("llm ...")
+        # self._fast_text_display("llm processing ~40sec")
         prompt = sb.get_next_scene(" ".join(self.text_buffer[-1]))
+        # self._fast_refresh()
         # sd gen
+        # self._fast_text_display("sd ...")
         self.sd_process(prompt)
+        # self._fast_refresh()
 
     def transit(self):
         self.locked = True
@@ -70,11 +84,11 @@ class Controller:
         logging.info('transit to 2g done')
     
     def clear_screen(self):
-        # self.eink.PIC_display_Clear()
         image = Image.new("L", (eink_width, eink_height), "white")
-        pixels = dump_2bit(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
-        self.part_screen(pixels)
-        self.eink.PIC_display_Clear()
+        hex_pixels = dump_1bit(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.uint8))
+        self.eink.epd_init_part()
+        self.eink.PIC_display(hex_pixels)
+
 
     def part_screen(self, hex_pixels):
         self.locked = True
@@ -91,24 +105,37 @@ class Controller:
         if self.in_4g : 
             self.transit()
             self.in_4g = False
-        
+    
+    def _fast_refresh(self):
+        pixels = dump_1bit_with_dithering(np.array(self.image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32))
+        self.part_screen(pixels)
+
+    def _fast_text_display(self, text="loading ..."):
+        image = fast_text_display(self.image, text)
+        grayscale = image.transpose(Image.FLIP_TOP_BOTTOM).convert('L')
+        hex_pixels = dump_1bit_with_dithering(np.array(grayscale, dtype=np.float32))
+        # hex_pixels = dump_1bit(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.uint8))
+        self.part_screen(hex_pixels)
+
     def update_screen(self):
         image = self.image
         # image = self._prepare_menu(self.image)
         # update screen
         grayscale = image.transpose(Image.FLIP_TOP_BOTTOM).convert('L')
-        pixels = np.array(grayscale, dtype=np.float32)
         logging.info('preprocess image done')
-        hex_pixels = dump_2bit(pixels).tolist()
+        hex_pixels = dump_1bit_with_dithering(np.array(grayscale, dtype=np.float32))
         logging.info('2bit pixels dump done')
         self.part_screen(hex_pixels)
 
     def load_model(self):
         logger.info("loading model")
+        self._fast_text_display("loading sd model ~40sec")
         sd_baker.load_model(
-            '/home/kevin/ai/models/sdxs-512-0.9-onnx',
+            '/home/kevin/ai/models/sdxs-512-dreamshaper-onnx',
             "sdxs",
             "")
+        self._fast_text_display("sd model loaded!")
+        # self._fast_refresh()
     
     def _select_book(self, key):
         self.locked = True
@@ -127,10 +154,14 @@ class Controller:
         # rolling        
         self.selection_idx[self.page] = self.selection_idx[self.page] % len(model_list)
 
+        self.clear_screen()
         # print screen
         thumbnail_image = render_thumbnail_page(Image.open("/".join(curr_file.split("/")[0:-1])+"/thumbnail.png"), "")        
-        hex_pixels = image_to_header_file(thumbnail_image)
-        self.full_screen(hex_pixels)
+        self.image = thumbnail_image
+        # hex_pixels = image_to_header_file(thumbnail_image)
+        grayscale = thumbnail_image.transpose(Image.FLIP_TOP_BOTTOM).convert('L')
+        hex_pixels = dump_1bit_with_dithering(np.array(grayscale, dtype=np.float32))
+        self.part_screen(hex_pixels) 
         self.locked = False
 
 
@@ -170,8 +201,11 @@ class Controller:
 
         # logger.info(text_to_display)
         # images 
-        line_img = [text_to_image(line) for line in text_to_display]
-        self.image = draw_text_on_screen(line_img)
+        # line_img = [text_to_image(line) for line in text_to_display]
+        gui.clear_page()
+        self.image = gui.draw_text_on_canvas(gui.canvas, ["".join(x) for x in text_to_display])
+    
+        # self.image = draw_text_on_screen(line_img)
         # print screen
         # hex_pixels = image_to_header_file(image)
         # self.full_screen(hex_pixels)
@@ -192,7 +226,7 @@ class Controller:
         # prepare prompt and trigger gen
         # event = sd_baker.generate_image(add_prompt=prompts, callback=self.sd_image_callback)
         # event.wait()
-        sd_baker._generate_image_thread(prompts, self.sd_image_callback)
+        sd_baker._generate_image_thread(prompts, self.sd_image_callback, "temp-ebook")
 
 
     def press_callback(self, key):
@@ -236,11 +270,15 @@ sd_baker.neg_prompt = "ng_deepnegative_v1_75t, bad hand, bad face, worst quality
 sd_baker.char_id = "graphic novel, dune movie,"
 sd_baker.num_inference_steps = 1
 
-screen_buffer = 10
+# scale with gui box
+gui = EbookGUI()
+w, h = gui.text_area[1][0] - gui.text_area[0][0] , gui.text_area[1][1] - gui.text_area[0][1]
+scale = 0.55
 ebk = BookLoader(filePath='../models/Dune.txt', 
-screenWidth=eink_width - screen_buffer*2,
-screenHeight=eink_height - screen_buffer*2,
-fontWidth=char_width, fontHeight=char_height)
+screenWidth=w,
+screenHeight=h,
+fontWidth=gui.font_size * scale, 
+fontHeight=gui.font_size * scale * 0.95)
 
 controller = Controller()
 file_cache = "./temp.png"
@@ -265,9 +303,9 @@ if __name__ == "__main__":
                 logger.info("background tasks triggerd")
                 controller.cooking = True
                 controller.trigger_background_job()
-            backCounter += 1 if GPIO.input(9) == 1 else 0
-            if backCounter >= 5:
-                os._exit(0)
+            # backCounter += 1 if GPIO.input(9) == 1 else 0
+            # if backCounter >= 5:
+            #     os._exit(0)
                 
 
     except Exception:
