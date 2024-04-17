@@ -7069,7 +7069,7 @@ design rules under a new name.</description>
 <attribute name="THERMALLOSS" value="" x="12.192" y="16.383" size="1.778" layer="27" rot="R270" display="off"/>
 <attribute name="TYPE" value="N-Channel" x="12.192" y="16.383" size="1.778" layer="27" rot="R270" display="off"/>
 </element>
-<element name="U5" library="MC74VHC1G14DFT1G" package="SOT65P210X110-5N" value="MC74VHC1G14DFT1G" x="17.78" y="20.066" smashed="yes" rot="R270">
+<element name="U5" library="MC74VHC1G14DFT1G" package="SOT65P210X110-5N" value="MC74VHC1G14DFT1G OR C66196" x="17.78" y="20.066" smashed="yes" rot="R270">
 <attribute name="AVAILABILITY" value="In Stock" x="17.78" y="20.066" size="1.778" layer="27" rot="R270" display="off"/>
 <attribute name="CHECK_PRICES" value="https://www.snapeda.com/parts/MC74VHC1G14DFT1G/Onsemi/view-part/?ref=eda" x="17.78" y="20.066" size="1.778" layer="27" rot="R270" display="off"/>
 <attribute name="DESCRIPTION" value=" MC74VHC1G14DFT1G Schmitt Trigger Inverter, 2 - 5.5 V, 5-Pin SC-88A | ON Semiconductor MC74VHC1G14DFT1G " x="17.78" y="20.066" size="1.778" layer="27" rot="R270" display="off"/>
