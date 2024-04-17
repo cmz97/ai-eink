@@ -30,7 +30,7 @@ class HomePage(Page):
         self.index = 0
         self.gui = GUI()
         self.display()
-        self.subprogram = ['./app_tiny_diffusion.py', './app_tamago.py', './app_tamago.py', 'app_ebook_kid.py']  # Add all your scripts here
+        self.subprogram = ['./app_tiny_diffusion.py', './app_ebook.py', './app_tamago.py', 'app_ebook_kid.py']  # Add all your scripts here
         
     def handle_input(self, input):
         logging.info(f"handle_input {input}")
