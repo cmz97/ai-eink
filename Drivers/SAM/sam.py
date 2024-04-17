@@ -33,6 +33,7 @@ class SAM:
     def monitor_pins(self):
         try:
             while True:
+                print("SAM Ping...")
                 line = self.ser.readline().decode().strip()  # Read a line from the serial port
                 if line.isdigit():  # Check if the line is a number
                     button_state = int(line)
