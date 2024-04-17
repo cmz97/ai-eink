@@ -24,6 +24,7 @@ try:
             process_button_state(button_state)
         else:
             print(line)  # Print any other messages such as "xPOWER_ON", "xPOWER_OFF", "xUP"
+            print(len(line))
 
 except KeyboardInterrupt:
     print("Program terminated by user")
