@@ -43,8 +43,17 @@ CMAKE_ARGS="-DLLAMA_BLAS=ON -DLLAMA_BLAS_VENDOR=OpenBLAS" pip install llama-cpp-
 pip install --upgrade-strategy eager optimum[onnxruntime]
 pip install Pillow==9.5.0 sshkeyboard diffusers transformers accelerate
 pip install spidev RPi.GPIO numba
-
 # sudo raspi-config enable SPI I2C
+
+# RAG related
+#https://pimylifeup.com/raspberry-pi-postgresql/
+# sudo apt install -y tesseract-ocr poppler-utils
+pip install llama-cpp-haystack
+pip install fastembed-haystack qdrant-haystack
+pip install pypdf
+pip install pydantic==1.10.13
+# embedding data goes to /home/kevin/llmware_data/accounts/llmware
+
 
 # llm ollama
 curl -fsSL https://ollama.com/install.sh | sh
