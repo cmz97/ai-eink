@@ -34,12 +34,17 @@ python_version=$($PYTHON_COMMAND --version 2>&1 | awk '{print $2}')
 echo "Python version : $python_version"
 
 BASEDIR=$(pwd)
-# pip installs
+# BLAS follow this https://github.com/OpenMathLib/OpenBLAS/wiki/Faq#replacing-system-blasupdating-apt-openblas-in-mintubuntudebian
 git clone https://github.com/xianyi/OpenBLAS
 cd OpenBLAS
-make
+make DYNAMIC_ARCH=1
+sudo make DYNAMIC_ARCH=1 install
+sudo apt install libblas-dev liblapack-dev
+sudo update-alternatives --install /usr/lib/libblas.so.3 libblas.so.3 /opt/OpenBLAS/lib/libopenblas.so.0 41 \
+   --slave /usr/lib/liblapack.so.3 liblapack.so.3 /opt/OpenBLAS/lib/libopenblas.so.0
 CMAKE_ARGS="-DLLAMA_BLAS=ON -DLLAMA_BLAS_VENDOR=OpenBLAS" pip install llama-cpp-python
 
+# pip instals
 pip install --upgrade-strategy eager optimum[onnxruntime]
 pip install Pillow==9.5.0 sshkeyboard diffusers transformers accelerate
 pip install spidev RPi.GPIO numba
@@ -54,6 +59,30 @@ pip install pypdf
 pip install pydantic==1.10.13
 # embedding data goes to /home/kevin/llmware_data/accounts/llmware
 
+
+# Whisper
+pip install pydub
+git clone https://github.com/ggerganov/whisper.cpp.git 
+cd whisper.cpp/
+bash ./models/download-ggml-model.sh tiny.en-q5_1
+OPENBLAS_PATH=/opt/OpenBLAS WHISPER_OPENBLAS=1 make libwhisper.so -j
+# to run 
+LD_LIBRARY_PATH=/opt/OpenBLAS WHISPER_OPENBLAS=1 python mic_script.py 
+
+# alternatve
+pip install faster-whisper
+# translation 
+
+
+
+# github auth 
+(type -p wget >/dev/null || (sudo apt update && sudo apt-get install wget -y)) \
+&& sudo mkdir -p -m 755 /etc/apt/keyrings \
+&& wget -qO- https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo tee /etc/apt/keyrings/githubcli-archive-keyring.gpg > /dev/null \
+&& sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg \
+&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null \
+&& sudo apt update \
+&& sudo apt install gh -y
 
 # llm ollama
 curl -fsSL https://ollama.com/install.sh | sh
