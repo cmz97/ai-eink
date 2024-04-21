@@ -43,7 +43,13 @@ CMAKE_ARGS="-DLLAMA_BLAS=ON -DLLAMA_BLAS_VENDOR=OpenBLAS" pip install llama-cpp-
 pip install --upgrade-strategy eager optimum[onnxruntime]
 pip install Pillow==9.5.0 sshkeyboard diffusers transformers accelerate
 pip install spidev RPi.GPIO numba
+pip install pyserial
 # sudo raspi-config enable SPI I2C
+
+# CAM related
+pip install ultralytics
+pip install opencv-python
+apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
 
 # RAG related
 #https://pimylifeup.com/raspberry-pi-postgresql/

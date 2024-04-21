@@ -12,6 +12,8 @@ from utils import *
 import threading  # Import threading module
 import RPi.GPIO as GPIO
 from apps import SdBaker, PromptsBank
+from Drivers.SAM.sam import SAM
+
 import logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 GPIO.cleanup()
@@ -21,12 +23,13 @@ class Controller:
     def __init__(self):
         self.eink = einkDSP()
         
-        buttons = [
-            {'pin': 9, 'direction': 'up', 'callback': self.press_callback},
-            {'pin': 22, 'direction': 'down', 'callback': self.press_callback},
-            {'pin': 17, 'direction': 'enter', 'callback': self.press_callback}
-        ]
-        self.multi_button_monitor = MultiButtonMonitor(buttons)
+        # buttons = [
+        #     {'pin': 9, 'direction': 'up', 'callback': self.press_callback},
+        #     {'pin': 22, 'direction': 'down', 'callback': self.press_callback},
+        #     {'pin': 17, 'direction': 'enter', 'callback': self.press_callback}
+        # ]
+        # self.multi_button_monitor = MultiButtonMonitor(buttons)
+        self.sam = SAM(self.press_callback)        
 
         self.in_4g = True
         self.image = Image.new("L", (eink_width, eink_height), "white")
@@ -178,9 +181,9 @@ class Controller:
         self.page = 0
         
         # process key
-        if key == "up" : self.selection_idx[self.page] += 1 
-        elif key == "down" : self.selection_idx[self.page] -= 1 
-        elif key == "enter" :  # load model
+        if key == 0 : self.selection_idx[self.page] += 1 
+        elif key == 1 : self.selection_idx[self.page] -= 1 
+        elif key == 2 :  # load model
             curr_file = str(model_list[self.selection_idx[self.page]])
             with open(curr_file) as f: model_info = json.load(f)
             if model_info['name'] == "Gallery" :
@@ -235,9 +238,9 @@ class Controller:
                 self.image_callback(image)
             return 
         
-        if key == "up" : self.selection_idx[self.page] -= 1
-        elif key == "down" : self.selection_idx[self.page] += 1
-        elif key == "enter" :  # hit prompt selection
+        if key == 0 : self.selection_idx[self.page] -= 1
+        elif key == 1 : self.selection_idx[self.page] += 1
+        elif key == 2 :  # hit prompt selection
             if self.selection_idx[self.page] == 0: 
                 self._edit_prompt_page_0("init")
                 return
@@ -259,9 +262,9 @@ class Controller:
         # status sync
         self.page = 2    
             
-        if key == "up" : self.selection_idx[self.page] -= 1 
-        elif key == "down" : self.selection_idx[self.page] += 1 
-        elif key == "enter" :  # hit prompt selection
+        if key == 0 : self.selection_idx[self.page] -= 1 
+        elif key == 1 : self.selection_idx[self.page] += 1 
+        elif key == 2 :  # hit prompt selection
             if self.selection_idx[self.page] != len(self.display_cache[self.page])-1:
                 # update and fresh new screen selects
                 self._edit_prompt_page_1("init")
@@ -281,9 +284,9 @@ class Controller:
         if key == "init":
             self.update_screen()
             return
-        if key == "up" : self.selection_idx[self.page] -= 1 
-        elif key == "down" : self.selection_idx[self.page] += 1 
-        elif key == "enter" :
+        if key == 0 : self.selection_idx[self.page] -= 1 
+        elif key == 1 : self.selection_idx[self.page] += 1 
+        elif key == 2 :
             if self.selection_idx[self.page] == 0: 
                 self._edit_prompt_page_0("")
                 return # no change    
@@ -329,9 +332,9 @@ class Controller:
             self.image_callback(image)
             return
 
-        if key == "up" : self.selection_idx[self.page] -= 1 
-        elif key == "down" : self.selection_idx[self.page] += 1 
-        elif key == "enter" :  # load image
+        if key == 0 : self.selection_idx[self.page] -= 1 
+        elif key == 1 : self.selection_idx[self.page] += 1 
+        elif key == 2 :  # load image
             if self.selection_idx[self.page] == len(self.display_cache[self.page])-1:
                 # back to main page
                 self._model_select_page("init")

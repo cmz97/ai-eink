@@ -55,7 +55,7 @@ camera.start()
 time.sleep(2)
 
 timer = time.time()
-while time.time() - timer < 10:
+while time.time() - timer < 5:
     time.sleep(0.7)
     init_image = camera.switch_mode_and_capture_image(capture_config)
     w,h = init_image.size

@@ -10,6 +10,8 @@ import json
 from pathlib import Path
 from einkDSP import einkDSP
 from encoder import Encoder, Button, MultiButtonMonitor
+from Drivers.SAM.sam import SAM
+
 from PIL import Image
 from utils import * 
 import threading  # Import threading module
@@ -53,14 +55,14 @@ class Controller:
         # self.butDown = Button(22, direction='down', callback=self.press_callback) # gpio 26
         # self.butEnter = Button(17, direction='enter', callback=self.press_callback) # gpio 26
 
-        buttons = [
-            {'pin': 9, 'direction': 'up', 'callback': self.press_callback},
-            {'pin': 22, 'direction': 'down', 'callback': self.press_callback},
-            {'pin': 17, 'direction': 'enter', 'callback': self.press_callback}
-        ]
+        # buttons = [
+        #     {'pin': 9, 'direction': 'up', 'callback': self.press_callback},
+        #     {'pin': 22, 'direction': 'down', 'callback': self.press_callback},
+        #     {'pin': 17, 'direction': 'enter', 'callback': self.press_callback}
+        # ]
         
-        self.multi_button_monitor = MultiButtonMonitor(buttons)
-
+        # self.multi_button_monitor = MultiButtonMonitor(buttons)
+        self.sam = SAM(self.press_callback)        
 
         self.in_4g = True
         self.image = gui.canvas
@@ -195,7 +197,7 @@ class Controller:
 
     def press_callback(self, key): 
         # only key needed to gen a new story
-        if key == "enter" and not self.pending_story:
+        if key == 2 and not self.pending_story:
             self.pending_story = True
             self._fast_text_display("preparing the story...")
 

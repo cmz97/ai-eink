@@ -49,7 +49,7 @@ class HomePage(Page):
                 # Run the script and wait for it to complete
                 # self.app.multi_button_monitor.stop_monitoring()
                 self._print_text("opening...")
-                process = subprocess.Popen(['venv/bin/python', script_to_run],)
+                process = subprocess.Popen(['env/bin/python', script_to_run],)
                 process.wait()  # Wait for the subprocess to complete       
                 # self.app.multi_button_monitor.start_monitoring()
                 print("Sub-Program exited!!!")
