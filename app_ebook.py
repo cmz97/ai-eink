@@ -14,6 +14,7 @@ import RPi.GPIO as GPIO
 from apps import SdBaker, PromptsBank, BookLoader, SceneBaker
 import logging
 from Ebook_GUI import EbookGUI
+from Drivers.SAM.sam import SAM
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 GPIO.cleanup()
@@ -27,13 +28,14 @@ class Controller:
         # self.butDown = Button(22, direction='down', callback=self.press_callback) # gpio 26
         # self.butEnter = Button(17, direction='enter', callback=self.press_callback) # gpio 26
 
-        buttons = [
-            {'pin': 9, 'direction': 'up', 'callback': self.press_callback},
-            {'pin': 22, 'direction': 'down', 'callback': self.press_callback},
-            {'pin': 17, 'direction': 'enter', 'callback': self.press_callback}
-        ]
+        # buttons = [
+        #     {'pin': 9, 'direction': 'up', 'callback': self.press_callback},
+        #     {'pin': 22, 'direction': 'down', 'callback': self.press_callback},
+        #     {'pin': 17, 'direction': 'enter', 'callback': self.press_callback}
+        # ]
         
-        self.multi_button_monitor = MultiButtonMonitor(buttons)
+        # self.multi_button_monitor = MultiButtonMonitor(buttons)
+        self.sam = SAM(self.press_callback)        
 
         self.in_4g = True
         self.image = Image.new("L", (eink_width, eink_height), "white")
@@ -145,9 +147,9 @@ class Controller:
         ebk.loadFile(curr_file)
 
         # process key
-        if key == "up" : self.selection_idx[self.page] += 1 
-        elif key == "down" : self.selection_idx[self.page] -= 1 
-        elif key == "enter" :  # load book
+        if key == 0 : self.selection_idx[self.page] += 1 
+        elif key == 1 : self.selection_idx[self.page] -= 1 
+        elif key == 2 :  # load book
             self._read_page("init")
             return
 
@@ -170,8 +172,8 @@ class Controller:
         # sync status
         self.page = 1
         # process key
-        if key == "up" : self.selection_idx[self.page] -= 1 
-        elif key == "down" : self.selection_idx[self.page] += 1 
+        if key == 0 : self.selection_idx[self.page] -= 1 
+        elif key == 1 : self.selection_idx[self.page] += 1 
 
         logger.info(f"status self.image_preview_page {self.image_preview_page}, self.selection_idx[self.page] {self.selection_idx[self.page]}")
 

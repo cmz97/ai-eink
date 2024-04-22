@@ -50,6 +50,11 @@ pip install pyserial
 pip install ultralytics
 pip install opencv-python
 apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
+sudo apt install -y python3-libcamera python3-kms++
+sudo apt install -y python3-prctl libatlas-base-dev ffmpeg libopenjp2-7 python3-pip
+pip install numpy --upgrade
+pip install picamera2
+cp -r /usr/lib/python3/dist-packages/libcamera env/lib/python3.11/site-packages/
 
 # RAG related
 #https://pimylifeup.com/raspberry-pi-postgresql/

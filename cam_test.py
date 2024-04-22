@@ -24,10 +24,9 @@ from optimum.onnxruntime import ORTStableDiffusionInpaintPipeline
 import torch
 import math
 
-eink = einkDSP()
-
-eink.epd_init_fast()
-eink.PIC_display_Clear()
+# eink = einkDSP()
+# eink.epd_init_fast()
+# eink.PIC_display_Clear()
 
 camera = Picamera2()
 logging.info(' taking pic >>> ')
@@ -63,10 +62,10 @@ while time.time() - timer < 5:
     # crop_box = (w//2-128, h//2-192, w//2+128, h//2+192)
     # init_image = init_image.crop(crop_box) 
     init_image.save('./cam_test_image.png')
-    image = insert_image(Image.new("L", (eink_width, eink_height), "white"), init_image)
-    pixels = dump_2bit(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
-    eink.epd_init_part()
-    eink.PIC_display(pixels)
+    # image = insert_image(Image.new("L", (eink_width, eink_height), "white"), init_image)
+    # pixels = dump_2bit(np.array(image.transpose(Image.FLIP_TOP_BOTTOM), dtype=np.float32)).tolist()
+    # eink.epd_init_part()
+    # eink.PIC_display(pixels)
     time.sleep(0.7)
 
 camera.close()

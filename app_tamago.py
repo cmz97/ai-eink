@@ -15,6 +15,7 @@ import RPi.GPIO as GPIO
 from apps import SdBaker, PromptsBank, BookLoader, SceneBaker
 import logging
 from concurrent.futures import ThreadPoolExecutor
+from Drivers.SAM.sam import SAM
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 # GPIO.cleanup()
@@ -28,13 +29,16 @@ class Controller:
         # self.butEnter = Button(17, direction='enter', callback=self.press_callback) # gpio 26
 
 
-        buttons = [
-            {'pin': 9, 'direction': 'up', 'callback': self.press_callback},
-            {'pin': 22, 'direction': 'down', 'callback': self.press_callback},
-            {'pin': 17, 'direction': 'enter', 'callback': self.press_callback}
-        ]
+        # buttons = [
+        #     {'pin': 9, 'direction': 'up', 'callback': self.press_callback},
+        #     {'pin': 22, 'direction': 'down', 'callback': self.press_callback},
+        #     {'pin': 17, 'direction': 'enter', 'callback': self.press_callback}
+        # ]
         
-        self.multi_button_monitor = MultiButtonMonitor(buttons)
+        # self.multi_button_monitor = MultiButtonMonitor(buttons)
+
+        self.sam = SAM(self.press_callback)        
+
 
 
         self.in_4g = False # start from false
@@ -248,7 +252,7 @@ class Controller:
             if not self.animation_thread or not self.animation_thread.is_alive() : self.start_animation()
         # if self.animation_thread and self.animation_thread.is_alive() : self.stop_start_animation() # stop animation
 
-        if key == "enter":
+        if key == 2:
             logging.info(f"hit enter")
             # lock
             self.locked = True
@@ -288,7 +292,7 @@ class Controller:
 
     def _image_display(self, key):
         self.page = 1        
-        if key == "enter": # get back to status page
+        if key == 2: # get back to status page
             self._show_status("init")
             return
 
