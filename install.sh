@@ -55,6 +55,7 @@ sudo apt install -y python3-prctl libatlas-base-dev ffmpeg libopenjp2-7 python3-
 pip install numpy --upgrade
 pip install picamera2
 cp -r /usr/lib/python3/dist-packages/libcamera env/lib/python3.11/site-packages/
+cp -r /usr/lib/python3/dist-packages/pykms env/lib/python3.11/site-packages/
 
 # RAG related
 #https://pimylifeup.com/raspberry-pi-postgresql/
@@ -65,6 +66,10 @@ pip install pypdf
 pip install pydantic==1.10.13
 # embedding data goes to /home/kevin/llmware_data/accounts/llmware
 
+
+# mic related 
+sudo apt install portaudio19-dev
+pip install pyaudio
 
 # llm ollama
 curl -fsSL https://ollama.com/install.sh | sh
