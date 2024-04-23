@@ -24,6 +24,7 @@ class AudioRecorder:
         self.recording = False
         self.st = threading.Event()
         self.recording_thread = None
+        self.file_ready_event = threading.Event()  # Event to signal file is ready
 
     def record_control(self):
         if not self.recording : 
@@ -49,6 +50,8 @@ class AudioRecorder:
         self.recording = False
 
     def record_loop(self):
+        self.file_ready_event.clear()  # Clear the event at the start
+        
         while self.st.is_set():
             data = self.stream.read(self.CHUNK)
             self.frames.append(data)
@@ -61,6 +64,7 @@ class AudioRecorder:
         wf.setframerate(self.RATE)
         wf.writeframes(b''.join(self.frames))
         wf.close()
+        self.file_ready_event.set()  # Set the event after file is written
 
 
 class Whisper:
@@ -182,13 +186,23 @@ class Application:
 
     def press_callback(self, key):
         if not self.ar.recording : 
+            # new page
+            self.text_buffer = []
+            self.gui.clear_page()
+            self.image = self.gui.canvas
+            
             self._fast_text_display("recoding ...") # call for recording 
+            self.ar.record_control()  # Start or stop recording
+            return
         
-        if not self.ar.record_control(): # print on screen
-            # TRIGGER TRANSCRIBE
-            for sentence in self.wp.transcribe():
-                for word in sentence.split():
-                    self.stream_text(word)
+        # else finish the recording and display
+        self.ar.record_control()  # Start or stop recording
+        # Wait for the recording to finish and file to be ready
+        self.ar.file_ready_event.wait()  
+        # Now proceed with transcription
+        for sentence in self.wp.transcribe():
+            for word in sentence.split():
+                self.stream_text(word)
         
 
 if __name__ == "__main__":
@@ -197,7 +211,7 @@ if __name__ == "__main__":
 
     while True:
         print("ping")
-        time.sleep(0.2)
+        time.sleep(0.5)
 
 
 
