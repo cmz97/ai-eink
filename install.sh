@@ -62,8 +62,7 @@ cp -r /usr/lib/python3/dist-packages/pykms env/lib/python3.11/site-packages/
 # sudo apt install -y tesseract-ocr poppler-utils
 pip install llama-cpp-haystack
 pip install fastembed-haystack qdrant-haystack
-pip install pypdf
-pip install pydantic==1.10.13
+pip install pypdf pydantic==1.10.13
 # embedding data goes to /home/kevin/llmware_data/accounts/llmware
 
 

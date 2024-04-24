@@ -9,7 +9,7 @@ import textwrap
 class EbookGUI:
     def __init__(self, eink_width=240, eink_height=416, FONT_PATH='./Asset/Font/Monorama-Bold.ttf', icons = ['./Asset/Image/batt.bmp']):
         self.eink_width, self.eink_height = eink_width, eink_height
-        self.FONT_PATH = './Asset/Font/Monorama-Bold.ttf'
+        self.FONT_PATH = './Asset/Font/NotoSansSC-VariableFont_wght.ttf'
         self.icons = icons
         self.contents = ""
 

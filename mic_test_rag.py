@@ -7,6 +7,7 @@ from faster_whisper import WhisperModel
 from einkDSP import einkDSP
 from Ebook_GUI import EbookGUI
 from utils import * 
+from rag_script import query_pipeline
 
 class AudioRecorder:
 
@@ -99,6 +100,7 @@ class Application:
 
         self.text_buffer = []
         self.image_buffer = []
+        self.rag_pipeline = query_pipeline
 
     def eink_display_4g(self, hex_pixels):
         logging.info('eink_display_4g')
@@ -165,7 +167,6 @@ class Application:
         logging.info('2bit pixels dump done')
         self.part_screen(hex_pixels)
 
-
     def stream_text(self, text):
         self._status_check()
         # screen_buffer = 10
@@ -184,12 +185,29 @@ class Application:
         self.image = self.gui.draw_text_on_canvas(self.gui.canvas, [" ".join(x) for x in self.text_buffer])
         self.update_screen()        
 
+    def run_rag(self, question):
+        st = time.time()
+        results = self.rag_pipeline.run(
+            {   "text_embedder": {"text": question},
+                "prompt_builder": {"question": question},
+                # "answer_builder": {"query": question},
+            }
+        )
+        time_taken = time.time() - st
+        print(f"Query done. Time taken: {time_taken:.2f} seconds")
+        print(f"Question: {results['answer_builder']['answers'][0].query}")
+        print(f"Answer: {results['answer_builder']['answers'][0].data}")
+        answer = results['answer_builder']['answers'][0].data
+        self.text_buffer.append(['-']) # newline
+        for word in answer.split(): 
+            self.stream_text(word)
+
     def press_callback(self, key):
         if not self.ar.recording : 
             # new page
-            self.text_buffer = []
-            self.gui.clear_page()
-            self.image = self.gui.canvas
+            self.text_buffer.append(['+']) # newline
+            # self.gui.clear_page()
+            # self.image = self.gui.canvas
             
             self._fast_text_display("recoding ...") # call for recording 
             self.ar.record_control()  # Start or stop recording
@@ -201,6 +219,9 @@ class Application:
         self.ar.file_ready_event.wait()  
         # Now proceed with transcription
         for sentence in self.wp.transcribe():
+            # process the sentences first in a thread
+            thread = threading.Thread(target=self.run_rag, args=(sentence,))
+            thread.start()
             for word in sentence.split():
                 self.stream_text(word)
         
@@ -208,7 +229,7 @@ class Application:
 if __name__ == "__main__":
     
     app = Application()
-
+    
     while True:
         print("ping")
         time.sleep(0.5)

@@ -33,6 +33,15 @@ import time
 # document_store.write_documents(documents_with_embeddings.get("documents"), policy=DuplicatePolicy.OVERWRITE)
 
 
+# constants
+model_path = "/home/kevin/ai/models/q4_0-bling-sheared-llama-1.3b-0.1.gguf"
+prompt_template = """<human>: Please read the following text: {% for doc in documents %}
+{{doc.content}}{% endfor %}
+Based on this text, please answer the question: 
+{{question}}\n<bot>:"""
+
+
+# inits 
 document_store = QdrantDocumentStore(
     path="/home/kevin/ai/books/dnd/db",
     embedding_dim =384,
@@ -40,8 +49,6 @@ document_store = QdrantDocumentStore(
     return_embedding=True,
     wait_result_from_api=True,
 )
-
-model_path = "/home/kevin/ai/models/q4_0-bling-sheared-llama-1.3b-0.1.gguf"
 generator = LlamaCppGenerator(
     model=model_path, 
     n_ctx=512, 
@@ -50,10 +57,6 @@ generator = LlamaCppGenerator(
 )
 generator.warm_up()
 # define the prompt template
-prompt_template = """<human>: Please read the following text: {% for doc in documents %}
-{{doc.content}}{% endfor %}
-Based on this text, please answer the question: 
-{{question}}\n<bot>:"""
 
 query_pipeline = Pipeline()
 # FastembedTextEmbedder is used to embed the query

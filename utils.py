@@ -251,14 +251,14 @@ class ORTModelTiledVaeWrapper(object):
 
 def format_text(line_buffer, word, boxWidth, boxHeight, fontWidth, fontHeight):
         # line buffer -> <line_idx, words>
-        charsPerLine = boxWidth // fontWidth
-        linesPerPage = boxHeight // fontHeight
+        charsPerLine = int(boxWidth // fontWidth)
+        linesPerPage = int(boxHeight // fontHeight)
         # assume buffer = list of words
-
+        print(f"[debug] {charsPerLine}")
         lineLength = len(" ".join(line_buffer[-1])) if line_buffer else 0
         # handle corner case
         if len(word) > charsPerLine:  # need to break word
-            return line_buffer + word[:charsPerLine], False
+            return line_buffer + [word[:charsPerLine]], False
             
         if lineLength + len(word) + (1 if line_buffer else 0) <= charsPerLine: # append and update
             if line_buffer:
