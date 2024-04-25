@@ -9,7 +9,7 @@
 <grid distance="0.1" unitdist="inch" unit="inch" style="lines" multiple="1" display="no" altdistance="0.01" altunitdist="inch" altunit="inch"/>
 <layers>
 <layer number="1" name="Top" color="4" fill="1" visible="no" active="no"/>
-<layer number="2" name="Route2" color="16" fill="1" visible="no" active="no"/>
+<layer number="2" name="Route2" color="23" fill="1" visible="no" active="no"/>
 <layer number="3" name="Route3" color="17" fill="1" visible="no" active="no"/>
 <layer number="4" name="Route4" color="18" fill="1" visible="no" active="no"/>
 <layer number="5" name="Route5" color="19" fill="1" visible="no" active="no"/>
@@ -22,7 +22,7 @@
 <layer number="12" name="Route12" color="20" fill="1" visible="no" active="no"/>
 <layer number="13" name="Route13" color="21" fill="1" visible="no" active="no"/>
 <layer number="14" name="Route14" color="22" fill="1" visible="no" active="no"/>
-<layer number="15" name="Route15" color="23" fill="1" visible="no" active="no"/>
+<layer number="15" name="Route15" color="60" fill="1" visible="no" active="no"/>
 <layer number="16" name="Bottom" color="1" fill="1" visible="no" active="no"/>
 <layer number="17" name="Pads" color="2" fill="1" visible="no" active="no"/>
 <layer number="18" name="Vias" color="2" fill="1" visible="no" active="no"/>
@@ -9848,23 +9848,15 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <vertex x="9.4" y="-0.1"/>
 <vertex x="8.3" y="-0.1"/>
 </polygon>
-<wire x1="-6.76" y1="4.532" x2="-4.728" y2="4.532" width="0.1524" layer="51"/>
-<wire x1="-4.728" y1="4.532" x2="-5.744" y2="3.3382" width="0.1524" layer="51"/>
-<wire x1="-6.76" y1="4.532" x2="-5.744" y2="3.3382" width="0.1524" layer="51"/>
 <wire x1="-9.3" y1="-2.6" x2="9.3" y2="-2.6" width="0.1524" layer="51"/>
 <wire x1="9.3" y1="-2.6" x2="9.3" y2="2.6" width="0.1524" layer="51"/>
 <wire x1="9.3" y1="2.6" x2="-9.3" y2="2.6" width="0.1524" layer="51"/>
 <wire x1="-9.3" y1="2.6" x2="-9.3" y2="-2.6" width="0.1524" layer="51"/>
-<text x="-5.1864" y="6.35" size="1.27" layer="51" ratio="6">524372471</text>
-<wire x1="-6.76" y1="4.532" x2="-4.728" y2="4.532" width="0.1524" layer="21"/>
-<wire x1="-4.728" y1="4.532" x2="-5.744" y2="3.3382" width="0.1524" layer="21"/>
-<wire x1="-6.76" y1="4.532" x2="-5.744" y2="3.3382" width="0.1524" layer="21"/>
 <wire x1="-9.3" y1="-0.4175" x2="-9.3" y2="-2.6" width="0.1524" layer="21"/>
 <wire x1="-9.3" y1="-2.6" x2="9.3" y2="-2.6" width="0.1524" layer="21"/>
 <wire x1="9.3" y1="-2.6" x2="9.3" y2="-0.4175" width="0.1524" layer="21"/>
 <wire x1="9.3" y1="2.6" x2="6.2175" y2="2.6" width="0.1524" layer="21"/>
 <wire x1="-6.2175" y1="2.6" x2="-9.3" y2="2.6" width="0.1524" layer="21"/>
-<text x="-5.1864" y="6.35" size="1.27" layer="21" ratio="6">524372471</text>
 <polygon width="0.0254" layer="1">
 <vertex x="-8.3" y="2.1"/>
 <vertex x="-9.4" y="2.1"/>
@@ -13526,23 +13518,15 @@ grid 2.54 mm</description>
 <vertex x="8.9" y="-0.1"/>
 <vertex x="7.8" y="-0.1"/>
 </polygon>
-<wire x1="-6.26" y1="4.532" x2="-4.228" y2="4.532" width="0.1524" layer="51"/>
-<wire x1="-4.228" y1="4.532" x2="-5.244" y2="3.3382" width="0.1524" layer="51"/>
-<wire x1="-6.26" y1="4.532" x2="-5.244" y2="3.3382" width="0.1524" layer="51"/>
 <wire x1="-8.8" y1="-2.6" x2="8.8" y2="-2.6" width="0.1524" layer="51"/>
 <wire x1="8.8" y1="-2.6" x2="8.8" y2="2.6" width="0.1524" layer="51"/>
 <wire x1="8.8" y1="2.6" x2="-8.8" y2="2.6" width="0.1524" layer="51"/>
 <wire x1="-8.8" y1="2.6" x2="-8.8" y2="-2.6" width="0.1524" layer="51"/>
-<text x="-5.1864" y="6.35" size="1.27" layer="51" ratio="6">524372271</text>
-<wire x1="-6.26" y1="4.532" x2="-4.228" y2="4.532" width="0.1524" layer="21"/>
-<wire x1="-4.228" y1="4.532" x2="-5.244" y2="3.3382" width="0.1524" layer="21"/>
-<wire x1="-6.26" y1="4.532" x2="-5.244" y2="3.3382" width="0.1524" layer="21"/>
 <wire x1="-8.8" y1="-0.4175" x2="-8.8" y2="-2.6" width="0.1524" layer="21"/>
 <wire x1="-8.8" y1="-2.6" x2="8.8" y2="-2.6" width="0.1524" layer="21"/>
 <wire x1="8.8" y1="-2.6" x2="8.8" y2="-0.4175" width="0.1524" layer="21"/>
 <wire x1="8.8" y1="2.6" x2="5.7175" y2="2.6" width="0.1524" layer="21"/>
 <wire x1="-5.7175" y1="2.6" x2="-8.8" y2="2.6" width="0.1524" layer="21"/>
-<text x="-5.1864" y="6.35" size="1.27" layer="21" ratio="6">524372271</text>
 <polygon width="0.0254" layer="1">
 <vertex x="-7.8" y="2.1"/>
 <vertex x="-8.9" y="2.1"/>
@@ -14602,9 +14586,9 @@ grid 2.54 mm</description>
 <class number="0" name="default" width="0.0889" drill="0">
 <clearance class="0" value="0.1524"/>
 </class>
-<class number="1" name="BUS" width="0.4572" drill="0.4826">
+<class number="1" name="BUS" width="0.3048" drill="0.3">
 </class>
-<class number="2" name="1A" width="0.3048" drill="0.4826">
+<class number="2" name="1A" width="0.3048" drill="0.3">
 </class>
 <class number="3" name="PCIEs" width="0.1905" drill="0">
 <clearance class="3" value="0.0889"/>
@@ -14809,8 +14793,6 @@ grid 2.54 mm</description>
 <part name="GND13" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
 <part name="RPIBOOT2" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
 <part name="GND22" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
-<part name="RPIBOOT3" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
-<part name="GND25" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
 <part name="RPIBOOT4" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
 <part name="GND26" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
 <part name="RPIBOOT5" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3"/>
@@ -14889,7 +14871,6 @@ grid 2.54 mm</description>
 <part name="U$138" library="microbuilder" deviceset="GND" device=""/>
 <part name="C43" library="Capacitor" library_urn="urn:adsk.eagle:library:16290819" deviceset="C" device="CHIP-0402(1005-METRIC)" package3d_urn="urn:adsk.eagle:package:16290895/5" technology="_" value="0.1uF"/>
 <part name="C44" library="Capacitor" library_urn="urn:adsk.eagle:library:16290819" deviceset="C" device="CHIP-0402(1005-METRIC)" package3d_urn="urn:adsk.eagle:package:16290895/5" technology="_" value="0.1uF"/>
-<part name="C70" library="Capacitor" library_urn="urn:adsk.eagle:library:16290819" deviceset="C" device="CHIP-0402(1005-METRIC)" package3d_urn="urn:adsk.eagle:package:16290895/5" technology="_" value="0.1uF"/>
 <part name="C71" library="Capacitor" library_urn="urn:adsk.eagle:library:16290819" deviceset="C" device="CHIP-0402(1005-METRIC)" package3d_urn="urn:adsk.eagle:package:16290895/5" technology="_" value="0.1uF"/>
 <part name="C72" library="Capacitor" library_urn="urn:adsk.eagle:library:16290819" deviceset="C" device="CHIP-0402(1005-METRIC)" package3d_urn="urn:adsk.eagle:package:16290895/5" technology="_" value="0.1uF"/>
 <part name="C73" library="Capacitor" library_urn="urn:adsk.eagle:library:16290819" deviceset="C" device="CHIP-0402(1005-METRIC)" package3d_urn="urn:adsk.eagle:package:16290895/5" technology="_" value="0.1uF"/>
@@ -14967,9 +14948,10 @@ grid 2.54 mm</description>
 <part name="FB3" library="Filter" library_urn="urn:adsk.eagle:library:16378195" deviceset="FB" device="CHIP-0603(1608-METRIC)" package3d_urn="urn:adsk.eagle:package:16378199/1" value="FERRITE_BEAD"/>
 <part name="FB4" library="Filter" library_urn="urn:adsk.eagle:library:16378195" deviceset="FB" device="CHIP-0603(1608-METRIC)" package3d_urn="urn:adsk.eagle:package:16378199/1" value="FERRITE_BEAD"/>
 <part name="FB5" library="Filter" library_urn="urn:adsk.eagle:library:16378195" deviceset="FB" device="CHIP-0603(1608-METRIC)" package3d_urn="urn:adsk.eagle:package:16378199/1" value="FERRITE_BEAD"/>
-<part name="M.2KEYM(NGFF)" library="1-2199119-5" deviceset="1-2199119-5" device=""/>
+<part name="M.2KEYM(NGFF)" library="1-2199119-5" deviceset="1-2199119-5" device="" value="1-2199119-5 OR C841645"/>
 <part name="GND18" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
 <part name="GND29" library="supply1" library_urn="urn:adsk.eagle:library:371" deviceset="GND" device=""/>
+<part name="C25" library="rcl" deviceset="C-US" device="C1210" value="100uF"/>
 </parts>
 <sheets>
 <sheet>
@@ -15136,8 +15118,8 @@ the power LED. To either:
 <instance part="U$8" gate="G$1" x="581.66" y="220.98" smashed="yes">
 <attribute name="VALUE" x="580.136" y="218.44" size="1.27" layer="96"/>
 </instance>
-<instance part="U$14" gate="G$1" x="617.22" y="246.38" smashed="yes">
-<attribute name="VALUE" x="615.696" y="243.84" size="1.27" layer="96"/>
+<instance part="U$14" gate="G$1" x="617.22" y="238.76" smashed="yes">
+<attribute name="VALUE" x="615.696" y="236.22" size="1.27" layer="96"/>
 </instance>
 <instance part="R2" gate="G$1" x="520.7" y="203.2" smashed="yes" rot="R90">
 <attribute name="NAME" x="518.16" y="203.2" size="1.27" layer="95" font="vector" rot="R90" align="center"/>
@@ -15628,14 +15610,6 @@ the power LED. To either:
 <attribute name="NAME" x="-27.94" y="83.82" size="1.778" layer="95" font="vector" rot="R180"/>
 <attribute name="VALUE" x="-27.94" y="88.9" size="1.778" layer="96" font="vector" rot="R180"/>
 </instance>
-<instance part="RPIBOOT3" gate="G$1" x="-30.48" y="109.22" smashed="yes" rot="R180">
-<attribute name="NAME" x="-27.94" y="106.68" size="1.778" layer="95" font="vector" rot="R180"/>
-<attribute name="VALUE" x="-27.94" y="111.76" size="1.778" layer="96" font="vector" rot="R180"/>
-</instance>
-<instance part="GND25" gate="G$1" x="-30.48" y="101.6" smashed="yes" rot="R180">
-<attribute name="NAME" x="-27.94" y="99.06" size="1.778" layer="95" font="vector" rot="R180"/>
-<attribute name="VALUE" x="-27.94" y="104.14" size="1.778" layer="96" font="vector" rot="R180"/>
-</instance>
 <instance part="RPIBOOT4" gate="G$1" x="-30.48" y="124.46" smashed="yes" rot="R180">
 <attribute name="NAME" x="-27.94" y="121.92" size="1.778" layer="95" font="vector" rot="R180"/>
 <attribute name="VALUE" x="-27.94" y="127" size="1.778" layer="96" font="vector" rot="R180"/>
@@ -15903,10 +15877,6 @@ the power LED. To either:
 <instance part="C44" gate="G$1" x="787.4" y="281.94" smashed="yes">
 <attribute name="NAME" x="785.11" y="283.19" size="1.27" layer="95" font="vector" rot="R90" align="center"/>
 <attribute name="VALUE" x="789.7" y="283.19" size="1.27" layer="96" font="vector" rot="R90" align="center"/>
-</instance>
-<instance part="C70" gate="G$1" x="795.02" y="281.94" smashed="yes">
-<attribute name="NAME" x="792.73" y="283.19" size="1.27" layer="95" font="vector" rot="R90" align="center"/>
-<attribute name="VALUE" x="797.32" y="283.19" size="1.27" layer="96" font="vector" rot="R90" align="center"/>
 </instance>
 <instance part="C71" gate="G$1" x="802.64" y="281.94" smashed="yes">
 <attribute name="NAME" x="800.35" y="283.19" size="1.27" layer="95" font="vector" rot="R90" align="center"/>
@@ -16187,6 +16157,10 @@ the power LED. To either:
 <instance part="GND29" gate="1" x="408.94" y="22.86" smashed="yes" rot="MR0">
 <attribute name="VALUE" x="411.48" y="20.32" size="1.778" layer="96" rot="MR0"/>
 </instance>
+<instance part="C25" gate="G$1" x="594.36" y="241.3" smashed="yes" rot="R90">
+<attribute name="NAME" x="593.725" y="242.316" size="1.778" layer="95" rot="R90"/>
+<attribute name="VALUE" x="598.551" y="242.316" size="1.778" layer="96" rot="R90"/>
+</instance>
 </instances>
 <busses>
 </busses>
@@ -16230,10 +16204,13 @@ the power LED. To either:
 <wire x1="579.12" y1="226.06" x2="581.66" y2="226.06" width="0.1524" layer="91"/>
 </segment>
 <segment>
-<wire x1="617.22" y1="251.46" x2="617.22" y2="248.92" width="0.1524" layer="91"/>
+<wire x1="617.22" y1="251.46" x2="617.22" y2="241.3" width="0.1524" layer="91"/>
 <pinref part="U$14" gate="G$1" pin="GND"/>
 <pinref part="LED2" gate="G$1" pin="C"/>
 <wire x1="614.68" y1="251.46" x2="617.22" y2="251.46" width="0.1524" layer="91"/>
+<pinref part="C25" gate="G$1" pin="2"/>
+<wire x1="599.44" y1="241.3" x2="617.22" y2="241.3" width="0.1524" layer="91"/>
+<junction x="617.22" y="241.3"/>
 </segment>
 <segment>
 <pinref part="U$1" gate="G$1" pin="GND"/>
@@ -16625,11 +16602,6 @@ the power LED. To either:
 <label x="-25.4" y="86.36" size="1.778" layer="95"/>
 </segment>
 <segment>
-<pinref part="GND25" gate="G$1" pin="1"/>
-<wire x1="-30.48" y1="101.6" x2="-20.32" y2="101.6" width="0.1524" layer="91"/>
-<label x="-25.4" y="101.6" size="1.778" layer="95"/>
-</segment>
-<segment>
 <pinref part="GND26" gate="G$1" pin="1"/>
 <wire x1="-30.48" y1="116.84" x2="-20.32" y2="116.84" width="0.1524" layer="91"/>
 <label x="-25.4" y="116.84" size="1.778" layer="95"/>
@@ -16832,16 +16804,13 @@ the power LED. To either:
 <pinref part="C75" gate="G$1" pin="2"/>
 <wire x1="817.88" y1="276.86" x2="810.26" y2="276.86" width="0.1524" layer="91"/>
 <wire x1="810.26" y1="276.86" x2="802.64" y2="276.86" width="0.1524" layer="91"/>
-<wire x1="802.64" y1="276.86" x2="795.02" y2="276.86" width="0.1524" layer="91"/>
-<wire x1="795.02" y1="276.86" x2="787.4" y2="276.86" width="0.1524" layer="91"/>
+<wire x1="802.64" y1="276.86" x2="787.4" y2="276.86" width="0.1524" layer="91"/>
 <wire x1="787.4" y1="276.86" x2="779.78" y2="276.86" width="0.1524" layer="91"/>
 <wire x1="779.78" y1="276.86" x2="767.08" y2="276.86" width="0.1524" layer="91"/>
 <pinref part="C43" gate="G$1" pin="2"/>
 <junction x="779.78" y="276.86"/>
 <pinref part="C44" gate="G$1" pin="2"/>
 <junction x="787.4" y="276.86"/>
-<pinref part="C70" gate="G$1" pin="2"/>
-<junction x="795.02" y="276.86"/>
 <pinref part="C71" gate="G$1" pin="2"/>
 <junction x="802.64" y="276.86"/>
 <pinref part="C72" gate="G$1" pin="2"/>
@@ -17103,8 +17072,9 @@ the power LED. To either:
 <wire x1="568.96" y1="236.22" x2="574.04" y2="236.22" width="0.1524" layer="91"/>
 <wire x1="574.04" y1="236.22" x2="579.12" y2="236.22" width="0.1524" layer="91"/>
 <wire x1="579.12" y1="236.22" x2="591.82" y2="236.22" width="0.1524" layer="91"/>
-<wire x1="591.82" y1="236.22" x2="591.82" y2="251.46" width="0.1524" layer="91"/>
+<wire x1="591.82" y1="236.22" x2="591.82" y2="241.3" width="0.1524" layer="91"/>
 <pinref part="C2" gate="G$1" pin="1"/>
+<wire x1="591.82" y1="241.3" x2="591.82" y2="251.46" width="0.1524" layer="91"/>
 <wire x1="591.82" y1="251.46" x2="591.82" y2="256.54" width="0.1524" layer="91"/>
 <wire x1="574.04" y1="231.14" x2="574.04" y2="236.22" width="0.1524" layer="91"/>
 <junction x="574.04" y="236.22"/>
@@ -17115,6 +17085,8 @@ the power LED. To either:
 <junction x="591.82" y="251.46"/>
 <pinref part="C6" gate="G$1" pin="1"/>
 <junction x="579.12" y="236.22"/>
+<pinref part="C25" gate="G$1" pin="1"/>
+<junction x="591.82" y="241.3"/>
 </segment>
 <segment>
 <pinref part="RPI-CM1" gate="G$1" pin="+5V(INPUT)@77"/>
@@ -17386,13 +17358,6 @@ the power LED. To either:
 <pinref part="C7" gate="G$1" pin="1"/>
 <wire x1="576.58" y1="2.54" x2="576.58" y2="5.08" width="0.1524" layer="91"/>
 <junction x="576.58" y="2.54"/>
-</segment>
-</net>
-<net name="1.8V" class="0">
-<segment>
-<pinref part="RPIBOOT3" gate="G$1" pin="1"/>
-<wire x1="-30.48" y1="109.22" x2="-20.32" y2="109.22" width="0.1524" layer="91"/>
-<label x="-25.4" y="109.22" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="USB_N" class="0">
@@ -18592,8 +18557,7 @@ the power LED. To either:
 <wire x1="767.08" y1="284.48" x2="767.08" y2="289.56" width="0.1524" layer="91"/>
 <wire x1="767.08" y1="289.56" x2="779.78" y2="289.56" width="0.1524" layer="91"/>
 <wire x1="779.78" y1="289.56" x2="787.4" y2="289.56" width="0.1524" layer="91"/>
-<wire x1="787.4" y1="289.56" x2="795.02" y2="289.56" width="0.1524" layer="91"/>
-<wire x1="795.02" y1="289.56" x2="802.64" y2="289.56" width="0.1524" layer="91"/>
+<wire x1="787.4" y1="289.56" x2="802.64" y2="289.56" width="0.1524" layer="91"/>
 <wire x1="802.64" y1="289.56" x2="810.26" y2="289.56" width="0.1524" layer="91"/>
 <wire x1="810.26" y1="289.56" x2="817.88" y2="289.56" width="0.1524" layer="91"/>
 <pinref part="C73" gate="G$1" pin="1"/>
@@ -18605,9 +18569,6 @@ the power LED. To either:
 <pinref part="C71" gate="G$1" pin="1"/>
 <wire x1="802.64" y1="284.48" x2="802.64" y2="289.56" width="0.1524" layer="91"/>
 <junction x="802.64" y="289.56"/>
-<pinref part="C70" gate="G$1" pin="1"/>
-<wire x1="795.02" y1="284.48" x2="795.02" y2="289.56" width="0.1524" layer="91"/>
-<junction x="795.02" y="289.56"/>
 <pinref part="C44" gate="G$1" pin="1"/>
 <wire x1="787.4" y1="284.48" x2="787.4" y2="289.56" width="0.1524" layer="91"/>
 <junction x="787.4" y="289.56"/>
@@ -19587,10 +19548,72 @@ the power LED. To either:
 <approved hash="104,1,88.9,246.38,OSC2,VCC,3.3V,,,"/>
 <approved hash="104,1,464.82,137.16,U9,VDD,3.3V,,,"/>
 <approved hash="104,1,-25.4,287.02,U10,IN,5.0V,,,"/>
+<approved hash="104,1,728.98,243.84,C2040,IOVDD_2,SAM_3V3,,,"/>
+<approved hash="104,1,728.98,220.98,C2040,IOVDD_3,SAM_3V3,,,"/>
+<approved hash="104,1,728.98,190.5,C2040,IOVDD_4,SAM_3V3,,,"/>
+<approved hash="104,1,728.98,187.96,C2040,DVDD_2,SAM_1V1,,,"/>
+<approved hash="104,1,784.86,182.88,C2040,IOVDD_5,SAM_3V3,,,"/>
+<approved hash="104,1,784.86,205.74,C2040,IOVDD_6,SAM_3V3,,,"/>
+<approved hash="104,1,784.86,208.28,C2040,ADC_AVDD,SAM_3V3,,,"/>
+<approved hash="104,1,784.86,210.82,C2040,VREG_VIN,SAM_3V3,,,"/>
+<approved hash="104,1,784.86,220.98,C2040,USB_VDD,SAM_3V3,,,"/>
+<approved hash="104,1,784.86,223.52,C2040,IOVDD,SAM_3V3,,,"/>
+<approved hash="104,1,784.86,226.06,C2040,DVDD,SAM_1V1,,,"/>
 <approved hash="104,1,662.94,292.1,U11,IN,VOUT,,,"/>
-<approved hash="104,1,728.98,129.54,SPI_FLASH_SAM,VCC,SAM_3V3,,,"/>
+<approved hash="104,1,73.66,203.2,U12,VDD,AVDD,,,"/>
+<approved hash="104,1,853.44,172.72,U8,VCC,SAM_3V3,,,"/>
 <approved hash="204,1,624.84,142.24,U13,GND_2,,,,"/>
+<approved hash="104,1,528.32,-7.62,U5,VCC,SAM_3V3,,,"/>
+<approved hash="104,1,797.56,129.54,U6,VCC,SAM_3V3,,,"/>
+<approved hash="106,1,220.98,96.52,CAM0_C_N,,,,,"/>
+<approved hash="106,1,220.98,93.98,CAM0_C_P,,,,,"/>
+<approved hash="106,1,220.98,111.76,CAM0_D0_N,,,,,"/>
+<approved hash="106,1,220.98,109.22,CAM0_D0_P,,,,,"/>
+<approved hash="106,1,220.98,104.14,CAM0_D1_N,,,,,"/>
+<approved hash="106,1,220.98,101.6,CAM0_D1_P,,,,,"/>
+<approved hash="106,1,160.02,58.42,DSI0_C_N,,,,,"/>
+<approved hash="106,1,160.02,55.88,DSI0_C_P,,,,,"/>
+<approved hash="106,1,160.02,73.66,DSI0_D0_N,,,,,"/>
+<approved hash="106,1,160.02,71.12,DSI0_D0_P,,,,,"/>
+<approved hash="106,1,160.02,66.04,DSI0_D1_N,,,,,"/>
+<approved hash="106,1,160.02,63.5,DSI0_D1_P,,,,,"/>
+<approved hash="106,1,160.02,35.56,DSI1_C_N,,,,,"/>
+<approved hash="106,1,160.02,33.02,DSI1_C_P,,,,,"/>
+<approved hash="106,1,160.02,50.8,DSI1_D0_N,,,,,"/>
+<approved hash="106,1,160.02,48.26,DSI1_D0_P,,,,,"/>
+<approved hash="106,1,160.02,43.18,DSI1_D1_N,,,,,"/>
+<approved hash="106,1,160.02,40.64,DSI1_D1_P,,,,,"/>
+<approved hash="106,1,160.02,27.94,DSI1_D2_N,,,,,"/>
+<approved hash="106,1,160.02,25.4,DSI1_D2_P,,,,,"/>
+<approved hash="106,1,220.98,27.94,DSI1_D3_N,,,,,"/>
+<approved hash="106,1,220.98,25.4,DSI1_D3_P,,,,,"/>
+<approved hash="106,1,160.02,81.28,HDMI0_CEC,,,,,"/>
+<approved hash="106,1,220.98,33.02,HDMI0_CLK_N,,,,,"/>
+<approved hash="106,1,220.98,35.56,HDMI0_CLK_P,,,,,"/>
+<approved hash="106,1,160.02,78.74,HDMI0_HOTPLUG,,,,,"/>
+<approved hash="106,1,220.98,20.32,HDMI0_SCL,,,,,"/>
+<approved hash="106,1,160.02,20.32,HDMI0_SDA,,,,,"/>
+<approved hash="106,1,220.98,40.64,HDMI0_TX0_N,,,,,"/>
+<approved hash="106,1,220.98,43.18,HDMI0_TX0_P,,,,,"/>
+<approved hash="106,1,220.98,48.26,HDMI0_TX1_N,,,,,"/>
+<approved hash="106,1,220.98,50.8,HDMI0_TX1_P,,,,,"/>
+<approved hash="106,1,220.98,55.88,HDMI0_TX2_N,,,,,"/>
+<approved hash="106,1,220.98,58.42,HDMI0_TX2_P,,,,,"/>
+<approved hash="106,1,160.02,83.82,HDMI1_CEC,,,,,"/>
+<approved hash="106,1,220.98,63.5,HDMI1_CLK_N,,,,,"/>
+<approved hash="106,1,220.98,66.04,HDMI1_CLK_P,,,,,"/>
+<approved hash="106,1,160.02,91.44,HDMI1_HOTPLUG,,,,,"/>
+<approved hash="106,1,160.02,86.36,HDMI1_SCL,,,,,"/>
+<approved hash="106,1,160.02,88.9,HDMI1_SDA,,,,,"/>
+<approved hash="106,1,220.98,71.12,HDMI1_TX0_N,,,,,"/>
+<approved hash="106,1,220.98,73.66,HDMI1_TX0_P,,,,,"/>
+<approved hash="106,1,220.98,78.74,HDMI1_TX1_N,,,,,"/>
+<approved hash="106,1,220.98,81.28,HDMI1_TX1_P,,,,,"/>
+<approved hash="106,1,220.98,86.36,HDMI1_TX2_N,,,,,"/>
+<approved hash="106,1,220.98,88.9,HDMI1_TX2_P,,,,,"/>
 <approved hash="106,1,497.84,88.9,NC,,,,,"/>
+<approved hash="106,1,220.98,142.24,RESERVED@104,,,,,"/>
+<approved hash="106,1,220.98,139.7,RESERVED@106,,,,,"/>
 <approved hash="106,1,728.98,238.76,SAM_GPIO1,,,,,"/>
 <approved hash="106,1,728.98,236.22,SAM_GPIO2,,,,,"/>
 <approved hash="106,1,728.98,233.68,SAM_GPIO3,,,,,"/>
@@ -19612,9 +19635,11 @@ the power LED. To either:
 <approved hash="106,1,728.98,182.88,SAM_SWD,,,,,"/>
 <approved hash="106,1,497.84,76.2,TSCL,,,,,"/>
 <approved hash="106,1,497.84,73.66,TSDA,,,,,"/>
+<approved hash="106,1,160.02,144.78,USB_OTG_ID,,,,,"/>
+<approved hash="106,1,160.02,132.08,VDAC_COMP,,,,,"/>
 <approved hash="108,1,368.3,261.62,VOUT,,,,,"/>
 <approved hash="111,1,568.96,218.44,LBO,,,,,"/>
-<approved hash="111,1,40.64,246.38,LEFT_N,,,,,"/>
+<approved hash="111,1,48.26,246.38,LEFT_N,,,,,"/>
 <approved hash="115,1,281.94,252.73,TS,,,,,"/>
 </errors>
 </schematic>
