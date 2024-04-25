@@ -25,7 +25,6 @@ class AudioRecorder:
         self.frames = []
         self.recording = False
         self.st = threading.Event()
-        self.recording_thread = None
         self.file_ready_event = threading.Event()  # Event to signal file is ready
 
     def record_control(self):

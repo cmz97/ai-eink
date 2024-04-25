@@ -47,7 +47,7 @@ pip install pyserial
 # sudo raspi-config enable SPI I2C
 
 # CAM related
-pip install ultralytics
+pip install ultralytics git+https://github.com/ultralytics/CLIP.git
 pip install opencv-python
 apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
 sudo apt install -y python3-libcamera python3-kms++
