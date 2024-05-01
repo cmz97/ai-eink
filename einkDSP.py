@@ -1,7 +1,62 @@
 
 import time
 import spidev
-import RPi.GPIO as GPIO
+import platform
+
+_ROCK =  'rockchip' in platform.release()
+
+if not _ROCK :
+    import RPi.GPIO as GPIO
+else:
+    from gpiod.line import Direction, Value, Bias
+    import gpiod
+
+    class RockGPIO:
+        def __init__(self):
+            # Dictionary to hold line requests for different pins
+            self.lines = {}
+
+        def _parse_pin(self, pin):
+            # Parse the pin format 'GPIO1_C6' to extract the chip number and line number
+            bank, sub_bank, index = int(pin[4]), pin[6], int(pin[7])
+            # Calculate the line number based on bank, sub-bank, and index
+            line_number = int((ord(sub_bank) - ord('A')) * 8 + index) 
+            return bank, line_number
+
+        def setup(self, pin, direction, initial_value=Value.INACTIVE, bias=Bias.UNKNOWN):
+            # Parse the pin to get the chip number and line number
+            chip_number, line_number = self._parse_pin(pin)
+            # Request the line with bias settings
+            line_settings = gpiod.LineSettings(direction=direction, output_value=initial_value, bias=bias)
+            line_request = gpiod.request_lines(f'/dev/gpiochip{chip_number}', consumer='RockGPIO', config={line_number: line_settings})
+            # Store the request in a dictionary for future use
+            self.lines[pin] = line_request
+
+        def output(self, pin, value):
+            # Get the line request
+            line_request = self.lines.get(pin)
+            if line_request:
+                # Get the line number from parsing the pin
+                _, line_number = self._parse_pin(pin)
+                # Set the line value
+                line_request.set_value(line_number, Value.ACTIVE if value else Value.INACTIVE)
+
+        def input(self, pin):
+            # Get the line request
+            line_request = self.lines.get(pin)
+            if line_request:
+                # Get the line number from parsing the pin
+                _, line_number = self._parse_pin(pin)
+                # Return the line value
+                return line_request.get_value(line_number)
+
+        def cleanup(self):
+            # Close all line requests when cleaning up
+            for pin, line_request in self.lines.items():
+                line_request.close()
+            self.lines.clear()
+
+
 
 class einkDSP:
     def __init__(self) -> None:
@@ -41,26 +96,43 @@ class einkDSP:
         ]
         self.emptyImage = [0xFF] * 24960
         self.oldData = [0] * 12480
-        self.GPIO = GPIO
+        
 
         #Pin Def
-        self.DC_PIN = 6
-        self.RST_PIN = 13
-        self.BUSY_PIN = 5
-        
+
+        if  _ROCK : 
+            self.RK_DC_PIN = "GPIO1_C6"
+            self.RK_RST_PIN = "GPIO1_D2"
+            self.RK_BUSY_PIN = "GPIO0_D3"
+        else:
+            self.DC_PIN = 6
+            self.RST_PIN = 13
+            self.BUSY_PIN = 5
+
         self.EPD_WIDTH = 240 
         self.EPD_HEIGHT = 416 
+
+        if  _ROCK : 
+            self.RockGPIO = RockGPIO()
+        else:
+            self.GPIO = GPIO
 
         self.spi = self.EPD_GPIO_Init()
         self.epd_w21_init_4g()
 
     def EPD_GPIO_Init(self):
         # GPIO.cleanup()
-        self.GPIO.setwarnings(False) 
-        self.GPIO.setmode(GPIO.BCM)
-        self.GPIO.setup(self.DC_PIN, GPIO.OUT) #DC 
-        self.GPIO.setup(self.RST_PIN, GPIO.OUT) #REST
-        self.GPIO.setup(self.BUSY_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP) #BUSY
+        if not _ROCK : 
+            self.GPIO.setwarnings(False) 
+            self.GPIO.setmode(GPIO.BCM)
+            self.GPIO.setup(self.DC_PIN, GPIO.OUT) #DC 
+            self.GPIO.setup(self.RST_PIN, GPIO.OUT) #REST
+            self.GPIO.setup(self.BUSY_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP) #BUSY
+        else:
+            self.RockGPIO.setup(self.DC_PIN, Direction.OUTPUT)
+            self.RockGPIO.setup(self.RST_PIN, Direction.OUTPUT)
+            self.RockGPIO.setup(self.BUSY_PIN, Direction.INPUT, bias=Bias.PULL_UP)
+
 
 
         bus = 0 # We only have SPI bus 0 available to us on the Pi
@@ -79,12 +151,18 @@ class einkDSP:
 
     def epd_w21_write_cmd(self,command):
         self.SPI_Delay()
-        self.GPIO.output(self.DC_PIN, GPIO.LOW)  # Command mode
+        if _ROCK:
+            self.RockGPIO.output(self.RK_DC_PIN, Value.INACTIVE)  # Data mode
+        else:
+            self.GPIO.output(self.DC_PIN, GPIO.LOW)
         self.SPI_Write(command)
 
     def epd_w21_write_data(self,data):
         self.SPI_Delay()
-        self.GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
+        if _ROCK:
+            self.RockGPIO.output(self.RK_DC_PIN, Value.ACTIVE)  # Data mode
+        else:
+            self.GPIO.output(self.DC_PIN, GPIO.HIGH)
         self.SPI_Write(data)
 
     def delay_xms(self,xms):
@@ -92,9 +170,9 @@ class einkDSP:
 
     def epd_w21_init(self):
         self.delay_xms(100)  # At least 10ms delay
-        self.GPIO.output(self.RST_PIN, False)  # Module reset
+        self.RockGPIO.output(self.RK_RST_PIN, Value.INACTIVE) if _ROCK else self.GPIO.output(self.RST_PIN, GPIO.LOW)
         self.delay_xms(20)
-        self.GPIO.output(self.RST_PIN, True)
+        self.RockGPIO.output(self.RK_RST_PIN, Value.ACTIVE) if _ROCK else self.GPIO.output(self.RST_PIN, GPIO.HIGH)
         self.delay_xms(20)
 
    
@@ -117,8 +195,12 @@ class einkDSP:
         # You would need to implement self.lcd_chkstatus here
 
     def lcd_chkstatus(self):
-        while self.GPIO.input(self.BUSY_PIN) == GPIO.LOW:  # Assuming LOW means busy
-            time.sleep(0.01)  # Wait 10ms before checking again
+        if _ROCK:
+            while self.RockGPIO.input(self.RK_BUSY_PIN) == Value.INACTIVE:  # Assuming LOW means busy
+                time.sleep(0.01)
+        else:
+            while self.GPIO.input(self.BUSY_PIN) == GPIO.LOW:  # Assuming LOW means busy
+                time.sleep(0.01)  # Wait 10ms before checking again
 
     def epd_sleep(self):
         self.epd_w21_write_cmd(0x02)  # Power off
@@ -250,7 +332,10 @@ class einkDSP:
         # Command to start transmitting old data
         buffer = []
         self.epd_w21_write_cmd(0x10)
-        self.GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
+        if _ROCK:
+            self.RockGPIO.output(self.RK_DC_PIN, Value.ACTIVE)
+        else:
+            self.GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
 
         print("Start Old Data Transmission")
         # Iterate over each byte of the image data
@@ -282,7 +367,10 @@ class einkDSP:
         print("Start New Data Transmission")
         # Command to start transmitting new data
         self.epd_w21_write_cmd(0x13)
-        self.GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
+        if _ROCK:
+            self.RockGPIO.output(self.RK_DC_PIN, Value.ACTIVE)
+        else:
+            self.GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
 
         for i in range(12480):  # Repeat the process for new data
             temp3 = 0
@@ -321,12 +409,18 @@ class einkDSP:
         
         # Transfer old data
         self.epd_w21_write_cmd(0x10)
-        self.GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
+        if _ROCK:
+            self.RockGPIO.output(self.RK_DC_PIN, Value.ACTIVE)
+        else:
+            self.GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
         self.spi.xfer3(self.oldData, self.spi.max_speed_hz, 1 ,8)
 
         # Transfer new data
         self.epd_w21_write_cmd(0x13)
-        self.GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
+        if _ROCK:
+            self.RockGPIO.output(self.RK_DC_PIN, Value.ACTIVE)
+        else:
+            self.GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
         self.spi.xfer3(new_data, self.spi.max_speed_hz, 1 ,8)
         self.oldData = new_data.copy()
         
@@ -338,12 +432,18 @@ class einkDSP:
     def PIC_display_Clear(self,poweroff=False):
         # Transfer old data
         self.epd_w21_write_cmd(0x10)
-        self.GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
+        if _ROCK:
+            self.RockGPIO.output(self.RK_DC_PIN, Value.ACTIVE)
+        else:
+            self.GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
         self.spi.xfer3(self.oldData, self.spi.max_speed_hz, 1 ,8)
         
         # Transfer new data, setting all to 0xFF (white or clear)
         self.epd_w21_write_cmd(0x13)
-        self.GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
+        if _ROCK:
+            self.RockGPIO.output(self.RK_DC_PIN, Value.ACTIVE)
+        else:
+            self.GPIO.output(self.DC_PIN, GPIO.HIGH)  # Data mode
         self.spi.xfer3([0] * 12480, self.spi.max_speed_hz, 1 ,8)
         self.oldData = [0] * 12480
 
