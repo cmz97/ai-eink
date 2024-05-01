@@ -1522,384 +1522,6 @@ by exp-lbrs.ulp</description>
 <text x="-1.83" y="1.81" size="0.8128" layer="25" ratio="18">&gt;NAME</text>
 <text x="-1.83" y="-2.16" size="0.4064" layer="27" ratio="10">&gt;VALUE</text>
 </package>
-<package name="CHIPLED_1206">
-<description>&lt;b&gt;CHIPLED 1206&lt;/b&gt;</description>
-<wire x1="-0.4" y1="1.6" x2="0.4" y2="1.6" width="0.1016" layer="51" curve="172.619069"/>
-<wire x1="-0.8" y1="-0.95" x2="-0.8" y2="0.95" width="0.1016" layer="51"/>
-<wire x1="0.8" y1="0.95" x2="0.8" y2="-0.95" width="0.1016" layer="51"/>
-<wire x1="-0.6" y1="0.446" x2="0" y2="0.446" width="0.2032" layer="21"/>
-<wire x1="0" y1="0.446" x2="0.6" y2="0.446" width="0.2032" layer="21"/>
-<wire x1="0" y1="0.446" x2="-0.6" y2="-0.154" width="0.2032" layer="21"/>
-<wire x1="-0.6" y1="-0.154" x2="0.6" y2="-0.154" width="0.2032" layer="21"/>
-<wire x1="0.6" y1="-0.154" x2="0" y2="0.446" width="0.2032" layer="21"/>
-<wire x1="1" y1="2.4985" x2="-1" y2="2.4985" width="0.2032" layer="21"/>
-<wire x1="-1" y1="2.4985" x2="-1" y2="-2.4985" width="0.2032" layer="21"/>
-<wire x1="-1" y1="-2.4985" x2="1" y2="-2.4985" width="0.2032" layer="21"/>
-<wire x1="1" y1="-2.4985" x2="1" y2="2.4985" width="0.2032" layer="21"/>
-<circle x="-0.55" y="1.425" radius="0.1" width="0.0762" layer="51"/>
-<smd name="C" x="0" y="1.496" dx="1.5" dy="1.5" layer="1"/>
-<smd name="A" x="0" y="-1.496" dx="1.5" dy="1.5" layer="1"/>
-<text x="-1.27" y="-2.286" size="0.8128" layer="25" ratio="18" rot="R90">&gt;NAME</text>
-<text x="1.651" y="-2.286" size="0.4064" layer="27" ratio="10" rot="R90">&gt;VALUE</text>
-<text x="-0.1" y="-2.23" size="0.4064" layer="51">A</text>
-<text x="-0.1" y="1.86" size="0.4064" layer="51">C</text>
-<rectangle x1="-0.85" y1="1.525" x2="-0.35" y2="1.65" layer="51"/>
-<rectangle x1="-0.85" y1="1.225" x2="-0.625" y2="1.55" layer="51"/>
-<rectangle x1="-0.45" y1="1.225" x2="-0.325" y2="1.45" layer="51"/>
-<rectangle x1="-0.65" y1="1.225" x2="-0.225" y2="1.35" layer="51"/>
-<rectangle x1="0.35" y1="1.3" x2="0.85" y2="1.65" layer="51"/>
-<rectangle x1="0.25" y1="1.225" x2="0.85" y2="1.35" layer="51"/>
-<rectangle x1="-0.85" y1="0.95" x2="0.85" y2="1.25" layer="51"/>
-<rectangle x1="-0.85" y1="-1.65" x2="0.85" y2="-0.95" layer="51"/>
-</package>
-<package name="CHIPLED_0805">
-<description>&lt;b&gt;CHIPLED 0805&lt;/b&gt;</description>
-<wire x1="-0.35" y1="0.925" x2="0.35" y2="0.925" width="0.1016" layer="51" curve="162.394521"/>
-<wire x1="-0.35" y1="-0.925" x2="0.35" y2="-0.925" width="0.1016" layer="51" curve="-162.394521"/>
-<wire x1="0.575" y1="0.525" x2="0.575" y2="-0.525" width="0.1016" layer="51"/>
-<wire x1="-0.575" y1="-0.5" x2="-0.575" y2="0.925" width="0.1016" layer="51"/>
-<wire x1="-0.4" y1="0.2" x2="0" y2="0.2" width="0.2032" layer="21"/>
-<wire x1="0" y1="0.2" x2="0.4" y2="0.2" width="0.2032" layer="21"/>
-<wire x1="0" y1="0.2" x2="-0.4" y2="-0.2" width="0.2032" layer="21"/>
-<wire x1="-0.4" y1="-0.2" x2="0.4" y2="-0.2" width="0.2032" layer="21"/>
-<wire x1="0.4" y1="-0.2" x2="0" y2="0.2" width="0.2032" layer="21"/>
-<wire x1="0.85" y1="-1.9" x2="-0.85" y2="-1.9" width="0.2032" layer="21"/>
-<wire x1="-0.85" y1="-1.9" x2="-0.85" y2="1.9" width="0.2032" layer="21"/>
-<wire x1="-0.85" y1="1.9" x2="0.85" y2="1.9" width="0.2032" layer="21"/>
-<wire x1="0.85" y1="1.9" x2="0.85" y2="-1.9" width="0.2032" layer="21"/>
-<circle x="-0.45" y="0.85" radius="0.103" width="0.0762" layer="51"/>
-<smd name="C" x="0" y="1.05" dx="1.2" dy="1.2" layer="1"/>
-<smd name="A" x="0" y="-1.05" dx="1.2" dy="1.2" layer="1"/>
-<text x="-1.016" y="-1.778" size="0.8128" layer="25" ratio="18" rot="R90">&gt;NAME</text>
-<text x="1.397" y="-1.778" size="0.4064" layer="27" ratio="10" rot="R90">&gt;VALUE</text>
-<text x="-0.1" y="-1.4" size="0.254" layer="51">A</text>
-<text x="-0.1" y="1.2" size="0.254" layer="51">C</text>
-<rectangle x1="0.3" y1="0.5" x2="0.625" y2="1" layer="51"/>
-<rectangle x1="-0.325" y1="0.5" x2="-0.175" y2="0.75" layer="51"/>
-<rectangle x1="0.175" y1="0.5" x2="0.325" y2="0.75" layer="51"/>
-<rectangle x1="-0.2" y1="0.5" x2="0.2" y2="0.675" layer="51"/>
-<rectangle x1="0.3" y1="-1" x2="0.625" y2="-0.5" layer="51"/>
-<rectangle x1="-0.625" y1="-1" x2="-0.3" y2="-0.5" layer="51"/>
-<rectangle x1="0.175" y1="-0.75" x2="0.325" y2="-0.5" layer="51"/>
-<rectangle x1="-0.325" y1="-0.75" x2="-0.175" y2="-0.5" layer="51"/>
-<rectangle x1="-0.2" y1="-0.675" x2="0.2" y2="-0.5" layer="51"/>
-<rectangle x1="-0.6" y1="0.5" x2="-0.3" y2="0.762" layer="51"/>
-<rectangle x1="-0.625" y1="0.925" x2="-0.3" y2="1" layer="51"/>
-</package>
-<package name="CHIPLED_0603">
-<description>&lt;b&gt;CHIPLED 0603&lt;/b&gt;</description>
-<wire x1="-0.3" y1="0.8" x2="0.3" y2="0.8" width="0.1016" layer="51" curve="170.055574"/>
-<wire x1="-0.275" y1="-0.825" x2="0.275" y2="-0.825" width="0.0508" layer="51" curve="-180"/>
-<wire x1="-0.4" y1="0.375" x2="-0.4" y2="-0.35" width="0.1016" layer="51"/>
-<wire x1="0.4" y1="0.35" x2="0.4" y2="-0.35" width="0.1016" layer="51"/>
-<wire x1="-0.65" y1="-1.4" x2="-0.65" y2="1.4" width="0.2032" layer="21"/>
-<wire x1="0.65" y1="1.4" x2="0.65" y2="-1.4" width="0.2032" layer="21"/>
-<wire x1="-0.65" y1="1.4" x2="0.65" y2="1.4" width="0.2032" layer="21"/>
-<wire x1="-0.65" y1="-1.4" x2="0.65" y2="-1.4" width="0.2032" layer="21"/>
-<wire x1="-0.4" y1="0.2" x2="0" y2="0.2" width="0.2032" layer="21"/>
-<wire x1="0" y1="0.2" x2="0.4" y2="0.2" width="0.2032" layer="21"/>
-<wire x1="0" y1="0.2" x2="-0.4" y2="-0.2" width="0.2032" layer="21"/>
-<wire x1="-0.4" y1="-0.2" x2="0.4" y2="-0.2" width="0.2032" layer="21"/>
-<wire x1="0.4" y1="-0.2" x2="0" y2="0.2" width="0.2032" layer="21"/>
-<circle x="-0.35" y="0.625" radius="0.075" width="0.0508" layer="51"/>
-<smd name="C" x="0" y="0.75" dx="0.8" dy="0.8" layer="1"/>
-<smd name="A" x="0" y="-0.75" dx="0.8" dy="0.8" layer="1"/>
-<text x="-0.762" y="-1.27" size="0.8128" layer="25" ratio="18" rot="R90">&gt;NAME</text>
-<text x="1.27" y="-1.27" size="0.4064" layer="27" ratio="10" rot="R90">&gt;VALUE</text>
-<rectangle x1="-0.45" y1="0.7" x2="-0.25" y2="0.85" layer="51"/>
-<rectangle x1="-0.275" y1="0.55" x2="-0.225" y2="0.6" layer="51"/>
-<rectangle x1="-0.45" y1="0.35" x2="-0.4" y2="0.725" layer="51"/>
-<rectangle x1="0.25" y1="0.55" x2="0.45" y2="0.85" layer="51"/>
-<rectangle x1="-0.45" y1="0.35" x2="0.45" y2="0.575" layer="51"/>
-<rectangle x1="-0.45" y1="-0.85" x2="-0.25" y2="-0.35" layer="51"/>
-<rectangle x1="0.25" y1="-0.85" x2="0.45" y2="-0.35" layer="51"/>
-<rectangle x1="-0.275" y1="-0.575" x2="0.275" y2="-0.35" layer="51"/>
-<rectangle x1="-0.275" y1="-0.65" x2="-0.175" y2="-0.55" layer="51"/>
-<rectangle x1="0.175" y1="-0.65" x2="0.275" y2="-0.55" layer="51"/>
-</package>
-<package name="CHIPLED_0603_NOOUTLINE">
-<wire x1="-0.3" y1="0.8" x2="0.3" y2="0.8" width="0.1016" layer="51" curve="170.055574"/>
-<wire x1="-0.275" y1="-0.825" x2="0.275" y2="-0.825" width="0.0508" layer="51" curve="-180"/>
-<wire x1="-0.4" y1="0.375" x2="-0.4" y2="-0.35" width="0.1016" layer="51"/>
-<wire x1="0.4" y1="0.35" x2="0.4" y2="-0.35" width="0.1016" layer="51"/>
-<circle x="-0.35" y="0.625" radius="0.075" width="0.0508" layer="51"/>
-<smd name="C" x="0" y="0.75" dx="0.8" dy="0.8" layer="1"/>
-<smd name="A" x="0" y="-0.75" dx="0.8" dy="0.8" layer="1"/>
-<text x="-0.762" y="-1.27" size="0.8128" layer="25" ratio="18" rot="R90">&gt;NAME</text>
-<text x="1.27" y="-1.27" size="0.4064" layer="27" ratio="10" rot="R90">&gt;VALUE</text>
-<rectangle x1="-0.45" y1="0.7" x2="-0.25" y2="0.85" layer="51"/>
-<rectangle x1="-0.275" y1="0.55" x2="-0.225" y2="0.6" layer="51"/>
-<rectangle x1="-0.45" y1="0.35" x2="-0.4" y2="0.725" layer="51"/>
-<rectangle x1="0.25" y1="0.55" x2="0.45" y2="0.85" layer="51"/>
-<rectangle x1="-0.45" y1="0.35" x2="0.45" y2="0.575" layer="51"/>
-<rectangle x1="-0.45" y1="-0.85" x2="-0.25" y2="-0.35" layer="51"/>
-<rectangle x1="0.25" y1="-0.85" x2="0.45" y2="-0.35" layer="51"/>
-<rectangle x1="-0.275" y1="-0.575" x2="0.275" y2="-0.35" layer="51"/>
-<rectangle x1="-0.275" y1="-0.65" x2="-0.175" y2="-0.55" layer="51"/>
-<rectangle x1="0.175" y1="-0.65" x2="0.275" y2="-0.55" layer="51"/>
-<rectangle x1="-0.381" y1="0.1397" x2="0.381" y2="0.2667" layer="21"/>
-<polygon width="0.1524" layer="21">
-<vertex x="0" y="0.1397"/>
-<vertex x="-0.254" y="-0.1778"/>
-<vertex x="0.254" y="-0.1778"/>
-</polygon>
-</package>
-<package name="CHIPLED_0805_NOOUTLINE">
-<wire x1="-0.35" y1="0.925" x2="0.35" y2="0.925" width="0.1016" layer="51" curve="162.394521"/>
-<wire x1="-0.35" y1="-0.925" x2="0.35" y2="-0.925" width="0.1016" layer="51" curve="-162.394521"/>
-<wire x1="0.575" y1="0.525" x2="0.575" y2="-0.525" width="0.1016" layer="51"/>
-<wire x1="-0.575" y1="-0.5" x2="-0.575" y2="0.925" width="0.1016" layer="51"/>
-<circle x="-0.45" y="0.85" radius="0.103" width="0.0762" layer="51"/>
-<smd name="C" x="0" y="1.05" dx="1.2" dy="1.2" layer="1"/>
-<smd name="A" x="0" y="-1.05" dx="1.2" dy="1.2" layer="1"/>
-<text x="-1.016" y="-1.778" size="0.8128" layer="25" ratio="18" rot="R90">&gt;NAME</text>
-<text x="1.397" y="-1.778" size="0.4064" layer="27" ratio="10" rot="R90">&gt;VALUE</text>
-<text x="-0.1" y="-1.4" size="0.254" layer="51">A</text>
-<text x="-0.1" y="1.2" size="0.254" layer="51">C</text>
-<rectangle x1="0.3" y1="0.5" x2="0.625" y2="1" layer="51"/>
-<rectangle x1="-0.325" y1="0.5" x2="-0.175" y2="0.75" layer="51"/>
-<rectangle x1="0.175" y1="0.5" x2="0.325" y2="0.75" layer="51"/>
-<rectangle x1="-0.2" y1="0.5" x2="0.2" y2="0.675" layer="51"/>
-<rectangle x1="0.3" y1="-1" x2="0.625" y2="-0.5" layer="51"/>
-<rectangle x1="-0.625" y1="-1" x2="-0.3" y2="-0.5" layer="51"/>
-<rectangle x1="0.175" y1="-0.75" x2="0.325" y2="-0.5" layer="51"/>
-<rectangle x1="-0.325" y1="-0.75" x2="-0.175" y2="-0.5" layer="51"/>
-<rectangle x1="-0.2" y1="-0.675" x2="0.2" y2="-0.5" layer="51"/>
-<rectangle x1="-0.6" y1="0.5" x2="-0.3" y2="0.762" layer="51"/>
-<rectangle x1="-0.625" y1="0.925" x2="-0.3" y2="1" layer="51"/>
-<rectangle x1="-0.4445" y1="0.1405" x2="0.4445" y2="0.331" layer="21"/>
-<polygon width="0.1524" layer="21">
-<vertex x="0" y="0.254"/>
-<vertex x="-0.381" y="-0.254"/>
-<vertex x="0.381" y="-0.254"/>
-</polygon>
-</package>
-<package name="CREE_XLAMP_XPE2">
-<description>&lt;p&gt;Source: http://www.cree.com/~/media/Files/Cree/LED%20Components%20and%20Modules/XLamp/Data%20and%20Binning/XLampXPE2.pdf&lt;/p&gt;</description>
-<smd name="CATHODE" x="-1.4" y="0" dx="0.5" dy="3.3" layer="1" cream="no"/>
-<smd name="ANODE" x="1.4" y="0" dx="0.5" dy="3.3" layer="1" cream="no"/>
-<smd name="THERMAL" x="0" y="0" dx="1.3" dy="3.3" layer="1" cream="no"/>
-<rectangle x1="-2.05" y1="-0.25" x2="-1.15" y2="0.25" layer="1"/>
-<rectangle x1="-2.1" y1="-0.3" x2="-1.15" y2="0.3" layer="29"/>
-<rectangle x1="1.15" y1="-0.25" x2="2.05" y2="0.25" layer="1" rot="R180"/>
-<rectangle x1="1.15" y1="-0.3" x2="2.1" y2="0.3" layer="29" rot="R180"/>
-<rectangle x1="-0.6" y1="-1.6" x2="0.6" y2="1.6" layer="31"/>
-<rectangle x1="-2" y1="-0.2" x2="-1.2" y2="0.2" layer="31"/>
-<rectangle x1="-1.6" y1="0.2" x2="-1.2" y2="1.6" layer="31"/>
-<rectangle x1="-1.6" y1="-1.6" x2="-1.2" y2="-0.2" layer="31"/>
-<rectangle x1="1.2" y1="-0.2" x2="2" y2="0.2" layer="31"/>
-<rectangle x1="1.2" y1="0.2" x2="1.6" y2="1.6" layer="31"/>
-<rectangle x1="1.2" y1="-1.6" x2="1.6" y2="-0.2" layer="31"/>
-<wire x1="-1.725" y1="1.725" x2="1.725" y2="1.725" width="0.127" layer="51"/>
-<wire x1="1.725" y1="1.725" x2="1.725" y2="-1.725" width="0.127" layer="51"/>
-<wire x1="1.725" y1="-1.725" x2="-1.725" y2="-1.725" width="0.127" layer="51"/>
-<wire x1="-1.725" y1="-1.725" x2="-1.725" y2="1.725" width="0.127" layer="51"/>
-<circle x="0" y="0" radius="1.48660625" width="0.127" layer="51"/>
-<rectangle x1="-1.5" y1="-1.5" x2="-1.3" y2="-1.3" layer="51"/>
-<wire x1="-0.6" y1="-1.7" x2="-0.6" y2="-0.7" width="0.127" layer="51"/>
-<wire x1="-0.6" y1="-0.7" x2="0.7" y2="-0.7" width="0.127" layer="51"/>
-<wire x1="0.7" y1="-0.7" x2="0.7" y2="0.7" width="0.127" layer="51"/>
-<wire x1="0.7" y1="0.7" x2="0" y2="0.7" width="0.127" layer="51"/>
-<wire x1="0" y1="0.7" x2="0" y2="1.7" width="0.127" layer="51"/>
-<polygon width="0.1524" layer="21">
-<vertex x="2.346" y="1.2"/>
-<vertex x="2.954" y="0.719"/>
-<vertex x="2.954" y="1.681"/>
-</polygon>
-<rectangle x1="2.1" y1="0.6" x2="2.4" y2="1.8" layer="21"/>
-<wire x1="-1.8" y1="1.8" x2="1.8" y2="1.8" width="0.127" layer="21"/>
-<wire x1="1.8" y1="1.8" x2="1.8" y2="0.4" width="0.127" layer="21"/>
-<wire x1="-1.8" y1="1.8" x2="-1.8" y2="0.4" width="0.127" layer="21"/>
-<wire x1="-1.8" y1="-0.4" x2="-1.8" y2="-1.8" width="0.127" layer="21"/>
-<wire x1="-1.8" y1="-1.8" x2="1.8" y2="-1.8" width="0.127" layer="21"/>
-<wire x1="1.8" y1="-1.8" x2="1.8" y2="-0.4" width="0.127" layer="21"/>
-<text x="-1.862" y="2.027" size="0.8128" layer="25" ratio="18">&gt;NAME</text>
-<text x="-1.762" y="-2.435" size="0.4064" layer="27" ratio="10">&gt;VALUE</text>
-<rectangle x1="-0.5" y1="-0.5" x2="0.5" y2="0.5" layer="51"/>
-</package>
-<package name="CREE_XLAMP_XTE">
-<smd name="CATHODE" x="-1.4" y="0" dx="0.5" dy="3.3" layer="1" cream="no"/>
-<smd name="ANODE" x="1.4" y="0" dx="0.5" dy="3.3" layer="1" cream="no"/>
-<smd name="THERMAL" x="0" y="0" dx="1.3" dy="3.3" layer="1" cream="no"/>
-<rectangle x1="-2.05" y1="-0.25" x2="-1.15" y2="0.25" layer="1"/>
-<rectangle x1="-2.1" y1="-0.3" x2="-1.15" y2="0.3" layer="29"/>
-<rectangle x1="1.15" y1="-0.25" x2="2.05" y2="0.25" layer="1" rot="R180"/>
-<rectangle x1="1.15" y1="-0.3" x2="2.1" y2="0.3" layer="29" rot="R180"/>
-<rectangle x1="-0.6" y1="-1.6" x2="0.6" y2="1.6" layer="31"/>
-<rectangle x1="-2" y1="-0.2" x2="-1.2" y2="0.2" layer="31"/>
-<rectangle x1="-1.6" y1="0.2" x2="-1.2" y2="1.6" layer="31"/>
-<rectangle x1="-1.6" y1="-1.6" x2="-1.2" y2="-0.2" layer="31"/>
-<rectangle x1="1.2" y1="-0.2" x2="2" y2="0.2" layer="31"/>
-<rectangle x1="1.2" y1="0.2" x2="1.6" y2="1.6" layer="31"/>
-<rectangle x1="1.2" y1="-1.6" x2="1.6" y2="-0.2" layer="31"/>
-<wire x1="-1.725" y1="1.725" x2="1.725" y2="1.725" width="0.127" layer="51"/>
-<wire x1="1.725" y1="1.725" x2="1.725" y2="-1.725" width="0.127" layer="51"/>
-<wire x1="1.725" y1="-1.725" x2="-1.725" y2="-1.725" width="0.127" layer="51"/>
-<wire x1="-1.725" y1="-1.725" x2="-1.725" y2="1.725" width="0.127" layer="51"/>
-<rectangle x1="-1.5" y1="-1.5" x2="-1.3" y2="-1.3" layer="51"/>
-<polygon width="0.1524" layer="21">
-<vertex x="2.346" y="1.2"/>
-<vertex x="2.954" y="0.719"/>
-<vertex x="2.954" y="1.681"/>
-</polygon>
-<rectangle x1="2.1" y1="0.6" x2="2.4" y2="1.8" layer="21"/>
-<wire x1="-1.8" y1="1.8" x2="1.8" y2="1.8" width="0.127" layer="21"/>
-<wire x1="1.8" y1="1.8" x2="1.8" y2="0.4" width="0.127" layer="21"/>
-<wire x1="-1.8" y1="1.8" x2="-1.8" y2="0.4" width="0.127" layer="21"/>
-<wire x1="-1.8" y1="-0.4" x2="-1.8" y2="-1.8" width="0.127" layer="21"/>
-<wire x1="-1.8" y1="-1.8" x2="1.8" y2="-1.8" width="0.127" layer="21"/>
-<wire x1="1.8" y1="-1.8" x2="1.8" y2="-0.4" width="0.127" layer="21"/>
-<text x="-1.862" y="2.027" size="0.8128" layer="25" ratio="18">&gt;NAME</text>
-<text x="-1.762" y="-2.435" size="0.4064" layer="27" ratio="10">&gt;VALUE</text>
-<rectangle x1="-0.5" y1="-0.5" x2="0.5" y2="0.5" layer="51"/>
-<circle x="0" y="0" radius="1.5811375" width="0.127" layer="51"/>
-<circle x="0" y="0" radius="1.3928375" width="0.127" layer="51"/>
-<wire x1="1.2" y1="0.125" x2="1.45" y2="0.125" width="0.1" layer="51"/>
-<wire x1="1.45" y1="0.125" x2="1.45" y2="0.375" width="0.1" layer="51"/>
-<wire x1="1.45" y1="0.375" x2="1.7" y2="0.375" width="0.1" layer="51"/>
-<wire x1="1.7" y1="0.375" x2="1.7" y2="0.125" width="0.1" layer="51"/>
-<wire x1="1.7" y1="0.125" x2="1.95" y2="0.125" width="0.1" layer="51"/>
-<wire x1="1.95" y1="0.125" x2="1.95" y2="-0.125" width="0.1" layer="51"/>
-<wire x1="1.95" y1="-0.125" x2="1.7" y2="-0.125" width="0.1" layer="51"/>
-<wire x1="1.7" y1="-0.125" x2="1.7" y2="-0.375" width="0.1" layer="51"/>
-<wire x1="1.7" y1="-0.375" x2="1.45" y2="-0.375" width="0.1" layer="51"/>
-<wire x1="1.45" y1="-0.375" x2="1.45" y2="-0.125" width="0.1" layer="51"/>
-<wire x1="1.45" y1="-0.125" x2="1.2" y2="-0.125" width="0.1" layer="51"/>
-<wire x1="1.2" y1="-0.125" x2="1.2" y2="0.125" width="0.1" layer="51"/>
-</package>
-<package name="EVERLIGHT_45-21">
-<wire x1="-1.35" y1="1" x2="1.35" y2="1" width="0.127" layer="51"/>
-<wire x1="1.35" y1="1" x2="1.35" y2="0.7" width="0.127" layer="51"/>
-<wire x1="1.35" y1="0.7" x2="1.35" y2="-0.55" width="0.127" layer="51"/>
-<wire x1="1.35" y1="-0.55" x2="1.35" y2="-0.7" width="0.127" layer="51"/>
-<wire x1="1.35" y1="-0.7" x2="1.35" y2="-1" width="0.127" layer="51"/>
-<wire x1="1.35" y1="-1" x2="0.9" y2="-1" width="0.127" layer="51"/>
-<wire x1="0.9" y1="-1" x2="-1.35" y2="-1" width="0.127" layer="51"/>
-<wire x1="-1.35" y1="-1" x2="-1.35" y2="-0.7" width="0.127" layer="51"/>
-<wire x1="-1.35" y1="-0.7" x2="-1.35" y2="0.7" width="0.127" layer="51"/>
-<wire x1="-1.35" y1="0.7" x2="-1.35" y2="1" width="0.127" layer="51"/>
-<wire x1="1.35" y1="0.7" x2="1.5" y2="0.7" width="0.127" layer="51"/>
-<wire x1="1.5" y1="0.7" x2="1.5" y2="-0.7" width="0.127" layer="51"/>
-<wire x1="1.5" y1="-0.7" x2="1.35" y2="-0.7" width="0.127" layer="51"/>
-<wire x1="1.35" y1="-0.7" x2="1.35" y2="-0.55" width="0.127" layer="51"/>
-<wire x1="1.35" y1="-0.55" x2="1.35" y2="0.7" width="0.127" layer="51"/>
-<wire x1="-1.35" y1="0.7" x2="-1.5" y2="0.7" width="0.127" layer="51"/>
-<wire x1="-1.5" y1="0.7" x2="-1.5" y2="-0.7" width="0.127" layer="51"/>
-<wire x1="-1.5" y1="-0.7" x2="-1.35" y2="-0.7" width="0.127" layer="51"/>
-<wire x1="-1.15" y1="0.45" x2="-1.15" y2="0.5" width="0.127" layer="51"/>
-<wire x1="-1.15" y1="0.5" x2="-0.85" y2="0.8" width="0.127" layer="51" curve="-90"/>
-<wire x1="-0.85" y1="0.8" x2="0.8" y2="0.8" width="0.127" layer="51"/>
-<wire x1="0.8" y1="0.8" x2="1.15" y2="0.45" width="0.127" layer="51" curve="-90"/>
-<wire x1="1.15" y1="0.45" x2="1.15" y2="-0.5" width="0.127" layer="51"/>
-<wire x1="1.15" y1="-0.5" x2="0.85" y2="-0.8" width="0.127" layer="51" curve="-90"/>
-<wire x1="0.85" y1="-0.8" x2="-0.85" y2="-0.8" width="0.127" layer="51"/>
-<wire x1="-0.85" y1="-0.8" x2="-1.15" y2="-0.5" width="0.127" layer="51" curve="-90"/>
-<wire x1="-1.15" y1="-0.5" x2="-1.15" y2="0.45" width="0.127" layer="51"/>
-<smd name="A" x="-1.45" y="0" dx="1.4" dy="1.4" layer="1"/>
-<smd name="K" x="1.45" y="0" dx="1.4" dy="1.4" layer="1"/>
-<wire x1="0.9" y1="-1" x2="1.35" y2="-0.55" width="0.127" layer="51"/>
-<wire x1="1.35" y1="-0.55" x2="1.35" y2="-0.7" width="0.127" layer="51"/>
-<wire x1="1.35" y1="-0.7" x2="1.1" y2="-0.95" width="0.127" layer="51"/>
-<wire x1="1.1" y1="-0.95" x2="1.2" y2="-0.95" width="0.127" layer="51"/>
-<wire x1="1.2" y1="-0.95" x2="1.3" y2="-0.85" width="0.127" layer="51"/>
-<text x="-1.375" y="1.25" size="0.8128" layer="25" ratio="18">&gt;NAME</text>
-<text x="-1.375" y="-1.633" size="0.4064" layer="27" ratio="10">&gt;VALUE</text>
-<wire x1="-1.45" y1="0.85" x2="-1.45" y2="1.1" width="0.127" layer="21"/>
-<wire x1="-1.45" y1="1.1" x2="1.45" y2="1.1" width="0.127" layer="21"/>
-<wire x1="1.45" y1="1.1" x2="1.45" y2="0.9" width="0.127" layer="21"/>
-<wire x1="1.45" y1="0.9" x2="1.45" y2="0.85" width="0.127" layer="21"/>
-<wire x1="-1.45" y1="-0.85" x2="-1.45" y2="-1.1" width="0.127" layer="21"/>
-<wire x1="-1.45" y1="-1.1" x2="1.45" y2="-1.1" width="0.127" layer="21"/>
-<wire x1="1.45" y1="-1.1" x2="1.45" y2="-0.85" width="0.127" layer="21"/>
-<polygon width="0.1524" layer="21">
-<vertex x="0.254" y="0"/>
-<vertex x="-0.354" y="0.481"/>
-<vertex x="-0.354" y="-0.481"/>
-</polygon>
-<rectangle x1="0.2" y1="-0.6" x2="0.5" y2="0.6" layer="21" rot="R180"/>
-</package>
-<package name="PLCC2_REVMOUNT">
-<description>&lt;p&gt;PLCC2 - Reverse Mount&lt;/p&gt;
-&lt;p&gt;Source: http://catalog.osram-os.com/media/_en/Graphics/00042122_0.pdf&lt;/p&gt;</description>
-<smd name="K" x="-2.4" y="0" dx="1.2" dy="2.6" layer="1"/>
-<smd name="A" x="2.4" y="0" dx="1.2" dy="2.6" layer="1"/>
-<hole x="0" y="0" drill="2.5"/>
-<wire x1="-1.7" y1="1.15" x2="-1.7" y2="1.3" width="0.127" layer="51"/>
-<wire x1="-1.7" y1="1.3" x2="-1.5" y2="1.5" width="0.127" layer="51" curve="-90"/>
-<wire x1="-1.5" y1="1.5" x2="-0.95" y2="1.5" width="0.127" layer="51"/>
-<wire x1="-0.95" y1="1.5" x2="1.5" y2="1.5" width="0.127" layer="51"/>
-<wire x1="1.5" y1="1.5" x2="1.7" y2="1.3" width="0.127" layer="51" curve="-90"/>
-<wire x1="1.7" y1="1.3" x2="1.7" y2="1.2" width="0.127" layer="51"/>
-<wire x1="1.7" y1="1.2" x2="1.7" y2="1.15" width="0.127" layer="51"/>
-<wire x1="1.7" y1="1.15" x2="2.7" y2="1.15" width="0.127" layer="51"/>
-<wire x1="2.7" y1="1.15" x2="2.7" y2="-1.15" width="0.127" layer="51"/>
-<wire x1="2.7" y1="-1.15" x2="1.7" y2="-1.15" width="0.127" layer="51"/>
-<wire x1="1.7" y1="-1.15" x2="1.7" y2="-1.2" width="0.127" layer="51"/>
-<wire x1="1.7" y1="-1.2" x2="1.7" y2="-1.25" width="0.127" layer="51"/>
-<wire x1="1.7" y1="-1.25" x2="1.45" y2="-1.5" width="0.127" layer="51" curve="-90"/>
-<wire x1="1.45" y1="-1.5" x2="-1.45" y2="-1.5" width="0.127" layer="51"/>
-<wire x1="-1.45" y1="-1.5" x2="-1.7" y2="-1.25" width="0.127" layer="51" curve="-90"/>
-<wire x1="-1.7" y1="-1.25" x2="-1.7" y2="-1.15" width="0.127" layer="51"/>
-<wire x1="-1.7" y1="-1.15" x2="-2.65" y2="-1.15" width="0.127" layer="51"/>
-<wire x1="-2.65" y1="-1.15" x2="-2.65" y2="1.15" width="0.127" layer="51"/>
-<wire x1="-2.65" y1="1.15" x2="-1.7" y2="1.15" width="0.127" layer="51"/>
-<wire x1="-1.7" y1="1.15" x2="-1.7" y2="0.75" width="0.127" layer="51"/>
-<wire x1="-1.7" y1="0.75" x2="-1.7" y2="0.65" width="0.127" layer="51"/>
-<wire x1="-1.7" y1="0.65" x2="-1.7" y2="-0.65" width="0.127" layer="51"/>
-<wire x1="-1.7" y1="-0.65" x2="-1.7" y2="-1.15" width="0.127" layer="51"/>
-<wire x1="-1.7" y1="-0.65" x2="-1.75" y2="-0.65" width="0.127" layer="51"/>
-<wire x1="-1.75" y1="-0.65" x2="-1.85" y2="-0.55" width="0.127" layer="51" curve="-90"/>
-<wire x1="-1.85" y1="-0.55" x2="-1.85" y2="0.5" width="0.127" layer="51"/>
-<wire x1="-1.85" y1="0.5" x2="-1.7" y2="0.65" width="0.127" layer="51" curve="-90"/>
-<wire x1="1.7" y1="-1.2" x2="1.7" y2="-0.65" width="0.127" layer="51"/>
-<wire x1="1.7" y1="-0.65" x2="1.7" y2="0.65" width="0.127" layer="51"/>
-<wire x1="1.7" y1="0.65" x2="1.7" y2="1.2" width="0.127" layer="51"/>
-<wire x1="1.7" y1="0.65" x2="1.75" y2="0.65" width="0.127" layer="51"/>
-<wire x1="1.75" y1="0.65" x2="1.85" y2="0.55" width="0.127" layer="51" curve="-90"/>
-<wire x1="1.85" y1="0.55" x2="1.85" y2="-0.5" width="0.127" layer="51"/>
-<wire x1="1.85" y1="-0.5" x2="1.7" y2="-0.65" width="0.127" layer="51" curve="-90"/>
-<wire x1="-1.7" y1="0.75" x2="-0.95" y2="1.5" width="0.127" layer="51"/>
-<circle x="0" y="0" radius="1.220653125" width="0.127" layer="51"/>
-<wire x1="0" y1="0.8" x2="0.8" y2="0" width="0.127" layer="51" style="shortdash" curve="-90"/>
-<wire x1="0.8" y1="0" x2="0" y2="-0.8" width="0.127" layer="51" style="shortdash" curve="-90"/>
-<wire x1="0" y1="-0.8" x2="-0.8" y2="0" width="0.127" layer="51" style="shortdash" curve="-90"/>
-<wire x1="-0.8" y1="0" x2="0" y2="0.8" width="0.127" layer="51" style="shortdash" curve="-90"/>
-<wire x1="-1.75" y1="1.45" x2="-1.6" y2="1.6" width="0.127" layer="21" curve="-90"/>
-<wire x1="-1.6" y1="1.6" x2="1.6" y2="1.6" width="0.127" layer="21"/>
-<wire x1="1.6" y1="1.6" x2="1.75" y2="1.45" width="0.127" layer="21" curve="-90"/>
-<wire x1="-1.75" y1="-1.45" x2="-1.55" y2="-1.6" width="0.127" layer="21" curve="90"/>
-<wire x1="-1.55" y1="-1.6" x2="1.55" y2="-1.6" width="0.127" layer="21"/>
-<wire x1="1.55" y1="-1.6" x2="1.75" y2="-1.45" width="0.127" layer="21" curve="90"/>
-<text x="-1.79" y="1.84" size="0.8128" layer="25" ratio="18">&gt;NAME</text>
-<text x="-1.74" y="-2.16" size="0.4064" layer="27" ratio="10">&gt;VALUE</text>
-</package>
-<package name="CHIPLED_1206_NOOUTLINE">
-<wire x1="-0.6" y1="0.446" x2="0" y2="0.446" width="0.2032" layer="21"/>
-<wire x1="0" y1="0.446" x2="0.6" y2="0.446" width="0.2032" layer="21"/>
-<wire x1="0" y1="0.446" x2="-0.6" y2="-0.154" width="0.2032" layer="21"/>
-<wire x1="-0.6" y1="-0.154" x2="0.6" y2="-0.154" width="0.2032" layer="21"/>
-<wire x1="0.6" y1="-0.154" x2="0" y2="0.446" width="0.2032" layer="21"/>
-<smd name="C" x="0" y="1.496" dx="1.5" dy="1.5" layer="1"/>
-<smd name="A" x="0" y="-1.496" dx="1.5" dy="1.5" layer="1"/>
-<text x="-1.27" y="-2.286" size="0.8128" layer="25" ratio="18" rot="R90">&gt;NAME</text>
-<text x="1.651" y="-2.286" size="0.4064" layer="27" ratio="10" rot="R90">&gt;VALUE</text>
-</package>
-<package name="LED_1206_SIDE">
-<smd name="MT" x="0" y="0.3" dx="0.6" dy="0.6" layer="1"/>
-<smd name="C" x="-1.4" y="0" dx="1" dy="1" layer="1"/>
-<smd name="A" x="1.4" y="0" dx="1" dy="1" layer="1"/>
-<wire x1="-1.6" y1="0.2" x2="1.6" y2="0.2" width="0.1524" layer="21"/>
-<wire x1="1.6" y1="0.2" x2="1.6" y2="-0.2" width="0.1524" layer="21"/>
-<wire x1="1.6" y1="-0.2" x2="0.8" y2="-0.2" width="0.1524" layer="21"/>
-<wire x1="0.8" y1="-0.2" x2="-0.8" y2="-0.2" width="0.1524" layer="21"/>
-<wire x1="-0.8" y1="-0.2" x2="-1.6" y2="-0.2" width="0.1524" layer="21"/>
-<wire x1="-1.6" y1="-0.2" x2="-1.6" y2="0.2" width="0.1524" layer="21"/>
-<wire x1="-0.8" y1="-0.2" x2="-0.8" y2="-1.1" width="0.1524" layer="21"/>
-<wire x1="-0.8" y1="-1.1" x2="-0.1" y2="-1.8" width="0.1524" layer="21" curve="90"/>
-<wire x1="-0.1" y1="-1.8" x2="0.1" y2="-1.8" width="0.1524" layer="21"/>
-<wire x1="0.1" y1="-1.8" x2="0.8" y2="-1.1" width="0.1524" layer="21" curve="90"/>
-<wire x1="0.8" y1="-1.1" x2="0.8" y2="-0.2" width="0.1524" layer="21"/>
-</package>
 <package name="OSC_7X5MM">
 <wire x1="-3.75" y1="2.6" x2="3.75" y2="2.6" width="0.127" layer="51"/>
 <wire x1="3.75" y1="2.6" x2="3.75" y2="-2.6" width="0.2032" layer="51"/>
@@ -2134,25 +1756,6 @@ by exp-lbrs.ulp</description>
 <wire x1="0" y1="0" x2="1.27" y2="-1.27" width="0.254" layer="94"/>
 <text x="-1.524" y="1.016" size="1.27" layer="96">&gt;VALUE</text>
 <pin name="5.0V" x="0" y="-2.54" visible="off" length="short" direction="sup" rot="R90"/>
-</symbol>
-<symbol name="LED">
-<wire x1="-2.54" y1="1.27" x2="-2.54" y2="-1.27" width="0.254" layer="94"/>
-<wire x1="-2.54" y1="-1.27" x2="0" y2="0" width="0.254" layer="94"/>
-<wire x1="0" y1="0" x2="-2.54" y2="1.27" width="0.254" layer="94"/>
-<wire x1="0" y1="1.27" x2="0" y2="0" width="0.254" layer="94"/>
-<wire x1="0" y1="0" x2="0" y2="-1.27" width="0.254" layer="94"/>
-<wire x1="-0.635" y1="1.27" x2="0.635" y2="2.54" width="0.254" layer="94"/>
-<wire x1="-1.905" y1="1.27" x2="-0.635" y2="2.54" width="0.254" layer="94"/>
-<wire x1="-0.9525" y1="2.8575" x2="-0.3175" y2="2.2225" width="0.254" layer="94"/>
-<wire x1="-0.3175" y1="2.2225" x2="0" y2="3.175" width="0.254" layer="94"/>
-<wire x1="0" y1="3.175" x2="-0.9525" y2="2.8575" width="0.254" layer="94"/>
-<wire x1="0.3175" y1="2.8575" x2="0.9525" y2="2.2225" width="0.254" layer="94"/>
-<wire x1="1.27" y1="3.175" x2="0.3175" y2="2.8575" width="0.254" layer="94"/>
-<wire x1="0.9525" y1="2.2225" x2="1.27" y2="3.175" width="0.254" layer="94"/>
-<text x="-1.27" y="4.445" size="1.27" layer="95" align="center">&gt;NAME</text>
-<text x="-1.27" y="-2.794" size="1.27" layer="96" align="center">&gt;VALUE</text>
-<pin name="A" x="-5.08" y="0" visible="off" length="short" direction="pas"/>
-<pin name="C" x="2.54" y="0" visible="off" length="short" direction="pas" rot="R180"/>
 </symbol>
 <symbol name="VBUS">
 <text x="-1.524" y="1.016" size="1.27" layer="96">&gt;VALUE</text>
@@ -2560,176 +2163,6 @@ Vishay IHLP
 </gates>
 <devices>
 <device name="">
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-</devices>
-</deviceset>
-<deviceset name="LED" prefix="D" uservalue="yes">
-<description>&lt;p&gt;&lt;b&gt;LED&lt;/b&gt;&lt;/p&gt;
-&lt;b&gt;0603&lt;/b&gt; - 0603 Surface Mount Package
-&lt;hr&gt;
-&lt;p&gt;&lt;b&gt;&lt;u&gt;2mA:&lt;/u&gt;&lt;/b&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Green LED - Low Power (3.9mcd, 2ma, 1.7Vf) - Digikey: 475-2709-2-ND&lt;/li&gt;
-&lt;li&gt;Orange LED - Low Power (9.8mcd, 2ma, 1.8Vf) - Digikey: 475-1194-2-ND&lt;/li&gt;
-&lt;li&gt;Red LED - Low Power (5mcd, 2ma, 1.8Vf) - Digikey: 475-1195-2-ND&lt;/li&gt;
-&lt;li&gt;Yellow LED - Low Power (7mcd, 2ma, 1.8Vf) - Digikey: 475-1196-2-ND&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;b&gt;&lt;u&gt;5mA:&lt;/u&gt;&lt;/b&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Blue LED - Low Power (17mcd, 5ma, 2.9Vf) - Digikey: LNJ937W8CRACT-ND&lt;/li&gt;
-&lt;/ul&gt;
-&lt;b&gt;0805&lt;/b&gt; - 0805 Surface Mount Package
-&lt;hr&gt;
-&lt;p&gt;&lt;b&gt;&lt;u&gt;2mA:&lt;/u&gt;&lt;/b&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Red LED (8.8mcd, 2mA, 1.8Vf, Clear) - Low Power [Digikey: 475-2510-1-ND]&lt;/li&gt;
-&lt;li&gt;Green LED (5mcd, 2mA, 1.8Vf, Clear) - Low Power [Digikey: 475-2730-1-ND]&lt;/li&gt;
-&lt;li&gt;Yellow LED (11.3mcd, 2mA, 1.8Vf, Clear) - Low Power [Digikey: 475-2555-1-ND]&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;&lt;b&gt;&lt;u&gt;20mA:&lt;/u&gt;&lt;/b&gt;&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;Red LED (104mcd, 20mA, Diffused) - LS R976 [Digikey: 475-1278-6-ND]&lt;/li&gt;
-&lt;li&gt;Red LED (12mcd, 20mA, 2.0Vf, Clear) - APT2012EC [Digikey: 754-1128-1-ND]&lt;/li&gt;
-&lt;li&gt;Green LED (15mcd, 20mA, 2.2Vf, Clear) - APT2012GC [Digikey: 754-1131-1-ND]&lt;/li&gt;
-&lt;li&gt;Orange LED (160mcd, 20mA, 2.1Vf, Clear) - APT2012SECK [Digikey: 754-1130-1-ND]&lt;/li&gt;
-&lt;/ul&gt;
-&lt;li&gt;&lt;b&gt;1206&lt;/b&gt; - 1206 Surface Mount Package
-&lt;hr&gt;
-&lt;ul&gt;
-&lt;li&gt;Green LED (26mcd, 20mA, Diffused) - LG N971  [Digikey: 475-1407-6-ND]&lt;/li&gt;
-&lt;li&gt;Red LED (15mcd, 20mA, Diffused) - LH N974 [Digikey: 475-1416-6-ND]&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;li&gt;&lt;b&gt;Cree&lt;/b&gt; - Cree High-Power Surface Mount LEDs
-&lt;hr&gt;
-&lt;ul&gt;
-&lt;li&gt;XPEBWT-L1-0000-00D50 - White 111lm 350mA 2.9Vf 6200K 110°&lt;/li&gt;
-&lt;li&gt;XTEAWT-00-0000-00000LEE3 - White 114lm 350mA 2.85Vf 5000K 115°&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;li&gt;&lt;b&gt;Everlight&lt;/b&gt; - Everlight 45-21 Series Surface Mount LEDs
-&lt;hr&gt;
-&lt;ul&gt;
-&lt;li&gt;45-21/QK2C-B2832AC2CB2/2T - Warm White 2000mcd 20mA 3.25Vf 3050K 120°&lt;/li&gt;
-&lt;li&gt;45-21/LK2C-B38452C4CB2/2T - Nuetral White 2000mcd 20mA 3.25Vf 4150K 120°&lt;/li&gt;
-&lt;li&gt;45-21/LK2C-B50634C6CB2/2T - Cold White 2200mcd 20mA 3.25Vf 5650K 120°&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;li&gt;&lt;b&gt;PLCC2 Reverse Mount&lt;/b&gt;
-&lt;hr&gt;
-&lt;ul&gt;
-&lt;li&gt;LS T77K-J1L2-1-0-2-R18-Z - Red 11.25mcd 2mA 1.8Vf 630nm 120°&lt;/li&gt;
-&lt;li&gt;LO T77K-L1M2-24-Z - Orange 19.6mcd 2mA 1.8Vf 606nm 120°&lt;/li&gt;
-&lt;li&gt;LY T77K-K2M1-26-Z - Yellow 15.7mcd 2mA 1.8Vf 587nm 120°&lt;/li&gt;
-&lt;/ul&gt;</description>
-<gates>
-<gate name="G$1" symbol="LED" x="0" y="0"/>
-</gates>
-<devices>
-<device name="1206" package="CHIPLED_1206">
-<connects>
-<connect gate="G$1" pin="A" pad="A"/>
-<connect gate="G$1" pin="C" pad="C"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="0805" package="CHIPLED_0805">
-<connects>
-<connect gate="G$1" pin="A" pad="A"/>
-<connect gate="G$1" pin="C" pad="C"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="0603" package="CHIPLED_0603">
-<connects>
-<connect gate="G$1" pin="A" pad="A"/>
-<connect gate="G$1" pin="C" pad="C"/>
-</connects>
-<technologies>
-<technology name="">
-<attribute name="ROT" value="270" constant="no"/>
-</technology>
-</technologies>
-</device>
-<device name="0603_NOOUTLINE" package="CHIPLED_0603_NOOUTLINE">
-<connects>
-<connect gate="G$1" pin="A" pad="A"/>
-<connect gate="G$1" pin="C" pad="C"/>
-</connects>
-<technologies>
-<technology name="">
-<attribute name="ROT" value="270"/>
-</technology>
-</technologies>
-</device>
-<device name="0805_NOOUTLINE" package="CHIPLED_0805_NOOUTLINE">
-<connects>
-<connect gate="G$1" pin="A" pad="A"/>
-<connect gate="G$1" pin="C" pad="C"/>
-</connects>
-<technologies>
-<technology name="">
-<attribute name="ROT" value="270" constant="no"/>
-</technology>
-</technologies>
-</device>
-<device name="XPE2" package="CREE_XLAMP_XPE2">
-<connects>
-<connect gate="G$1" pin="A" pad="ANODE"/>
-<connect gate="G$1" pin="C" pad="CATHODE"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="XTE" package="CREE_XLAMP_XTE">
-<connects>
-<connect gate="G$1" pin="A" pad="ANODE"/>
-<connect gate="G$1" pin="C" pad="CATHODE"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="EV45-21" package="EVERLIGHT_45-21">
-<connects>
-<connect gate="G$1" pin="A" pad="A"/>
-<connect gate="G$1" pin="C" pad="K"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="PLCC2_REV" package="PLCC2_REVMOUNT">
-<connects>
-<connect gate="G$1" pin="A" pad="A"/>
-<connect gate="G$1" pin="C" pad="K"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="1206_NOOUTLINE" package="CHIPLED_1206_NOOUTLINE">
-<connects>
-<connect gate="G$1" pin="A" pad="A"/>
-<connect gate="G$1" pin="C" pad="C"/>
-</connects>
-<technologies>
-<technology name=""/>
-</technologies>
-</device>
-<device name="_1206RA" package="LED_1206_SIDE">
-<connects>
-<connect gate="G$1" pin="A" pad="A"/>
-<connect gate="G$1" pin="C" pad="C"/>
-</connects>
 <technologies>
 <technology name=""/>
 </technologies>
@@ -8654,68 +8087,6 @@ Source: &lt;a href="http://www.onsemi.com/pub/Collateral/MBR0530T1-D.PDF"&gt; Da
 <attribute name="PRICE" value="None"/>
 <attribute name="PURCHASE-URL" value="https://www.snapeda.com/api/url_track_click_mouser/?unipart_id=179458&amp;manufacturer=ON Semiconductor&amp;part_name=MBR0530&amp;search_term=None"/>
 <attribute name="SNAPEDA_LINK" value="https://www.snapeda.com/parts/MBR0530/Onsemi/view-part/?ref=snap"/>
-</technology>
-</technologies>
-</device>
-</devices>
-</deviceset>
-</devicesets>
-</library>
-<library name="ASPI-0403S-100M-T">
-<packages>
-<package name="IND_ASPI-0403S-100M-T">
-<wire x1="-3.3" y1="2.225" x2="-3.3" y2="-2.225" width="0.127" layer="51"/>
-<wire x1="3.3" y1="2.225" x2="3.3" y2="-2.225" width="0.127" layer="51"/>
-<wire x1="-3.3" y1="2.225" x2="3.3" y2="2.225" width="0.127" layer="51"/>
-<wire x1="-3.3" y1="-2.225" x2="3.3" y2="-2.225" width="0.127" layer="51"/>
-<wire x1="-3.68" y1="2.475" x2="-3.68" y2="-2.475" width="0.05" layer="39"/>
-<wire x1="-3.68" y1="-2.475" x2="3.68" y2="-2.475" width="0.05" layer="39"/>
-<wire x1="3.68" y1="-2.475" x2="3.68" y2="2.475" width="0.05" layer="39"/>
-<wire x1="3.68" y1="2.475" x2="-3.68" y2="2.475" width="0.05" layer="39"/>
-<wire x1="-3.3" y1="2.225" x2="3.3" y2="2.225" width="0.127" layer="21"/>
-<wire x1="-3.3" y1="-2.225" x2="3.3" y2="-2.225" width="0.127" layer="21"/>
-<text x="-3.68" y="2.725" size="0.8128" layer="25">&gt;NAME</text>
-<text x="-3.68" y="-2.725" size="0.8128" layer="27" align="top-left">&gt;VALUE</text>
-<smd name="1" x="-2.73" y="0" dx="1.4" dy="3.56" layer="1"/>
-<smd name="2" x="2.73" y="0" dx="1.4" dy="3.56" layer="1"/>
-</package>
-</packages>
-<symbols>
-<symbol name="ASPI-0403S-100M-T">
-<text x="-10.16" y="5.08" size="1.778" layer="95">&gt;NAME</text>
-<text x="-10.16" y="-5.08" size="1.778" layer="96" align="top-left">&gt;VALUE</text>
-<wire x1="-5.08" y1="0" x2="-7.62" y2="0" width="0.254" layer="94"/>
-<wire x1="5.08" y1="0" x2="7.62" y2="0" width="0.254" layer="94"/>
-<wire x1="-5.08" y1="0" x2="-2.54" y2="0" width="0.254" layer="94" curve="-180"/>
-<wire x1="-2.54" y1="0" x2="0" y2="0" width="0.254" layer="94" curve="-180"/>
-<wire x1="0" y1="0" x2="2.54" y2="0" width="0.254" layer="94" curve="-180"/>
-<wire x1="2.54" y1="0" x2="5.08" y2="0" width="0.254" layer="94" curve="-180"/>
-<pin name="1" x="-12.7" y="0" visible="off" length="middle" direction="pas"/>
-<pin name="2" x="12.7" y="0" visible="off" length="middle" direction="pas" rot="R180"/>
-</symbol>
-</symbols>
-<devicesets>
-<deviceset name="ASPI-0403S-100M-T" prefix="L">
-<description> &lt;a href="https://pricing.snapeda.com/parts/ASPI-0403S-100M-T/Abracon/view-part?ref=eda"&gt;Check availability&lt;/a&gt;</description>
-<gates>
-<gate name="G$1" symbol="ASPI-0403S-100M-T" x="0" y="0"/>
-</gates>
-<devices>
-<device name="" package="IND_ASPI-0403S-100M-T">
-<connects>
-<connect gate="G$1" pin="1" pad="1"/>
-<connect gate="G$1" pin="2" pad="2"/>
-</connects>
-<technologies>
-<technology name="">
-<attribute name="AVAILABILITY" value="In Stock"/>
-<attribute name="CHECK_PRICES" value="https://www.snapeda.com/parts/ASPI-0403S-100M-T/Abracon/view-part/?ref=eda"/>
-<attribute name="DESCRIPTION" value=" Inductor Power Shielded Wirewound 10uH 20% 100KHz 1A 75mOhm DCR T/R "/>
-<attribute name="MF" value="Abracon"/>
-<attribute name="MP" value="ASPI-0403S-100M-T"/>
-<attribute name="PACKAGE" value="Nonstandard Abracon"/>
-<attribute name="PRICE" value="None"/>
-<attribute name="SNAPEDA_LINK" value="https://www.snapeda.com/parts/ASPI-0403S-100M-T/Abracon/view-part/?ref=snap"/>
 </technology>
 </technologies>
 </device>
@@ -14885,6 +14256,350 @@ You are welcome to use this library for commercial purposes. For attribution, we
 </deviceset>
 </devicesets>
 </library>
+<library name="LQH5BPN2R2NT0L">
+<packages>
+<package name="IND_LQH5BPN2R2NT0L">
+<wire x1="-2.5" y1="2.5" x2="2.5" y2="2.5" width="0.127" layer="51"/>
+<wire x1="2.5" y1="2.5" x2="2.5" y2="-2.5" width="0.127" layer="51"/>
+<wire x1="2.5" y1="-2.5" x2="-2.5" y2="-2.5" width="0.127" layer="51"/>
+<wire x1="-2.5" y1="-2.5" x2="-2.5" y2="2.5" width="0.127" layer="51"/>
+<wire x1="-3" y1="2.75" x2="3" y2="2.75" width="0.05" layer="39"/>
+<wire x1="3" y1="2.75" x2="3" y2="-2.75" width="0.05" layer="39"/>
+<wire x1="3" y1="-2.75" x2="-3" y2="-2.75" width="0.05" layer="39"/>
+<wire x1="-3" y1="-2.75" x2="-3" y2="2.75" width="0.05" layer="39"/>
+<text x="-3" y="3.5" size="1.27" layer="25">&gt;NAME</text>
+<text x="-3" y="-3.5" size="1.27" layer="27" align="top-left">&gt;VALUE</text>
+<wire x1="-2.5" y1="2.5" x2="2.5" y2="2.5" width="0.127" layer="21"/>
+<wire x1="2.5" y1="-2.5" x2="-2.5" y2="-2.5" width="0.127" layer="21"/>
+<smd name="1" x="-1.825" y="0" dx="1.85" dy="4.1" layer="1"/>
+<smd name="2" x="1.825" y="0" dx="1.85" dy="4.1" layer="1"/>
+</package>
+</packages>
+<symbols>
+<symbol name="LQH5BPN2R2NT0L">
+<wire x1="-5.08" y1="0" x2="-7.62" y2="0" width="0.254" layer="94"/>
+<wire x1="5.08" y1="0" x2="7.62" y2="0" width="0.254" layer="94"/>
+<text x="-10.16" y="7.62" size="1.778" layer="95">&gt;NAME</text>
+<text x="-10.16" y="5.08" size="1.778" layer="96">&gt;VALUE</text>
+<wire x1="-5.08" y1="0" x2="-2.54" y2="0" width="0.254" layer="94" curve="-180"/>
+<wire x1="-2.54" y1="0" x2="0" y2="0" width="0.254" layer="94" curve="-180"/>
+<wire x1="0" y1="0" x2="2.54" y2="0" width="0.254" layer="94" curve="-180"/>
+<wire x1="2.54" y1="0" x2="5.08" y2="0" width="0.254" layer="94" curve="-180"/>
+<pin name="1" x="-12.7" y="0" visible="off" length="middle" direction="pas"/>
+<pin name="2" x="12.7" y="0" visible="off" length="middle" direction="pas" rot="R180"/>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="LQH5BPN2R2NT0L" prefix="L">
+<description>Inductor Power Chip Shielded Wirewound 1.2uH 30% 100KHz Ferrite 3.1A 0.0228Ohm DCR 2020 T/R </description>
+<gates>
+<gate name="G$1" symbol="LQH5BPN2R2NT0L" x="0" y="0"/>
+</gates>
+<devices>
+<device name="" package="IND_LQH5BPN2R2NT0L">
+<connects>
+<connect gate="G$1" pin="1" pad="1"/>
+<connect gate="G$1" pin="2" pad="2"/>
+</connects>
+<technologies>
+<technology name="">
+<attribute name="MANUFACTURER" value="Murata"/>
+<attribute name="MAXIMUM_PACKAGE_HEIGHT" value="2.2 mm"/>
+<attribute name="PARTREV" value="N/A"/>
+<attribute name="STANDARD" value="Manufacturer Recommendations"/>
+</technology>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
+<library name="LED" urn="urn:adsk.eagle:library:22900745">
+<description>&lt;B&gt;LED parts CHIP-Flat Top, Round Top</description>
+<packages>
+<package name="LEDC1608X65N_RND-R" urn="urn:adsk.eagle:footprint:24294738/1" library_version="20">
+<description>Chip LED, 0.80 X 1.60 X 0.65 mm body
+ &lt;p&gt;Chip LED package with body size 0.80 X 1.60 X 0.65 mm&lt;/p&gt;</description>
+<smd name="C" x="-0.75" y="0" dx="0.6118" dy="0.9118" layer="1"/>
+<smd name="A" x="0.75" y="0" dx="0.6118" dy="0.9118" layer="1"/>
+<wire x1="-1.3099" y1="0.7699" x2="0.8" y2="0.7699" width="0.12" layer="21"/>
+<wire x1="-1.3099" y1="0.7699" x2="-1.3099" y2="-0.7699" width="0.12" layer="21"/>
+<wire x1="-1.3099" y1="-0.7699" x2="0.8" y2="-0.7699" width="0.12" layer="21"/>
+<wire x1="-0.8" y1="-0.4" x2="-0.8" y2="0.4" width="0.12" layer="51"/>
+<wire x1="-0.8" y1="0.4" x2="0.8" y2="0.4" width="0.12" layer="51"/>
+<wire x1="0.8" y1="0.4" x2="0.8" y2="-0.4" width="0.12" layer="51"/>
+<wire x1="0.8" y1="-0.4" x2="-0.8" y2="-0.4" width="0.12" layer="51"/>
+<text x="0" y="1.4049" size="1.27" layer="25" align="bottom-center">&gt;NAME</text>
+<text x="0" y="-1.4049" size="1.27" layer="27" align="top-center">&gt;VALUE</text>
+</package>
+<package name="LEDC1608X95N_RND-R" urn="urn:adsk.eagle:footprint:24294740/1" library_version="20">
+<description>Chip LED, 0.80 X 1.60 X 0.95 mm body
+ &lt;p&gt;Chip LED package with body size 0.80 X 1.60 X 0.95 mm&lt;/p&gt;
+
+Ref : https://www.kingbrightusa.com/images/catalog/SPEC/APTD1608QBC-D.pdf</description>
+<smd name="C" x="-0.75" y="0" dx="0.6118" dy="0.9118" layer="1"/>
+<smd name="A" x="0.75" y="0" dx="0.6118" dy="0.9118" layer="1"/>
+<wire x1="-1.3099" y1="0.7699" x2="0.8" y2="0.7699" width="0.12" layer="21"/>
+<wire x1="-1.3099" y1="0.7699" x2="-1.3099" y2="-0.7699" width="0.12" layer="21"/>
+<wire x1="-1.3099" y1="-0.7699" x2="0.8" y2="-0.7699" width="0.12" layer="21"/>
+<wire x1="-0.8" y1="-0.4" x2="-0.8" y2="0.4" width="0.12" layer="51"/>
+<wire x1="-0.8" y1="0.4" x2="0.8" y2="0.4" width="0.12" layer="51"/>
+<wire x1="0.8" y1="0.4" x2="0.8" y2="-0.4" width="0.12" layer="51"/>
+<wire x1="0.8" y1="-0.4" x2="-0.8" y2="-0.4" width="0.12" layer="51"/>
+<text x="0" y="1.4049" size="1.27" layer="25" align="bottom-center">&gt;NAME</text>
+<text x="0" y="-1.4049" size="1.27" layer="27" align="top-center">&gt;VALUE</text>
+</package>
+<package name="LEDC2012X105N_RND-R" urn="urn:adsk.eagle:footprint:24294741/1" library_version="20">
+<description>Chip LED, 2.00 X 1.25 X 1.05 mm body
+ &lt;p&gt;Chip LED package with body size 2.00 X 1.25 X 1.05 mm&lt;/p&gt;</description>
+<smd name="C" x="-0.975" y="0" dx="0.8618" dy="1.3618" layer="1"/>
+<smd name="A" x="0.975" y="0" dx="0.8618" dy="1.3618" layer="1"/>
+<wire x1="-1.6599" y1="0.9949" x2="1" y2="0.9949" width="0.12" layer="21"/>
+<wire x1="-1.6599" y1="0.9949" x2="-1.6599" y2="-0.9949" width="0.12" layer="21"/>
+<wire x1="-1.6599" y1="-0.9949" x2="1" y2="-0.9949" width="0.12" layer="21"/>
+<wire x1="-1" y1="-0.625" x2="-1" y2="0.625" width="0.12" layer="51"/>
+<wire x1="-1" y1="0.625" x2="1" y2="0.625" width="0.12" layer="51"/>
+<wire x1="1" y1="0.625" x2="1" y2="-0.625" width="0.12" layer="51"/>
+<wire x1="1" y1="-0.625" x2="-1" y2="-0.625" width="0.12" layer="51"/>
+<text x="-0.127" y="1.6299" size="1.27" layer="25" align="bottom-center">&gt;NAME</text>
+<text x="-0.127" y="-1.6299" size="1.27" layer="27" align="top-center">&gt;VALUE</text>
+</package>
+<package name="LEDC3216X180N_RND-R" urn="urn:adsk.eagle:footprint:24294743/1" library_version="20">
+<description>Chip LED, 3.20 X 1.60 X 1.80 mm body
+ &lt;p&gt;Chip LED package with body size 3.20 X 1.60 X 1.80 mm&lt;/p&gt;</description>
+<smd name="C" x="-1.525" y="0" dx="0.9618" dy="1.7118" layer="1"/>
+<smd name="A" x="1.525" y="0" dx="0.9618" dy="1.7118" layer="1"/>
+<wire x1="-2.2599" y1="1.1699" x2="1.6" y2="1.1699" width="0.12" layer="21"/>
+<wire x1="-2.2599" y1="1.1699" x2="-2.2599" y2="-1.1699" width="0.12" layer="21"/>
+<wire x1="-2.2599" y1="-1.1699" x2="1.6" y2="-1.1699" width="0.12" layer="21"/>
+<wire x1="-1.6" y1="-0.8" x2="-1.6" y2="0.8" width="0.12" layer="51"/>
+<wire x1="-1.6" y1="0.8" x2="1.6" y2="0.8" width="0.12" layer="51"/>
+<wire x1="1.6" y1="0.8" x2="1.6" y2="-0.8" width="0.12" layer="51"/>
+<wire x1="1.6" y1="-0.8" x2="-1.6" y2="-0.8" width="0.12" layer="51"/>
+<text x="-0.127" y="1.8049" size="1.27" layer="25" align="bottom-center">&gt;NAME</text>
+<text x="-0.127" y="-1.8049" size="1.27" layer="27" align="top-center">&gt;VALUE</text>
+</package>
+<package name="LEDC3224X250N_RND-R" urn="urn:adsk.eagle:footprint:24294745/1" library_version="20">
+<description>Chip LED, 3.20 X 2.40 X 2.50 mm body
+ &lt;p&gt;Chip LED package with body size 3.20 X 2.40 X 2.50 mm&lt;/p&gt;</description>
+<smd name="C" x="-1.525" y="0" dx="0.9618" dy="2.5118" layer="1"/>
+<smd name="A" x="1.525" y="0" dx="0.9618" dy="2.5118" layer="1"/>
+<wire x1="-2.2599" y1="1.5699" x2="1.6" y2="1.5699" width="0.12" layer="21"/>
+<wire x1="-2.2599" y1="1.5699" x2="-2.2599" y2="-1.5699" width="0.12" layer="21"/>
+<wire x1="-2.2599" y1="-1.5699" x2="1.6" y2="-1.5699" width="0.12" layer="21"/>
+<wire x1="-1.6" y1="-1.2" x2="-1.6" y2="1.2" width="0.12" layer="51"/>
+<wire x1="-1.6" y1="1.2" x2="1.6" y2="1.2" width="0.12" layer="51"/>
+<wire x1="1.6" y1="1.2" x2="1.6" y2="-1.2" width="0.12" layer="51"/>
+<wire x1="1.6" y1="-1.2" x2="-1.6" y2="-1.2" width="0.12" layer="51"/>
+<text x="-0.127" y="2.2049" size="1.27" layer="25" align="bottom-center">&gt;NAME</text>
+<text x="-0.127" y="-2.2049" size="1.27" layer="27" align="top-center">&gt;VALUE</text>
+</package>
+</packages>
+<packages3d>
+<package3d name="LEDC1608X65N_RND-R" urn="urn:adsk.eagle:package:24294800/1" type="model" library_version="20">
+<description>Chip LED, 0.80 X 1.60 X 0.65 mm body
+ &lt;p&gt;Chip LED package with body size 0.80 X 1.60 X 0.65 mm&lt;/p&gt;</description>
+<packageinstances>
+<packageinstance name="LEDC1608X65N_RND-R"/>
+</packageinstances>
+</package3d>
+<package3d name="LEDC1608X95N_RND-R" urn="urn:adsk.eagle:package:24294804/1" type="model" library_version="20">
+<description>Chip LED, 0.80 X 1.60 X 0.95 mm body
+ &lt;p&gt;Chip LED package with body size 0.80 X 1.60 X 0.95 mm&lt;/p&gt;
+
+Ref : https://www.kingbrightusa.com/images/catalog/SPEC/APTD1608QBC-D.pdf</description>
+<packageinstances>
+<packageinstance name="LEDC1608X95N_RND-R"/>
+</packageinstances>
+</package3d>
+<package3d name="LEDC2012X105N_RND-R" urn="urn:adsk.eagle:package:24294805/1" type="model" library_version="20">
+<description>Chip LED, 2.00 X 1.25 X 1.05 mm body
+ &lt;p&gt;Chip LED package with body size 2.00 X 1.25 X 1.05 mm&lt;/p&gt;</description>
+<packageinstances>
+<packageinstance name="LEDC2012X105N_RND-R"/>
+</packageinstances>
+</package3d>
+<package3d name="LEDC3216X180N_RND-R" urn="urn:adsk.eagle:package:24294808/1" type="model" library_version="20">
+<description>Chip LED, 3.20 X 1.60 X 1.80 mm body
+ &lt;p&gt;Chip LED package with body size 3.20 X 1.60 X 1.80 mm&lt;/p&gt;</description>
+<packageinstances>
+<packageinstance name="LEDC3216X180N_RND-R"/>
+</packageinstances>
+</package3d>
+<package3d name="LEDC3224X250N_RND-R" urn="urn:adsk.eagle:package:24294812/1" type="model" library_version="20">
+<description>Chip LED, 3.20 X 2.40 X 2.50 mm body
+ &lt;p&gt;Chip LED package with body size 3.20 X 2.40 X 2.50 mm&lt;/p&gt;</description>
+<packageinstances>
+<packageinstance name="LEDC3224X250N_RND-R"/>
+</packageinstances>
+</package3d>
+</packages3d>
+<symbols>
+<symbol name="LED" urn="urn:adsk.eagle:symbol:22900757/4" library_version="20">
+<wire x1="1.27" y1="0" x2="0" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="0" y1="-2.54" x2="-1.27" y2="0" width="0.254" layer="94"/>
+<wire x1="1.27" y1="-2.54" x2="0" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="0" y1="-2.54" x2="-1.27" y2="-2.54" width="0.254" layer="94"/>
+<wire x1="1.27" y1="0" x2="-1.27" y2="0" width="0.254" layer="94"/>
+<wire x1="-2.032" y1="-0.762" x2="-3.429" y2="-2.159" width="0.1524" layer="94"/>
+<wire x1="-1.905" y1="-1.905" x2="-3.302" y2="-3.302" width="0.1524" layer="94"/>
+<text x="2.54" y="-0.762" size="1.778" layer="95" rot="R180" align="top-right">&gt;NAME</text>
+<text x="2.54" y="-3.302" size="1.778" layer="96" rot="R180" align="top-right">&gt;VALUE</text>
+<pin name="C" x="0" y="-5.08" visible="off" length="short" direction="pas" rot="R90"/>
+<pin name="A" x="0" y="2.54" visible="off" length="short" direction="pas" rot="R270"/>
+<polygon width="0.1524" layer="94">
+<vertex x="-3.048" y="-1.27"/>
+<vertex x="-3.429" y="-2.159"/>
+<vertex x="-2.54" y="-1.778"/>
+</polygon>
+<polygon width="0.1524" layer="94">
+<vertex x="-2.921" y="-2.413"/>
+<vertex x="-3.302" y="-3.302"/>
+<vertex x="-2.413" y="-2.921"/>
+</polygon>
+</symbol>
+</symbols>
+<devicesets>
+<deviceset name="CHIP-ROUND-R" urn="urn:adsk.eagle:component:22900853/7" prefix="D" uservalue="yes" library_version="20">
+<description>&lt;B&gt; LED - Generic</description>
+<gates>
+<gate name="G$1" symbol="LED" x="0" y="0"/>
+</gates>
+<devices>
+<device name="_0603" package="LEDC1608X65N_RND-R">
+<connects>
+<connect gate="G$1" pin="A" pad="A"/>
+<connect gate="G$1" pin="C" pad="C"/>
+</connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:24294800/1"/>
+</package3dinstances>
+<technologies>
+<technology name="">
+<attribute name="CATEGORY" value="LED" constant="no"/>
+<attribute name="COLOR" value="RED" constant="no"/>
+<attribute name="DESCRIPTION" value="CHIP LED ROUND" constant="no"/>
+<attribute name="MANUFACTURER" value="" constant="no"/>
+<attribute name="MPN" value="" constant="no"/>
+<attribute name="OPERATING_TEMP" value="" constant="no"/>
+<attribute name="PART_STATUS" value="" constant="no"/>
+<attribute name="ROHS_COMPLIANT" value="" constant="no"/>
+<attribute name="SERIES" value="" constant="no"/>
+<attribute name="SUB-CATEGORY" value="CHIP" constant="no"/>
+<attribute name="THERMALLOSS" value="" constant="no"/>
+<attribute name="TYPE" value="ROUND_TOP" constant="no"/>
+<attribute name="VALUE" value="LED_RED" constant="no"/>
+</technology>
+</technologies>
+</device>
+<device name="_0603-1MM" package="LEDC1608X95N_RND-R">
+<connects>
+<connect gate="G$1" pin="A" pad="A"/>
+<connect gate="G$1" pin="C" pad="C"/>
+</connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:24294804/1"/>
+</package3dinstances>
+<technologies>
+<technology name="">
+<attribute name="CATEGORY" value="LED" constant="no"/>
+<attribute name="COLOR" value="RED" constant="no"/>
+<attribute name="DESCRIPTION" value="CHIP LED ROUND" constant="no"/>
+<attribute name="MANUFACTURER" value="" constant="no"/>
+<attribute name="MPN" value="" constant="no"/>
+<attribute name="OPERATING_TEMP" value="" constant="no"/>
+<attribute name="PART_STATUS" value="" constant="no"/>
+<attribute name="ROHS_COMPLIANT" value="" constant="no"/>
+<attribute name="SERIES" value="" constant="no"/>
+<attribute name="SUB-CATEGORY" value="CHIP" constant="no"/>
+<attribute name="THERMALLOSS" value="" constant="no"/>
+<attribute name="TYPE" value="ROUND_TOP" constant="no"/>
+<attribute name="VALUE" value="LED_RED" constant="no"/>
+</technology>
+</technologies>
+</device>
+<device name="_0805" package="LEDC2012X105N_RND-R">
+<connects>
+<connect gate="G$1" pin="A" pad="A"/>
+<connect gate="G$1" pin="C" pad="C"/>
+</connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:24294805/1"/>
+</package3dinstances>
+<technologies>
+<technology name="">
+<attribute name="CATEGORY" value="LED" constant="no"/>
+<attribute name="COLOR" value="RED" constant="no"/>
+<attribute name="DESCRIPTION" value="CHIP LED ROUND" constant="no"/>
+<attribute name="MANUFACTURER" value="" constant="no"/>
+<attribute name="MPN" value="" constant="no"/>
+<attribute name="OPERATING_TEMP" value="" constant="no"/>
+<attribute name="PART_STATUS" value="" constant="no"/>
+<attribute name="ROHS_COMPLIANT" value="" constant="no"/>
+<attribute name="SERIES" value="" constant="no"/>
+<attribute name="SUB-CATEGORY" value="CHIP" constant="no"/>
+<attribute name="THERMALLOSS" value="" constant="no"/>
+<attribute name="TYPE" value="ROUND_TOP" constant="no"/>
+<attribute name="VALUE" value="LED_RED" constant="no"/>
+</technology>
+</technologies>
+</device>
+<device name="_1206" package="LEDC3216X180N_RND-R">
+<connects>
+<connect gate="G$1" pin="A" pad="A"/>
+<connect gate="G$1" pin="C" pad="C"/>
+</connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:24294808/1"/>
+</package3dinstances>
+<technologies>
+<technology name="">
+<attribute name="CATEGORY" value="LED" constant="no"/>
+<attribute name="COLOR" value="RED" constant="no"/>
+<attribute name="DESCRIPTION" value="CHIP LED ROUND" constant="no"/>
+<attribute name="MANUFACTURER" value="" constant="no"/>
+<attribute name="MPN" value="" constant="no"/>
+<attribute name="OPERATING_TEMP" value="" constant="no"/>
+<attribute name="PART_STATUS" value="" constant="no"/>
+<attribute name="ROHS_COMPLIANT" value="" constant="no"/>
+<attribute name="SERIES" value="" constant="no"/>
+<attribute name="SUB-CATEGORY" value="CHIP" constant="no"/>
+<attribute name="THERMALLOSS" value="" constant="no"/>
+<attribute name="TYPE" value="ROUND_TOP" constant="no"/>
+<attribute name="VALUE" value="LED_RED" constant="no"/>
+</technology>
+</technologies>
+</device>
+<device name="_1209" package="LEDC3224X250N_RND-R">
+<connects>
+<connect gate="G$1" pin="A" pad="A"/>
+<connect gate="G$1" pin="C" pad="C"/>
+</connects>
+<package3dinstances>
+<package3dinstance package3d_urn="urn:adsk.eagle:package:24294812/1"/>
+</package3dinstances>
+<technologies>
+<technology name="">
+<attribute name="CATEGORY" value="LED" constant="no"/>
+<attribute name="COLOR" value="RED" constant="no"/>
+<attribute name="DESCRIPTION" value="CHIP LED ROUND" constant="no"/>
+<attribute name="MANUFACTURER" value="" constant="no"/>
+<attribute name="MPN" value="" constant="no"/>
+<attribute name="OPERATING_TEMP" value="" constant="no"/>
+<attribute name="PART_STATUS" value="" constant="no"/>
+<attribute name="ROHS_COMPLIANT" value="" constant="no"/>
+<attribute name="SERIES" value="" constant="no"/>
+<attribute name="SUB-CATEGORY" value="CHIP" constant="no"/>
+<attribute name="THERMALLOSS" value="" constant="no"/>
+<attribute name="TYPE" value="ROUND_TOP" constant="no"/>
+<attribute name="VALUE" value="LED_RED" constant="no"/>
+</technology>
+</technologies>
+</device>
+</devices>
+</deviceset>
+</devicesets>
+</library>
 </libraries>
 <attributes>
 </attributes>
@@ -14905,16 +14620,16 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <parts>
 <part name="RPI-CM1" library="RPI-CM4" deviceset="RPI-CM4" device="" value="DF40C-100DS-0.4V(51)"/>
 <part name="U1" library="microbuilder" deviceset="VREG_TPS6103X" device="" value="TPS61092RSAR"/>
-<part name="L1" library="microbuilder" deviceset="INDUCTOR" device="TDK_VLC5045" value="6.8uH"/>
+<part name="L1" library="microbuilder" deviceset="INDUCTOR" device="TDK_VLC5045" value="6.8uH C36410"/>
 <part name="U$1" library="microbuilder" deviceset="GND" device=""/>
 <part name="U$2" library="microbuilder" deviceset="GND" device=""/>
 <part name="C1" library="Capacitor" library_urn="urn:adsk.eagle:library:16290819" deviceset="C" device="CHIP-0402(1005-METRIC)" package3d_urn="urn:adsk.eagle:package:16290895/5" technology="_" value="10uF"/>
 <part name="U$4" library="microbuilder" deviceset="GND" device=""/>
 <part name="C2" library="Capacitor" library_urn="urn:adsk.eagle:library:16290819" deviceset="C" device="CHIP-0402(1005-METRIC)" package3d_urn="urn:adsk.eagle:package:16290895/5" technology="_" value="2.2uF"/>
 <part name="U$7" library="microbuilder" deviceset="5.0V" device=""/>
-<part name="LOW_BATT" library="microbuilder" deviceset="LED" device="0805_NOOUTLINE" value="XL-2012VRC"/>
+<part name="LOW_BATT" library="LED" library_urn="urn:adsk.eagle:library:22900745" deviceset="CHIP-ROUND-R" device="_0603" package3d_urn="urn:adsk.eagle:package:24294800/1" value="LED_RED"/>
 <part name="R20" library="Resistor" library_urn="urn:adsk.eagle:library:16378527" deviceset="R-US" device="CHIP-0402(1005-METRIC)" package3d_urn="urn:adsk.eagle:package:16378568/5" technology="_" value="1K"/>
-<part name="LED2" library="microbuilder" deviceset="LED" device="0805_NOOUTLINE" value="5VBOOST"/>
+<part name="LED2" library="LED" library_urn="urn:adsk.eagle:library:22900745" deviceset="CHIP-ROUND-R" device="_0603" package3d_urn="urn:adsk.eagle:package:24294800/1" value="LED_RED"/>
 <part name="R5" library="Resistor" library_urn="urn:adsk.eagle:library:16378527" deviceset="R-US" device="CHIP-0402(1005-METRIC)" package3d_urn="urn:adsk.eagle:package:16378568/5" technology="_" value="1K"/>
 <part name="R13" library="Resistor" library_urn="urn:adsk.eagle:library:16378527" deviceset="R-US" device="CHIP-0402(1005-METRIC)" package3d_urn="urn:adsk.eagle:package:16378568/5" technology="_" value="200K"/>
 <part name="U$24" library="microbuilder" deviceset="GND" device=""/>
@@ -15013,7 +14728,6 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <part name="D4" library="MBR0530" deviceset="MBR0530" device=""/>
 <part name="U$83" library="microbuilder" deviceset="GND" device=""/>
 <part name="U$84" library="microbuilder" deviceset="GND" device=""/>
-<part name="L2" library="ASPI-0403S-100M-T" deviceset="ASPI-0403S-100M-T" device=""/>
 <part name="U$85" library="microbuilder" deviceset="GND" device=""/>
 <part name="U$86" library="microbuilder" deviceset="GND" device=""/>
 <part name="U3" library="battery-management-temp" deviceset="BQ27441-G1" device="" value="BQ27441DRZR-G1A">
@@ -15234,7 +14948,7 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <part name="U13" library="2024-03-29_01-35-38_Library" deviceset="TPD4EUSB30DQAR" device="DQA10"/>
 <part name="GND10" library="supply1" deviceset="GND" device=""/>
 <part name="JOY_STICK" library="BM04B-GHS-TBT_LF__SN__N_" deviceset="BM04B-GHS-TBT(LF)(SN)(N)" device=""/>
-<part name="CAMERA" library="2024-03-29_02-21-27_Library" deviceset="524372271" device="CON_524372271_MOL"/>
+<part name="CAMERA" library="2024-03-29_02-21-27_Library" deviceset="524372271" device="CON_524372271_MOL" value="C262642"/>
 <part name="GND11" library="SparkFun-Aesthetics" deviceset="GND" device=""/>
 <part name="Q2" library="DMG2307L" deviceset="DMG2307L" device="" value="DMG2307L"/>
 <part name="SUPPLY3" library="SparkFun-PowerSymbols" deviceset="3.3V" device=""/>
@@ -15281,6 +14995,8 @@ You are welcome to use this library for commercial purposes. For attribution, we
 <part name="U$10" library="microbuilder" deviceset="AVDD" device=""/>
 <part name="R43" library="Resistor" library_urn="urn:adsk.eagle:library:16378527" deviceset="R-US" device="CHIP-0402(1005-METRIC)" package3d_urn="urn:adsk.eagle:package:16378568/5" technology="_" value="10K"/>
 <part name="R44" library="Resistor" library_urn="urn:adsk.eagle:library:16378527" deviceset="R-US" device="CHIP-0402(1005-METRIC)" package3d_urn="urn:adsk.eagle:package:16378568/5" technology="_" value="6.57k"/>
+<part name="RPIBOOT3" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
+<part name="L3" library="LQH5BPN2R2NT0L" deviceset="LQH5BPN2R2NT0L" device="" value="FNR5012S100MT 10uH"/>
 </parts>
 <sheets>
 <sheet>
@@ -15403,17 +15119,17 @@ S HIGH = D2</text>
 <instance part="U$7" gate="G$1" x="591.82" y="259.08" smashed="yes">
 <attribute name="VALUE" x="590.296" y="260.096" size="1.27" layer="96"/>
 </instance>
-<instance part="LOW_BATT" gate="G$1" x="591.82" y="193.04" smashed="yes" rot="R270">
-<attribute name="NAME" x="596.265" y="194.31" size="1.27" layer="95" rot="R270" align="center"/>
-<attribute name="VALUE" x="589.026" y="194.31" size="1.27" layer="96" rot="R270" align="center"/>
+<instance part="LOW_BATT" gate="G$1" x="591.82" y="195.58" smashed="yes">
+<attribute name="NAME" x="594.36" y="194.818" size="1.778" layer="95" rot="R180" align="top-right"/>
+<attribute name="VALUE" x="594.36" y="192.278" size="1.778" layer="96" rot="R180" align="top-right"/>
 </instance>
 <instance part="R20" gate="G$1" x="591.82" y="203.2" smashed="yes" rot="R90">
 <attribute name="NAME" x="589.28" y="203.2" size="1.27" layer="95" font="vector" rot="R90" align="center"/>
 <attribute name="VALUE" x="591.82" y="203.2" size="1.016" layer="96" font="vector" ratio="15" rot="R90" align="center"/>
 </instance>
-<instance part="LED2" gate="G$1" x="612.14" y="251.46" smashed="yes">
-<attribute name="NAME" x="610.87" y="255.905" size="1.27" layer="95" align="center"/>
-<attribute name="VALUE" x="610.87" y="248.666" size="1.27" layer="96" align="center"/>
+<instance part="LED2" gate="G$1" x="609.6" y="251.46" smashed="yes" rot="R90">
+<attribute name="NAME" x="610.362" y="254" size="1.778" layer="95" rot="R270" align="top-right"/>
+<attribute name="VALUE" x="612.902" y="254" size="1.778" layer="96" rot="R270" align="top-right"/>
 </instance>
 <instance part="R5" gate="G$1" x="599.44" y="251.46" smashed="yes">
 <attribute name="NAME" x="599.44" y="254" size="1.27" layer="95" font="vector" align="center"/>
@@ -15739,10 +15455,6 @@ S HIGH = D2</text>
 </instance>
 <instance part="U$84" gate="G$1" x="624.84" y="50.8" smashed="yes">
 <attribute name="VALUE" x="623.316" y="48.26" size="1.27" layer="96"/>
-</instance>
-<instance part="L2" gate="G$1" x="579.12" y="71.12" smashed="yes">
-<attribute name="NAME" x="568.96" y="76.2" size="1.778" layer="95"/>
-<attribute name="VALUE" x="568.96" y="66.04" size="1.778" layer="96" align="top-left"/>
 </instance>
 <instance part="U$85" gate="G$1" x="594.36" y="33.02" smashed="yes">
 <attribute name="VALUE" x="592.836" y="30.48" size="1.27" layer="96"/>
@@ -16557,6 +16269,14 @@ S HIGH = D2</text>
 <instance part="R44" gate="G$1" x="551.18" y="-7.62" smashed="yes" rot="R180">
 <attribute name="NAME" x="551.18" y="-10.3886" size="1.778" layer="95" rot="R180" align="center"/>
 <attribute name="VALUE" x="551.18" y="-4.318" size="1.778" layer="96" rot="R180" align="center"/>
+</instance>
+<instance part="RPIBOOT3" gate="G$1" x="421.64" y="35.56" smashed="yes">
+<attribute name="NAME" x="419.1" y="38.1" size="1.778" layer="95" font="vector"/>
+<attribute name="VALUE" x="419.1" y="33.02" size="1.778" layer="96" font="vector"/>
+</instance>
+<instance part="L3" gate="G$1" x="579.12" y="71.12" smashed="yes">
+<attribute name="NAME" x="568.96" y="78.74" size="1.778" layer="95"/>
+<attribute name="VALUE" x="568.96" y="76.2" size="1.778" layer="96"/>
 </instance>
 </instances>
 <busses>
@@ -18048,8 +17768,8 @@ S HIGH = D2</text>
 <pinref part="D4" gate="G$1" pin="A"/>
 <wire x1="601.98" y1="71.12" x2="594.36" y2="71.12" width="0.1524" layer="91"/>
 <junction x="594.36" y="71.12"/>
-<pinref part="L2" gate="G$1" pin="2"/>
 <wire x1="594.36" y1="71.12" x2="591.82" y2="71.12" width="0.1524" layer="91"/>
+<pinref part="L3" gate="G$1" pin="2"/>
 </segment>
 </net>
 <net name="N$19" class="0">
@@ -19892,11 +19612,11 @@ S HIGH = D2</text>
 <pinref part="EINK_524352471" gate="A" pin="10"/>
 </segment>
 <segment>
-<pinref part="L2" gate="G$1" pin="1"/>
 <wire x1="566.42" y1="71.12" x2="563.88" y2="71.12" width="0.1524" layer="91"/>
 <wire x1="563.88" y1="71.12" x2="563.88" y2="63.5" width="0.1524" layer="91"/>
 <pinref part="C17" gate="G$1" pin="1"/>
 <label x="563.88" y="71.12" size="1.778" layer="95" rot="R90" xref="yes"/>
+<pinref part="L3" gate="G$1" pin="1"/>
 </segment>
 </net>
 <net name="SAM_EINK_ON" class="0">
@@ -19951,6 +19671,8 @@ S HIGH = D2</text>
 <wire x1="408.94" y1="38.1" x2="408.94" y2="40.64" width="0.1524" layer="91"/>
 <junction x="408.94" y="38.1"/>
 <label x="408.94" y="40.64" size="1.016" layer="95" rot="R90" xref="yes"/>
+<pinref part="RPIBOOT3" gate="G$1" pin="1"/>
+<wire x1="421.64" y1="35.56" x2="408.94" y2="35.56" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$10" class="0">

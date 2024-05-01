@@ -26,3 +26,8 @@ sudo alsactl store
 
 ## Pi-PICO
 ampy --port /dev/tty.usbmodem1112401 put main.py
+
+## Radxa
+sudo apt-get install python3-dev spidev
+sudo apt-get update
+sudo apt-get install python3-libgpiod
