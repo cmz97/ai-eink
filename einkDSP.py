@@ -129,9 +129,9 @@ class einkDSP:
             self.GPIO.setup(self.RST_PIN, GPIO.OUT) #REST
             self.GPIO.setup(self.BUSY_PIN, GPIO.IN, pull_up_down=GPIO.PUD_UP) #BUSY
         else:
-            self.RockGPIO.setup(self.DC_PIN, Direction.OUTPUT)
-            self.RockGPIO.setup(self.RST_PIN, Direction.OUTPUT)
-            self.RockGPIO.setup(self.BUSY_PIN, Direction.INPUT, bias=Bias.PULL_UP)
+            self.RockGPIO.setup(self.RK_DC_PIN, Direction.OUTPUT)
+            self.RockGPIO.setup(self.RK_RST_PIN, Direction.OUTPUT)
+            self.RockGPIO.setup(self.RK_BUSY_PIN, Direction.INPUT, bias=Bias.PULL_UP)
 
 
 
