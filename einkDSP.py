@@ -23,11 +23,15 @@ else:
             line_number = int((ord(sub_bank) - ord('A')) * 8 + index) 
             return bank, line_number
 
-        def setup(self, pin, direction, initial_value=Value.INACTIVE, bias=Bias.UNKNOWN):
+        def setup(self, pin, direction, initial_value=Value.INACTIVE, bias=Bias.AS_IS):
             # Parse the pin to get the chip number and line number
             chip_number, line_number = self._parse_pin(pin)
             # Request the line with bias settings
-            line_settings = gpiod.LineSettings(direction=direction, output_value=initial_value, bias=bias)
+            if direction == Direction.INPUT:
+                line_settings = gpiod.LineSettings(direction=direction, output_value=initial_value, bias=bias)
+            else:
+                line_settings = gpiod.LineSettings(direction=direction, output_value=initial_value)
+
             line_request = gpiod.request_lines(f'/dev/gpiochip{chip_number}', consumer='RockGPIO', config={line_number: line_settings})
             # Store the request in a dictionary for future use
             self.lines[pin] = line_request
