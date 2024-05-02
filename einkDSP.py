@@ -43,7 +43,7 @@ else:
                 # Get the line number from parsing the pin
                 _, line_number = self._parse_pin(pin)
                 # Set the line value
-                line_request.set_value(line_number, Value.ACTIVE if value else Value.INACTIVE)
+                line_request.set_value(line_number, value)
 
         def input(self, pin):
             # Get the line request
@@ -122,8 +122,8 @@ class einkDSP:
             self.GPIO = GPIO
 
         self.spi = self.EPD_GPIO_Init()
-        self.epd_w21_init_4g()
-        
+        # self.epd_w21_init_4g()
+
     def cleanup(self):
         if _ROCK:
             self.RockGPIO.cleanup()
