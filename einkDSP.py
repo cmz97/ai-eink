@@ -123,6 +123,10 @@ class einkDSP:
 
         self.spi = self.EPD_GPIO_Init()
         self.epd_w21_init_4g()
+        
+    def cleanup(self):
+        if _ROCK:
+            self.RockGPIO.cleanup()
 
     def EPD_GPIO_Init(self):
         # GPIO.cleanup()
