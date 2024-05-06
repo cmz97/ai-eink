@@ -2,6 +2,7 @@
 import time
 import spidev
 import platform
+import uuid
 
 _ROCK =  'rockchip' in platform.release()
 
@@ -32,7 +33,7 @@ else:
             else:
                 line_settings = gpiod.LineSettings(direction=direction, output_value=initial_value)
 
-            line_request = gpiod.request_lines(f'/dev/gpiochip{chip_number}', consumer='RockGPIO', config={line_number: line_settings})
+            line_request = gpiod.request_lines(f'/dev/gpiochip{chip_number}', consumer=f'RockGPIO', config={line_number: line_settings})
             # Store the request in a dictionary for future use
             self.lines[pin] = line_request
 
@@ -106,7 +107,7 @@ class einkDSP:
 
         if  _ROCK : 
             self.RK_DC_PIN = "GPIO1_C6"
-            self.RK_RST_PIN = "GPIO1_D2"
+            self.RK_RST_PIN = "GPIO1_B1"
             self.RK_BUSY_PIN = "GPIO0_D3"
         else:
             self.DC_PIN = 6
@@ -122,7 +123,7 @@ class einkDSP:
             self.GPIO = GPIO
 
         self.spi = self.EPD_GPIO_Init()
-        # self.epd_w21_init_4g()
+        self.epd_w21_init_4g()
 
     def cleanup(self):
         if _ROCK:
