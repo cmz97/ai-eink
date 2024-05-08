@@ -1,14 +1,16 @@
 # ai-eink
 
+# Device Tree Overlay
 force_turbo=1
+dtoverlay=uart3
+
+# NFC
 NFC Driver: https://github.com/2pecshy/eeprom-ST25DV-linux-driver
 sudo apt install -y python3-libcamera python3-kms++ libcap-dev
- pip3 install picamera2 --break-system-packages
 
 # Drivers
 ## Camera 
 sudo wget https://datasheets.raspberrypi.org/cmio/dt-blob-cam1.bin -O /boot/dt-blob.bin
-
 libcamera-still -q 80 -o test.jpg
 
 For OS Lite 
@@ -25,7 +27,7 @@ https://www.waveshare.com/wiki/WM8960_Audio_HAT
 sudo alsactl store
 
 ## Pi-PICO
-ampy --port /dev/tty.usbmodem1112401 put main.py
+ampy --port /dev/tty.usbmodem112401 put main.py
 
 ## Radxa
 sudo apt-get install python3-dev spidev

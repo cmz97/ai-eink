@@ -112,7 +112,7 @@ class einkDSP:
         else:
             self.DC_PIN = 6
             self.RST_PIN = 13
-            self.BUSY_PIN = 5
+            self.BUSY_PIN = 9
 
         self.EPD_WIDTH = 240 
         self.EPD_HEIGHT = 416 

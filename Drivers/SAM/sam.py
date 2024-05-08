@@ -23,7 +23,7 @@ class SAM:
 
 
     def start_monitoring(self):
-        self.ser = serial.Serial('/dev/ttyACM0', 115200, timeout=1)
+        self.ser = serial.Serial('/dev/ttyAMA3', 9600, timeout=1)
         if self.monitor_thread is None or not self.monitor_thread.is_alive():
             self.running = True
             self.monitor_thread = threading.Thread(target=self.monitor_pins)
