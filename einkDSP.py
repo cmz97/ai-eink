@@ -178,7 +178,7 @@ class einkDSP:
         time.sleep(xms / 1000.0)
 
     def epd_w21_init(self):
-        self.delay_xms(100)  # At least 10ms delay
+        self.delay_xms(100)  # At least 10ms delay #TODO Change to 10
         self.RockGPIO.output(self.RK_RST_PIN, Value.INACTIVE) if _ROCK else self.GPIO.output(self.RST_PIN, GPIO.LOW)
         self.delay_xms(20)
         self.RockGPIO.output(self.RK_RST_PIN, Value.ACTIVE) if _ROCK else self.GPIO.output(self.RST_PIN, GPIO.HIGH)

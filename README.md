@@ -1,5 +1,8 @@
 # ai-eink
 
+# System 
+sudo apt-get install sysstat
+
 # Device Tree Overlay
 force_turbo=1
 dtoverlay=uart3
@@ -23,6 +26,7 @@ Reboot
 ## Speakers
 https://github.com/HinTak/seeed-voicecard
 sudo aplay -Dhw:0 test.wav
+sudo arecord -D hw:0,0 -f S32_LE -r 16000 -c 2 test.wav
 https://www.waveshare.com/wiki/WM8960_Audio_HAT
 sudo alsactl store
 
