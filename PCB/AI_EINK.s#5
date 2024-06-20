@@ -15475,6 +15475,7 @@ Ref : https://www.kingbrightusa.com/images/catalog/SPEC/APTD1608QBC-D.pdf</descr
 <part name="RPIBOOT11" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
 <part name="GND42" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
 <part name="RPIBOOT12" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
+<part name="U$111" library="microbuilder" deviceset="GND" device=""/>
 </parts>
 <sheets>
 <sheet>
@@ -16921,6 +16922,9 @@ S HIGH = D2</text>
 <attribute name="NAME" x="744.22" y="48.26" size="1.778" layer="95" font="vector" rot="R180"/>
 <attribute name="VALUE" x="744.22" y="53.34" size="1.778" layer="96" font="vector" rot="R180"/>
 </instance>
+<instance part="U$111" gate="G$1" x="-43.18" y="246.38" smashed="yes">
+<attribute name="VALUE" x="-44.704" y="243.84" size="1.27" layer="96"/>
+</instance>
 </instances>
 <busses>
 </busses>
@@ -17940,6 +17944,12 @@ S HIGH = D2</text>
 <pinref part="U$110" gate="G$1" pin="GND"/>
 <pinref part="C36" gate="G$1" pin="1"/>
 <wire x1="-33.02" y1="274.32" x2="-30.48" y2="274.32" width="0.1524" layer="91"/>
+</segment>
+<segment>
+<pinref part="IC1" gate="G$1" pin="SDO"/>
+<wire x1="-38.1" y1="251.46" x2="-43.18" y2="251.46" width="0.1524" layer="91"/>
+<wire x1="-43.18" y1="251.46" x2="-43.18" y2="248.92" width="0.1524" layer="91"/>
+<pinref part="U$111" gate="G$1" pin="GND"/>
 </segment>
 </net>
 <net name="N$1" class="0">

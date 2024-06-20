@@ -19444,11 +19444,6 @@ S HIGH = D2</text>
 <label x="810.26" y="193.04" size="1.778" layer="95" align="bottom-right"/>
 </segment>
 <segment>
-<pinref part="U23" gate="A" pin="I/O"/>
-<wire x1="690.88" y1="119.38" x2="673.1" y2="119.38" width="0.1524" layer="91"/>
-<label x="675.64" y="119.38" size="1.778" layer="95"/>
-</segment>
-<segment>
 <pinref part="U25" gate="G$1" pin="SCL"/>
 <wire x1="909.32" y1="180.34" x2="889" y2="180.34" width="0.1524" layer="91"/>
 <label x="891.54" y="180.34" size="1.778" layer="95"/>
@@ -19480,11 +19475,6 @@ S HIGH = D2</text>
 <wire x1="937.26" y1="238.76" x2="919.48" y2="238.76" width="0.1524" layer="91"/>
 <label x="922.02" y="238.76" size="1.778" layer="95"/>
 <pinref part="J4" gate="A" pin="2"/>
-</segment>
-<segment>
-<pinref part="U24" gate="A" pin="I/O"/>
-<wire x1="690.88" y1="109.22" x2="673.1" y2="109.22" width="0.1524" layer="91"/>
-<label x="675.64" y="109.22" size="1.778" layer="95"/>
 </segment>
 <segment>
 <pinref part="U25" gate="G$1" pin="SDA"/>
@@ -20963,12 +20953,22 @@ S HIGH = D2</text>
 <label x="513.08" y="76.2" size="1.778" layer="95" align="bottom-right"/>
 <pinref part="EINK_524352471" gate="A" pin="19"/>
 </segment>
+<segment>
+<pinref part="U23" gate="A" pin="I/O"/>
+<wire x1="690.88" y1="119.38" x2="673.1" y2="119.38" width="0.1524" layer="91"/>
+<label x="675.64" y="119.38" size="1.778" layer="95"/>
+</segment>
 </net>
 <net name="TSDA" class="0">
 <segment>
 <wire x1="497.84" y1="73.66" x2="515.62" y2="73.66" width="0.1524" layer="91"/>
 <label x="513.08" y="73.66" size="1.778" layer="95" align="bottom-right"/>
 <pinref part="EINK_524352471" gate="A" pin="18"/>
+</segment>
+<segment>
+<pinref part="U24" gate="A" pin="I/O"/>
+<wire x1="690.88" y1="109.22" x2="673.1" y2="109.22" width="0.1524" layer="91"/>
+<label x="675.64" y="109.22" size="1.778" layer="95"/>
 </segment>
 </net>
 </nets>
@@ -21017,7 +21017,7 @@ S HIGH = D2</text>
 <approved hash="104,1,668.02,-30.48,U7,PAD,GND,,,"/>
 <approved hash="104,1,949.96,142.24,U15,IN,VOUT,,,"/>
 <approved hash="104,1,769.62,154.94,U16,VCC,SAM_3V3,,,"/>
-<approved hash="104,1,909.32,193.04,U25,VDD/NC,U25_VDD/NC,,,"/>
+<approved hash="104,1,909.32,193.04,U25,VDD/NC,HAP_3V3,,,"/>
 <approved hash="104,1,909.32,195.58,U25,VDD,HAP_3V3,,,"/>
 <approved hash="104,1,-17.78,215.9,U6,VDDIO,3.3V,,,"/>
 <approved hash="104,1,-20.32,215.9,U6,VDD,3.3V,,,"/>
@@ -21095,13 +21095,11 @@ S HIGH = D2</text>
 <approved hash="209,1,728.98,185.42,SAM_SWCLK,,,,,"/>
 <approved hash="106,1,728.98,185.42,SAM_SWCLK,,,,,"/>
 <approved hash="106,1,728.98,182.88,SAM_SWD,,,,,"/>
-<approved hash="106,1,909.32,193.04,U25_VDD/NC,,,,,"/>
 <approved hash="106,1,160.02,144.78,USB_OTG_ID,,,,,"/>
 <approved hash="106,1,160.02,132.08,VDAC_COMP,,,,,"/>
 <approved hash="108,1,368.3,261.62,VOUT,,,,,"/>
 <approved hash="111,1,568.96,218.44,LBO,,,,,"/>
 <approved hash="111,1,144.78,271.78,LEFT_N,,,,,"/>
-<approved hash="115,1,281.94,252.73,TS,,,,,"/>
 </errors>
 </schematic>
 </drawing>

@@ -15554,9 +15554,6 @@ the power LED. To either:
 <text x="492.76" y="106.68" size="2.54" layer="94" font="vector" align="top-left">EINK HiGH VOLTAGE MODULE</text>
 <text x="505.46" y="294.64" size="2.54" layer="94" font="vector" align="top-left">5V BOOST</text>
 <text x="276.86" y="144.78" size="2.54" layer="94" font="vector" align="top-left">CAMERA MODULE</text>
-<text x="170.18" y="297.18" size="1.778" layer="97">OPEN SOLDER JUMPER SJ1 AND ATTACH 10K POT TO JP4</text>
-<text x="170.18" y="299.72" size="1.778" layer="97">OPTIONAL EXTERNAL VOLUME CONTROL</text>
-<text x="170.18" y="294.64" size="1.778" layer="97">(COM-00906, COM-09940, COM-09119, COM-10613, ETC.)</text>
 <text x="934.72" y="2.54" size="1.778" layer="97">OE HIGH = Disconnected
 OE LOW = Connected
 S LOW = D1
@@ -18786,8 +18783,7 @@ S HIGH = D2</text>
 </segment>
 <segment>
 <wire x1="27.94" y1="182.88" x2="27.94" y2="180.34" width="0.1524" layer="91"/>
-<wire x1="27.94" y1="180.34" x2="30.48" y2="180.34" width="0.1524" layer="91"/>
-<label x="30.48" y="180.34" size="1.27" layer="95" font="vector" xref="yes"/>
+<label x="27.94" y="180.34" size="1.27" layer="95" font="vector" rot="R270" xref="yes"/>
 <pinref part="R33" gate="G$1" pin="1"/>
 </segment>
 </net>

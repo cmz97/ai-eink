@@ -15477,6 +15477,7 @@ Ref : https://www.kingbrightusa.com/images/catalog/SPEC/APTD1608QBC-D.pdf</descr
 <part name="RPIBOOT11" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
 <part name="GND42" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
 <part name="RPIBOOT12" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
+<part name="RPIBOOT13" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
 </parts>
 <sheets>
 <sheet>
@@ -16922,6 +16923,10 @@ S HIGH = D2</text>
 <instance part="RPIBOOT12" gate="G$1" x="741.68" y="50.8" smashed="yes" rot="R180">
 <attribute name="NAME" x="744.22" y="48.26" size="1.778" layer="95" font="vector" rot="R180"/>
 <attribute name="VALUE" x="744.22" y="53.34" size="1.778" layer="96" font="vector" rot="R180"/>
+</instance>
+<instance part="RPIBOOT13" gate="G$1" x="741.68" y="43.18" smashed="yes" rot="R180">
+<attribute name="NAME" x="744.22" y="40.64" size="1.778" layer="95" font="vector" rot="R180"/>
+<attribute name="VALUE" x="744.22" y="45.72" size="1.778" layer="96" font="vector" rot="R180"/>
 </instance>
 </instances>
 <busses>
@@ -19928,6 +19933,11 @@ S HIGH = D2</text>
 <pinref part="RPIBOOT12" gate="G$1" pin="1"/>
 <wire x1="741.68" y1="50.8" x2="751.84" y2="50.8" width="0.1524" layer="91"/>
 <label x="746.76" y="50.8" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="RPIBOOT13" gate="G$1" pin="1"/>
+<wire x1="741.68" y1="43.18" x2="751.84" y2="43.18" width="0.1524" layer="91"/>
+<label x="746.76" y="43.18" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="CAM1_D2_N" class="3">

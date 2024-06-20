@@ -3,7 +3,7 @@
 <eagle version="9.6.2">
 <drawing>
 <settings>
-<setting alwaysvectorfont="yes"/>
+<setting alwaysvectorfont="no"/>
 <setting verticaltext="up"/>
 </settings>
 <grid distance="10" unitdist="mil" unit="mil" style="lines" multiple="1" display="yes" altdistance="0.5" altunitdist="mil" altunit="mil"/>
@@ -8657,6 +8657,63 @@ design rules under a new name.</description>
 <wire x1="45.5836" y1="12.2588" x2="45.3644" y2="12.0396" width="0.3048" layer="1"/>
 <via x="45.3644" y="12.0396" extent="1-16" drill="0.3"/>
 <via x="7.8486" y="19.5707" extent="1-16" drill="0.3"/>
+<via x="5.08" y="91.186" extent="1-16" drill="0.3"/>
+<via x="6.604" y="93.218" extent="1-16" drill="0.3"/>
+<via x="11.684" y="93.218" extent="1-16" drill="0.3"/>
+<via x="24.13" y="87.122" extent="1-16" drill="0.3"/>
+<via x="37.592" y="89.916" extent="1-16" drill="0.3"/>
+<via x="11.684" y="16.51" extent="1-16" drill="0.3"/>
+<via x="21.59" y="12.954" extent="1-16" drill="0.3"/>
+<via x="28.448" y="22.098" extent="1-16" drill="0.3"/>
+<via x="16.764" y="4.064" extent="1-16" drill="0.3"/>
+<via x="42.418" y="6.858" extent="1-16" drill="0.3"/>
+<via x="44.196" y="6.858" extent="1-16" drill="0.3"/>
+<via x="45.974" y="6.858" extent="1-16" drill="0.3"/>
+<via x="48.006" y="6.858" extent="1-16" drill="0.3"/>
+<via x="53.594" y="11.684" extent="1-16" drill="0.3"/>
+<via x="8.636" y="35.56" extent="1-16" drill="0.3"/>
+<via x="8.636" y="38.354" extent="1-16" drill="0.3"/>
+<via x="8.636" y="40.894" extent="1-16" drill="0.3"/>
+<via x="2.9972" y="27.5971" extent="1-16" drill="0.3"/>
+<via x="14.224" y="69.85" extent="1-16" drill="0.3"/>
+<via x="14.224" y="59.944" extent="1-16" drill="0.3"/>
+<via x="19.304" y="50.8" extent="1-16" drill="0.3"/>
+<via x="20.828" y="52.07" extent="1-16" drill="0.3"/>
+<via x="24.13" y="55.626" extent="1-16" drill="0.3"/>
+<via x="24.892" y="57.912" extent="1-16" drill="0.3"/>
+<via x="24.892" y="59.944" extent="1-16" drill="0.3"/>
+<via x="26.4795" y="63.0682" extent="1-16" drill="0.3"/>
+<via x="29.0068" y="66.4845" extent="1-16" drill="0.3"/>
+<via x="37.1475" y="60.9346" extent="1-16" drill="0.3"/>
+<via x="38.9255" y="60.9346" extent="1-16" drill="0.3"/>
+<via x="38.9255" y="57.8866" extent="1-16" drill="0.3"/>
+<via x="41.4655" y="64.7446" extent="1-16" drill="0.3"/>
+<via x="41.4655" y="68.0466" extent="1-16" drill="0.3"/>
+<via x="45.5295" y="68.5546" extent="1-16" drill="0.3"/>
+<via x="45.5295" y="62.4586" extent="1-16" drill="0.3"/>
+<via x="45.5295" y="58.9026" extent="1-16" drill="0.3"/>
+<via x="53.4035" y="71.8566" extent="1-16" drill="0.3"/>
+<via x="47.4853" y="52.7431" extent="1-16" drill="0.3"/>
+<via x="45.4533" y="46.6471" extent="1-16" drill="0.3"/>
+<via x="23.4061" y="48.4886" extent="1-16" drill="0.3"/>
+<via x="21.1201" y="48.4886" extent="1-16" drill="0.3"/>
+<via x="49.276" y="92.71" extent="1-16" drill="0.3"/>
+<via x="40.894" y="92.71" extent="1-16" drill="0.3"/>
+<via x="41.91" y="96.012" extent="1-16" drill="0.3"/>
+<via x="39.37" y="96.012" extent="1-16" drill="0.3"/>
+<via x="37.084" y="96.012" extent="1-16" drill="0.3"/>
+<via x="34.798" y="96.012" extent="1-16" drill="0.3"/>
+<via x="28.194" y="96.012" extent="1-16" drill="0.3"/>
+<via x="25.908" y="96.012" extent="1-16" drill="0.3"/>
+<via x="23.622" y="96.012" extent="1-16" drill="0.3"/>
+<via x="21.336" y="96.012" extent="1-16" drill="0.3"/>
+<via x="19.05" y="96.012" extent="1-16" drill="0.3"/>
+<via x="4.572" y="52.578" extent="1-16" drill="0.3"/>
+<contactref element="IC1" pad="9"/>
+<contactref element="U6" pad="1"/>
+<wire x1="20.6815" y1="44.946" x2="20.66048125" y2="44.946" width="0.1524" layer="1"/>
+<wire x1="20.66048125" y1="44.946" x2="20.103240625" y2="45.503240625" width="0.1524" layer="1"/>
+<via x="20.103240625" y="45.503240625" extent="1-16" drill="0.35"/>
 </signal>
 <signal name="N$1">
 <contactref element="U1" pad="3"/>
@@ -10823,7 +10880,6 @@ design rules under a new name.</description>
 <wire x1="30.099" y1="23.876" x2="30.099" y2="21.717" width="0.1905" layer="15"/>
 <wire x1="25.15200625" y1="28.82299375" x2="30.099" y2="23.876" width="0.1905" layer="15"/>
 <contactref element="C2040" pad="37"/>
-<contactref element="EINK_524352471" pad="19"/>
 <contactref element="J4" pad="3"/>
 <contactref element="U23" pad="2"/>
 <contactref element="U25" pad="2"/>
@@ -10872,7 +10928,6 @@ design rules under a new name.</description>
 <wire x1="19.4056" y1="88.3231" x2="10.3124" y2="88.3231" width="0.1524" layer="16"/>
 <wire x1="10.3124" y1="88.3231" x2="8.2623" y2="90.3732" width="0.1524" layer="16"/>
 <via x="35.96803125" y="7.77076875" extent="1-16" drill="0.3"/>
-<wire x1="34.25" y1="10.818" x2="34.40315" y2="10.66485" width="0.0889" layer="1"/>
 <wire x1="34.40315" y1="10.66485" x2="34.40315" y2="10.3364625" width="0.0889" layer="1"/>
 <wire x1="35.96803125" y1="8.77158125" x2="35.96803125" y2="7.77076875" width="0.0889" layer="1"/>
 <wire x1="34.40315" y1="10.3364625" x2="35.96803125" y2="8.77158125" width="0.0889" layer="1"/>
@@ -10889,13 +10944,13 @@ design rules under a new name.</description>
 <wire x1="24.20184375" y1="31.29949375" x2="23.7513375" y2="31.75" width="0.1778" layer="1"/>
 <wire x1="23.7513375" y1="31.75" x2="22.7362" y2="31.75" width="0.1778" layer="1"/>
 <wire x1="22.7362" y1="31.75" x2="22.5158" y2="31.9704" width="0.1778" layer="1"/>
-<wire x1="34.25" y1="10.818" x2="34.25" y2="11.3686" width="0.1016" layer="1"/>
 <wire x1="34.6964" y1="11.815" x2="34.25" y2="11.3686" width="0.1016" layer="1"/>
 <wire x1="34.6964" y1="12.0452" x2="34.6964" y2="11.815" width="0.1016" layer="1"/>
 <wire x1="33.73995" y1="13.177925" x2="33.73995" y2="8.62725" width="0.1016" layer="16"/>
 <contactref element="RPIBOOT8" pad="P$1"/>
 <wire x1="16.908984375" y1="58.376615625" x2="17.018" y2="58.2676" width="0.0889" layer="16"/>
 <wire x1="17.018" y1="58.2676" x2="17.018" y2="57.2516" width="0.0889" layer="16"/>
+<wire x1="34.40315" y1="10.66485" x2="34.25" y2="11.3686" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="SAM_SDA">
 <contactref element="C2040" pad="36"/>
@@ -10932,7 +10987,6 @@ design rules under a new name.</description>
 <wire x1="26.6469375" y1="27.94" x2="30.861" y2="23.7259375" width="0.1905" layer="15"/>
 <wire x1="31.623" y1="21.336" x2="30.861" y2="22.098" width="0.1905" layer="1"/>
 <wire x1="30.861" y1="22.098" x2="30.861" y2="22.479" width="0.1905" layer="1"/>
-<contactref element="EINK_524352471" pad="18"/>
 <contactref element="J4" pad="2"/>
 <contactref element="U24" pad="2"/>
 <contactref element="U25" pad="3"/>
@@ -10941,9 +10995,7 @@ design rules under a new name.</description>
 <via x="16.307" y="87.547725" extent="1-16" drill="0.3"/>
 <wire x1="16.307" y1="87.547725" x2="9.343275" y2="87.547725" width="0.1524" layer="16"/>
 <wire x1="9.343275" y1="87.547725" x2="8.2196" y2="88.6714" width="0.1524" layer="16"/>
-<wire x1="33.8328" y1="10.9008" x2="33.75" y2="10.818" width="0.1524" layer="1"/>
 <via x="35.1536" y="8.56855" extent="1-16" drill="0.3"/>
-<wire x1="33.75" y1="10.818" x2="33.90315" y2="10.66485" width="0.0889" layer="1"/>
 <wire x1="33.90315" y1="10.66485" x2="33.90315" y2="10.3364625" width="0.0889" layer="1"/>
 <wire x1="35.1536" y1="9.0860125" x2="35.1536" y2="8.56855" width="0.0889" layer="1"/>
 <wire x1="33.90315" y1="10.3364625" x2="35.1536" y2="9.0860125" width="0.0889" layer="1"/>
@@ -10977,6 +11029,7 @@ design rules under a new name.</description>
 <contactref element="GND37" pad="P$1"/>
 <wire x1="14.2748" y1="58.0644" x2="14.2978" y2="58.0644" width="0.0889" layer="16"/>
 <wire x1="14.2978" y1="58.0644" x2="15.0852" y2="57.277" width="0.0889" layer="16"/>
+<wire x1="33.90315" y1="10.66485" x2="33.8328" y2="10.9008" width="0" layer="19" extent="1-1"/>
 </signal>
 <signal name="SAM_GPIO26/ADC0">
 <contactref element="C2040" pad="38"/>
@@ -13140,6 +13193,12 @@ design rules under a new name.</description>
 <wire x1="47.6528" y1="13.2657" x2="45.73665" y2="15.18185" width="0.0889" layer="2"/>
 <wire x1="46.5836" y1="13.3776" x2="46.5836" y2="12.9125" width="0.0889" layer="1"/>
 <wire x1="46.5836" y1="12.9125" x2="47.6528" y2="11.8433" width="0.0889" layer="1"/>
+</signal>
+<signal name="TSCL">
+<contactref element="EINK_524352471" pad="19"/>
+</signal>
+<signal name="TSDA">
+<contactref element="EINK_524352471" pad="18"/>
 </signal>
 </signals>
 <mfgpreviewcolors>

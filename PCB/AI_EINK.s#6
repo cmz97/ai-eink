@@ -14049,8 +14049,6 @@ Ref : https://www.kingbrightusa.com/images/catalog/SPEC/APTD1608QBC-D.pdf</descr
 <smd name="19" x="-0.2" y="1.55" dx="0.6" dy="0.2" layer="1" rot="R270"/>
 <smd name="20" x="-0.6" y="1.55" dx="0.6" dy="0.2" layer="1" rot="R270"/>
 <smd name="21" x="0" y="0" dx="1.14" dy="1.9" layer="1" cream="no"/>
-<pad name="V" x="0" y="-0.7" drill="0.2032" diameter="0.5"/>
-<pad name="V_1" x="0" y="0.7" drill="0.2032" diameter="0.5"/>
 <wire x1="1.25" y1="-1.65" x2="1.25" y2="1.65" width="0.1524" layer="51"/>
 <wire x1="-1.25" y1="1.65" x2="1.25" y2="1.65" width="0.1524" layer="51"/>
 <wire x1="-1.25" y1="-1.65" x2="1.25" y2="-1.65" width="0.1524" layer="51"/>

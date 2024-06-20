@@ -19444,11 +19444,6 @@ S HIGH = D2</text>
 <label x="810.26" y="193.04" size="1.778" layer="95" align="bottom-right"/>
 </segment>
 <segment>
-<wire x1="497.84" y1="76.2" x2="515.62" y2="76.2" width="0.1524" layer="91"/>
-<label x="513.08" y="76.2" size="1.778" layer="95" align="bottom-right"/>
-<pinref part="EINK_524352471" gate="A" pin="19"/>
-</segment>
-<segment>
 <pinref part="U23" gate="A" pin="I/O"/>
 <wire x1="690.88" y1="119.38" x2="673.1" y2="119.38" width="0.1524" layer="91"/>
 <label x="675.64" y="119.38" size="1.778" layer="95"/>
@@ -19485,11 +19480,6 @@ S HIGH = D2</text>
 <wire x1="937.26" y1="238.76" x2="919.48" y2="238.76" width="0.1524" layer="91"/>
 <label x="922.02" y="238.76" size="1.778" layer="95"/>
 <pinref part="J4" gate="A" pin="2"/>
-</segment>
-<segment>
-<wire x1="497.84" y1="73.66" x2="515.62" y2="73.66" width="0.1524" layer="91"/>
-<label x="513.08" y="73.66" size="1.778" layer="95" align="bottom-right"/>
-<pinref part="EINK_524352471" gate="A" pin="18"/>
 </segment>
 <segment>
 <pinref part="U24" gate="A" pin="I/O"/>
@@ -20965,6 +20955,20 @@ S HIGH = D2</text>
 <pinref part="J1" gate="A" pin="2"/>
 <wire x1="373.38" y1="195.58" x2="378.46" y2="195.58" width="0.1524" layer="91"/>
 <label x="378.46" y="195.58" size="1.016" layer="95" xref="yes"/>
+</segment>
+</net>
+<net name="TSCL" class="0">
+<segment>
+<wire x1="497.84" y1="76.2" x2="515.62" y2="76.2" width="0.1524" layer="91"/>
+<label x="513.08" y="76.2" size="1.778" layer="95" align="bottom-right"/>
+<pinref part="EINK_524352471" gate="A" pin="19"/>
+</segment>
+</net>
+<net name="TSDA" class="0">
+<segment>
+<wire x1="497.84" y1="73.66" x2="515.62" y2="73.66" width="0.1524" layer="91"/>
+<label x="513.08" y="73.66" size="1.778" layer="95" align="bottom-right"/>
+<pinref part="EINK_524352471" gate="A" pin="18"/>
 </segment>
 </net>
 </nets>

@@ -15464,6 +15464,19 @@ Ref : https://www.kingbrightusa.com/images/catalog/SPEC/APTD1608QBC-D.pdf</descr
 <part name="U$110" library="microbuilder" deviceset="GND" device=""/>
 <part name="Q4" library="Transistor" library_urn="urn:adsk.eagle:library:16378713" deviceset="NMOSFET" device="SOT23-GSD" package3d_urn="urn:adsk.eagle:package:28738/2" value="NMOS_C7465427"/>
 <part name="J1" library="2024-05-21_05-27-43_Library" deviceset="SM03B-SRSS-TB" device="CONN_SM03B-SRSS-TB_JST"/>
+<part name="RPIBOOT6" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
+<part name="GND7" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
+<part name="RPIBOOT7" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3"/>
+<part name="GND36" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
+<part name="RPIBOOT8" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
+<part name="GND37" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
+<part name="RPIBOOT9" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
+<part name="GND40" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
+<part name="RPIBOOT10" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
+<part name="GND41" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
+<part name="RPIBOOT11" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
+<part name="GND42" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
+<part name="RPIBOOT12" library="SparkFun-Connectors" deviceset="TEST-POINT" device="3" value="DNP"/>
 </parts>
 <sheets>
 <sheet>
@@ -16857,6 +16870,58 @@ S HIGH = D2</text>
 </instance>
 <instance part="J1" gate="A" x="373.38" y="193.04" smashed="yes" rot="R180">
 <attribute name="NAME" x="369.2154" y="187.7314" size="2.083" layer="95" ratio="6" rot="R180"/>
+</instance>
+<instance part="RPIBOOT6" gate="G$1" x="-71.12" y="124.46" smashed="yes" rot="R180">
+<attribute name="NAME" x="-68.58" y="121.92" size="1.778" layer="95" font="vector" rot="R180"/>
+<attribute name="VALUE" x="-68.58" y="127" size="1.778" layer="96" font="vector" rot="R180"/>
+</instance>
+<instance part="GND7" gate="G$1" x="-71.12" y="116.84" smashed="yes" rot="R180">
+<attribute name="NAME" x="-68.58" y="114.3" size="1.778" layer="95" font="vector" rot="R180"/>
+<attribute name="VALUE" x="-68.58" y="119.38" size="1.778" layer="96" font="vector" rot="R180"/>
+</instance>
+<instance part="RPIBOOT7" gate="G$1" x="-71.12" y="139.7" smashed="yes" rot="R180">
+<attribute name="NAME" x="-68.58" y="137.16" size="1.778" layer="95" font="vector" rot="R180"/>
+<attribute name="VALUE" x="-68.58" y="142.24" size="1.778" layer="96" font="vector" rot="R180"/>
+</instance>
+<instance part="GND36" gate="G$1" x="-71.12" y="132.08" smashed="yes" rot="R180">
+<attribute name="NAME" x="-68.58" y="129.54" size="1.778" layer="95" font="vector" rot="R180"/>
+<attribute name="VALUE" x="-68.58" y="134.62" size="1.778" layer="96" font="vector" rot="R180"/>
+</instance>
+<instance part="RPIBOOT8" gate="G$1" x="741.68" y="111.76" smashed="yes" rot="R180">
+<attribute name="NAME" x="744.22" y="109.22" size="1.778" layer="95" font="vector" rot="R180"/>
+<attribute name="VALUE" x="744.22" y="114.3" size="1.778" layer="96" font="vector" rot="R180"/>
+</instance>
+<instance part="GND37" gate="G$1" x="741.68" y="104.14" smashed="yes" rot="R180">
+<attribute name="NAME" x="744.22" y="101.6" size="1.778" layer="95" font="vector" rot="R180"/>
+<attribute name="VALUE" x="744.22" y="106.68" size="1.778" layer="96" font="vector" rot="R180"/>
+</instance>
+<instance part="RPIBOOT9" gate="G$1" x="741.68" y="96.52" smashed="yes" rot="R180">
+<attribute name="NAME" x="744.22" y="93.98" size="1.778" layer="95" font="vector" rot="R180"/>
+<attribute name="VALUE" x="744.22" y="99.06" size="1.778" layer="96" font="vector" rot="R180"/>
+</instance>
+<instance part="GND40" gate="G$1" x="741.68" y="88.9" smashed="yes" rot="R180">
+<attribute name="NAME" x="744.22" y="86.36" size="1.778" layer="95" font="vector" rot="R180"/>
+<attribute name="VALUE" x="744.22" y="91.44" size="1.778" layer="96" font="vector" rot="R180"/>
+</instance>
+<instance part="RPIBOOT10" gate="G$1" x="741.68" y="81.28" smashed="yes" rot="R180">
+<attribute name="NAME" x="744.22" y="78.74" size="1.778" layer="95" font="vector" rot="R180"/>
+<attribute name="VALUE" x="744.22" y="83.82" size="1.778" layer="96" font="vector" rot="R180"/>
+</instance>
+<instance part="GND41" gate="G$1" x="741.68" y="73.66" smashed="yes" rot="R180">
+<attribute name="NAME" x="744.22" y="71.12" size="1.778" layer="95" font="vector" rot="R180"/>
+<attribute name="VALUE" x="744.22" y="76.2" size="1.778" layer="96" font="vector" rot="R180"/>
+</instance>
+<instance part="RPIBOOT11" gate="G$1" x="741.68" y="66.04" smashed="yes" rot="R180">
+<attribute name="NAME" x="744.22" y="63.5" size="1.778" layer="95" font="vector" rot="R180"/>
+<attribute name="VALUE" x="744.22" y="68.58" size="1.778" layer="96" font="vector" rot="R180"/>
+</instance>
+<instance part="GND42" gate="G$1" x="741.68" y="58.42" smashed="yes" rot="R180">
+<attribute name="NAME" x="744.22" y="55.88" size="1.778" layer="95" font="vector" rot="R180"/>
+<attribute name="VALUE" x="744.22" y="60.96" size="1.778" layer="96" font="vector" rot="R180"/>
+</instance>
+<instance part="RPIBOOT12" gate="G$1" x="741.68" y="50.8" smashed="yes" rot="R180">
+<attribute name="NAME" x="744.22" y="48.26" size="1.778" layer="95" font="vector" rot="R180"/>
+<attribute name="VALUE" x="744.22" y="53.34" size="1.778" layer="96" font="vector" rot="R180"/>
 </instance>
 </instances>
 <busses>
@@ -18327,6 +18392,11 @@ S HIGH = D2</text>
 <wire x1="690.88" y1="99.06" x2="673.1" y2="99.06" width="0.1524" layer="91"/>
 <label x="675.64" y="99.06" size="1.778" layer="95"/>
 </segment>
+<segment>
+<pinref part="RPIBOOT9" gate="G$1" pin="1"/>
+<wire x1="741.68" y1="96.52" x2="751.84" y2="96.52" width="0.1524" layer="91"/>
+<label x="746.76" y="96.52" size="1.778" layer="95"/>
+</segment>
 </net>
 <net name="EINK_RESET" class="0">
 <segment>
@@ -18348,6 +18418,11 @@ S HIGH = D2</text>
 <pinref part="U17" gate="A" pin="I/O"/>
 <wire x1="690.88" y1="88.9" x2="673.1" y2="88.9" width="0.1524" layer="91"/>
 <label x="675.64" y="88.9" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="GND40" gate="G$1" pin="1"/>
+<wire x1="741.68" y1="88.9" x2="751.84" y2="88.9" width="0.1524" layer="91"/>
+<label x="746.76" y="88.9" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="EINK_D/C" class="0">
@@ -18371,6 +18446,11 @@ S HIGH = D2</text>
 <wire x1="690.88" y1="78.74" x2="673.1" y2="78.74" width="0.1524" layer="91"/>
 <label x="675.64" y="78.74" size="1.778" layer="95"/>
 </segment>
+<segment>
+<pinref part="RPIBOOT10" gate="G$1" pin="1"/>
+<wire x1="741.68" y1="81.28" x2="751.84" y2="81.28" width="0.1524" layer="91"/>
+<label x="746.76" y="81.28" size="1.778" layer="95"/>
+</segment>
 </net>
 <net name="EINK_CS" class="0">
 <segment>
@@ -18392,6 +18472,11 @@ S HIGH = D2</text>
 <pinref part="U20" gate="A" pin="I/O"/>
 <wire x1="690.88" y1="68.58" x2="673.1" y2="68.58" width="0.1524" layer="91"/>
 <label x="675.64" y="68.58" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="GND41" gate="G$1" pin="1"/>
+<wire x1="741.68" y1="73.66" x2="751.84" y2="73.66" width="0.1524" layer="91"/>
+<label x="746.76" y="73.66" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="CDD" class="0">
@@ -18508,6 +18593,11 @@ S HIGH = D2</text>
 <wire x1="690.88" y1="48.26" x2="673.1" y2="48.26" width="0.1524" layer="91"/>
 <label x="675.64" y="48.26" size="1.778" layer="95"/>
 </segment>
+<segment>
+<pinref part="GND42" gate="G$1" pin="1"/>
+<wire x1="741.68" y1="58.42" x2="751.84" y2="58.42" width="0.1524" layer="91"/>
+<label x="746.76" y="58.42" size="1.778" layer="95"/>
+</segment>
 </net>
 <net name="SPI_CLK" class="0">
 <segment>
@@ -18529,6 +18619,11 @@ S HIGH = D2</text>
 <pinref part="U21" gate="A" pin="I/O"/>
 <wire x1="690.88" y1="58.42" x2="673.1" y2="58.42" width="0.1524" layer="91"/>
 <label x="675.64" y="58.42" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="RPIBOOT11" gate="G$1" pin="1"/>
+<wire x1="741.68" y1="66.04" x2="751.84" y2="66.04" width="0.1524" layer="91"/>
+<label x="746.76" y="66.04" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="V_BATT" class="1">
@@ -18595,6 +18690,11 @@ S HIGH = D2</text>
 <wire x1="-50.8" y1="256.54" x2="-38.1" y2="256.54" width="0.1524" layer="91"/>
 <label x="-50.8" y="256.54" size="1.778" layer="95"/>
 </segment>
+<segment>
+<pinref part="GND7" gate="G$1" pin="1"/>
+<wire x1="-71.12" y1="116.84" x2="-60.96" y2="116.84" width="0.1524" layer="91"/>
+<label x="-66.04" y="116.84" size="1.778" layer="95"/>
+</segment>
 </net>
 <net name="SCL1" class="0">
 <segment>
@@ -18627,6 +18727,11 @@ S HIGH = D2</text>
 <pinref part="IC1" gate="G$1" pin="SCL"/>
 <wire x1="-38.1" y1="259.08" x2="-50.8" y2="259.08" width="0.1524" layer="91"/>
 <label x="-50.8" y="259.08" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="RPIBOOT6" gate="G$1" pin="1"/>
+<wire x1="-71.12" y1="124.46" x2="-60.96" y2="124.46" width="0.1524" layer="91"/>
+<label x="-66.04" y="124.46" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="BATTERY_IN" class="1">
@@ -19335,6 +19440,11 @@ S HIGH = D2</text>
 <wire x1="909.32" y1="180.34" x2="889" y2="180.34" width="0.1524" layer="91"/>
 <label x="891.54" y="180.34" size="1.778" layer="95"/>
 </segment>
+<segment>
+<pinref part="RPIBOOT8" gate="G$1" pin="1"/>
+<wire x1="741.68" y1="111.76" x2="751.84" y2="111.76" width="0.1524" layer="91"/>
+<label x="746.76" y="111.76" size="1.778" layer="95"/>
+</segment>
 </net>
 <net name="SAM_SDA" class="0">
 <segment>
@@ -19372,6 +19482,11 @@ S HIGH = D2</text>
 <pinref part="U25" gate="G$1" pin="SDA"/>
 <wire x1="909.32" y1="177.8" x2="889" y2="177.8" width="0.1524" layer="91"/>
 <label x="891.54" y="177.8" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="GND37" gate="G$1" pin="1"/>
+<wire x1="741.68" y1="104.14" x2="751.84" y2="104.14" width="0.1524" layer="91"/>
+<label x="746.76" y="104.14" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="SAM_GPIO26/ADC0" class="0">
@@ -19808,6 +19923,11 @@ S HIGH = D2</text>
 <pinref part="C2040" gate="A" pin="GPIO2"/>
 <wire x1="728.98" y1="236.22" x2="701.04" y2="236.22" width="0.1524" layer="91"/>
 <label x="703.58" y="236.22" size="1.778" layer="95"/>
+</segment>
+<segment>
+<pinref part="RPIBOOT12" gate="G$1" pin="1"/>
+<wire x1="741.68" y1="50.8" x2="751.84" y2="50.8" width="0.1524" layer="91"/>
+<label x="746.76" y="50.8" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="CAM1_D2_N" class="3">
@@ -20565,6 +20685,11 @@ S HIGH = D2</text>
 <wire x1="871.22" y1="223.52" x2="858.52" y2="223.52" width="0.1524" layer="91"/>
 <label x="858.52" y="223.52" size="1.27" layer="95" font="vector" rot="R180" xref="yes"/>
 </segment>
+<segment>
+<pinref part="GND36" gate="G$1" pin="1"/>
+<wire x1="-71.12" y1="132.08" x2="-60.96" y2="132.08" width="0.1524" layer="91"/>
+<label x="-66.04" y="132.08" size="1.778" layer="95"/>
+</segment>
 </net>
 <net name="UART_RXD3_SAM" class="0">
 <segment>
@@ -20582,6 +20707,11 @@ S HIGH = D2</text>
 <wire x1="861.06" y1="228.6" x2="861.06" y2="226.06" width="0.1524" layer="91"/>
 <wire x1="861.06" y1="226.06" x2="858.52" y2="226.06" width="0.1524" layer="91"/>
 <label x="858.52" y="226.06" size="1.27" layer="95" font="vector" rot="R180" xref="yes"/>
+</segment>
+<segment>
+<pinref part="RPIBOOT7" gate="G$1" pin="1"/>
+<wire x1="-71.12" y1="139.7" x2="-60.96" y2="139.7" width="0.1524" layer="91"/>
+<label x="-66.04" y="139.7" size="1.778" layer="95"/>
 </segment>
 </net>
 <net name="N$28" class="0">
