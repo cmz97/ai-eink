@@ -236,7 +236,7 @@
 <wire x1="1" y1="89.92" x2="1" y2="9.08" width="0" layer="20"/>
 <wire x1="1" y1="9.08" x2="6.08" y2="4" width="0" layer="20" curve="90"/>
 <text x="31" y="56" size="0.4064" layer="26" rot="MR0">EINK</text>
-<text x="48.244" y="70.675" size="1.016" layer="25" rot="R270">Distiller V0.6
+<text x="48.244" y="70.675" size="1.016" layer="25" rot="R270">Distiller V0.7
 © PamirAI Inc. 2024</text>
 <text x="1" y="3.825" size="0.07" layer="22" font="vector" rot="MR0">/Users/chengmingzhang/Desktop/Screenshot_2024-02-21_at_10.06.41_PM.bmp</text>
 <rectangle x1="48.387" y1="27.051" x2="60.198" y2="39.878" layer="1"/>
@@ -9220,10 +9220,8 @@ design rules under a new name.</description>
 <wire x1="29.083" y1="26.829575" x2="29.083" y2="26.543" width="0.0889" layer="1"/>
 <via x="29.083" y="26.543" extent="1-16" drill="0.3"/>
 <wire x1="29.083" y1="26.829575" x2="27.178" y2="28.734575" width="0.0889" layer="1"/>
-<wire x1="43.3346" y1="21.3815" x2="42.8139" y2="21.3815" width="0.0889" layer="1"/>
-<wire x1="42.8139" y1="21.3815" x2="42.5546" y2="21.6408" width="0.0889" layer="1"/>
-<wire x1="42.5546" y1="21.6408" x2="36.3982" y2="21.6408" width="0.0889" layer="1"/>
-<wire x1="36.3982" y1="21.6408" x2="35.941" y2="22.098" width="0.0889" layer="1"/>
+<wire x1="43.3346" y1="21.3815" x2="36.6575" y2="21.3815" width="0.0889" layer="1"/>
+<wire x1="36.6575" y1="21.3815" x2="35.941" y2="22.098" width="0.0889" layer="1"/>
 <via x="35.941" y="22.098" extent="1-16" drill="0.3"/>
 <wire x1="41.867" y1="87.797" x2="40.684" y2="86.614" width="0.2032" layer="1"/>
 <wire x1="40.684" y1="86.614" x2="40.386" y2="86.614" width="0.2032" layer="1"/>
@@ -10715,7 +10713,7 @@ design rules under a new name.</description>
 <wire x1="9.05678125" y1="12.69035625" x2="14.007075" y2="7.7400625" width="0.1905" layer="15"/>
 <wire x1="28.2436625" y1="10.033" x2="34.798" y2="10.033" width="0.1905" layer="15"/>
 <wire x1="34.798" y1="10.033" x2="39.17315" y2="5.65785" width="0.1905" layer="15"/>
-<wire x1="39.17315" y1="5.65785" x2="50.13193125" y2="5.65785" width="0.1905" layer="15"/>
+<wire x1="39.17315" y1="5.65785" x2="49.94143125" y2="5.65785" width="0.1905" layer="15"/>
 <wire x1="59.055" y1="43.815" x2="58.928" y2="43.688" width="0.2032" layer="1"/>
 <wire x1="53.2361" y1="44.45" x2="53.9981" y2="43.688" width="0.2032" layer="1"/>
 <wire x1="58.928" y1="43.688" x2="53.9981" y2="43.688" width="0.2032" layer="1"/>
@@ -10734,8 +10732,8 @@ design rules under a new name.</description>
 <wire x1="58.3668" y1="21.07188125" x2="58.3668" y2="13.62011875" width="0.2032" layer="16"/>
 <wire x1="58.3668" y1="13.62011875" x2="58.085" y2="13.33831875" width="0.2032" layer="16"/>
 <wire x1="59.5776" y1="42.2764" x2="59.5776" y2="24.7796" width="0.2032" layer="15"/>
-<wire x1="50.13193125" y1="5.65785" x2="53.60346875" y2="9.1293875" width="0.2032" layer="15"/>
-<wire x1="53.60346875" y1="9.1293875" x2="56.4280125" y2="9.1293875" width="0.2032" layer="15"/>
+<wire x1="49.94143125" y1="5.65785" x2="53.41296875" y2="9.1293875" width="0.2032" layer="15"/>
+<wire x1="53.41296875" y1="9.1293875" x2="56.4280125" y2="9.1293875" width="0.2032" layer="15"/>
 <wire x1="27.10575" y1="8.86339375" x2="27.10575" y2="8.8950875" width="0.1905" layer="15"/>
 <wire x1="27.10575" y1="8.8950875" x2="28.2436625" y2="10.033" width="0.1905" layer="15"/>
 <wire x1="14.007075" y1="7.7400625" x2="25.98241875" y2="7.7400625" width="0.1905" layer="15"/>
@@ -13389,6 +13387,9 @@ design rules under a new name.</description>
 <approved hash="6,1,4d8ef6a52816d514"/>
 <approved hash="6,1,b4d3b52a10c31a02"/>
 <approved hash="6,1,124fe8e44ba988fc"/>
+<approved hash="6,1,deb33dd36c94cb30"/>
+<approved hash="23,1,8d5ee360e08e8eb0"/>
+<approved hash="23,1,a04ff68ff63ea0fe"/>
 </errors>
 </board>
 </drawing>
