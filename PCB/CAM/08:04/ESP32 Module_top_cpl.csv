@@ -1,0 +1,10 @@
+Designator,Mid X,Mid Y,Layer,Rotation
+JA,25.00, 3.00,Top,180.0
+JB,25.00,37.00,Top,180.0
+TP_1V8, 7.75,34.42,Top,0.0
+TP_3V3, 9.53, 3.30,Top,0.0
+TP_5V, 8.13,16.26,Top,0.0
+TP_DATA0,17.78,24.26,Top,0.0
+TP_EMMC_CLK,15.24,24.26,Top,0.0
+TP_EMMC_CMD,13.97,24.26,Top,0.0
+TP_GND, 0.89, 5.84,Top,0.0
